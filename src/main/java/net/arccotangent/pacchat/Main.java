@@ -14,7 +14,7 @@ import java.util.Scanner;
 public class Main {
 	
 	private static Logger core_log = new Logger("CORE");
-	private static final String VERSION = "20160926";
+	private static final String VERSION = "20160927";
 	private static KeyPair keyPair;
 	
 	public static KeyPair getKeypair(){
@@ -24,8 +24,8 @@ public class Main {
 	private static void printHelpMsg() {
 		System.out.println("help - This help message");
 		System.out.println("exit - Exit chat mode and shut down PacChat.");
-		System.out.println("send <ip address> - Send a message. PacChat will prompt you to enter your message after you enter the command.");
-		System.out.println("reply - Reply to the last person to send you a message.");
+		System.out.println("send/s <ip address> - Send a message. PacChat will prompt you to enter your message after you enter the command.");
+		System.out.println("reply/r - Reply to the last person to send you a message.");
 	}
 	
 	public static void main(String[] args) {
@@ -73,6 +73,7 @@ public class Main {
 					core_log.i("Exiting chat mode.");
 					active = false;
 					break;
+				case "s":
 				case "send":
 					if (cmd.length >= 2 && !cmd[1].isEmpty()) {
 						core_log.i("Preparing to send message to IP address " + cmd[1]);
@@ -103,6 +104,7 @@ public class Main {
 					break;
 				case "":
 					break;
+				case "r":
 				case "reply":
 					core_log.i("Replying to last sender IP address.");
 					core_log.i("Preparing to send message to IP address " + server.getLastSender());
