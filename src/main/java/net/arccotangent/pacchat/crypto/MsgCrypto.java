@@ -12,8 +12,8 @@ public class MsgCrypto {
 	
 	private static Logger mc_log = new Logger("CRYPTO/MSGCRYPTO");
 	
-	public static String encryptMessage(String msg, PublicKey publicKey) {
-		mc_log.i("Encrypting message.");
+	public static String encryptAndSignMessage(String msg, PublicKey publicKey, PrivateKey privateKey) {
+		mc_log.i("Encrypting and signing message.");
 		SecretKey aes = AES.generateAESKey();
 		
 		assert aes != null;
@@ -21,16 +21,27 @@ public class MsgCrypto {
 		byte[] aesCryptedText = AES.encryptBytes(msg.getBytes(), aes);
 		byte[] cryptedAesKey = RSA.encryptBytes(aes.getEncoded(), publicKey);
 		
+		byte[] signature = RSA.signBytes(cryptedAesKey, privateKey);
+		
 		String cryptedTextB64 = Base64.encodeBase64String(aesCryptedText);
 		String cryptedKeyB64 = Base64.encodeBase64String(cryptedAesKey);
+		String signatureB64 = Base64.encodeBase64String(signature);
 		
-		return cryptedKeyB64 + "\n" + cryptedTextB64;
+		return cryptedKeyB64 + "\n" + cryptedTextB64 + "\n" + signatureB64;
 	}
 	
-	public static String decryptMessage(String cryptedMsg, PrivateKey privateKey) {
-		mc_log.i("Decrypting message.");
+	public static String decryptAndVerifyMessage(String cryptedMsg, PrivateKey privateKey, PublicKey publicKey) {
+		mc_log.i("Decrypting and verifying message.");
 		String cryptedKeyB64 = cryptedMsg.substring(0, cryptedMsg.indexOf("\n"));
-		String cryptedTextB64 = cryptedMsg.substring(cryptedMsg.indexOf("\n") + 1);
+		int firstNewline = cryptedMsg.indexOf("\n") + 1;
+		int lastNewline = cryptedMsg.indexOf("\n", firstNewline);
+		String cryptedTextB64 = cryptedMsg.substring(firstNewline, lastNewline);
+		String signatureB64 = cryptedMsg.substring(lastNewline + 1);
+		
+		if (RSA.verifyBytes(Base64.decodeBase64(cryptedKeyB64), Base64.decodeBase64(signatureB64), publicKey))
+			mc_log.i("Message authenticity verified!");
+		else
+			mc_log.w("Message authenticity NOT VERIFIED! Will continue decryption anyway.");
 		
 		byte[] aesKey = RSA.decryptBytes(Base64.decodeBase64(cryptedKeyB64), privateKey);
 		assert aesKey != null;

@@ -14,7 +14,7 @@ import java.util.Scanner;
 public class Main {
 	
 	private static Logger core_log = new Logger("CORE");
-	private static final String VERSION = "20160927";
+	private static final String VERSION = "20161009";
 	private static KeyPair keyPair;
 	
 	public static KeyPair getKeypair(){
@@ -40,8 +40,8 @@ public class Main {
 		
 		core_log.i("Performing crypto test..");
 		String testmsg = "test message";
-		String crypted = MsgCrypto.encryptMessage(testmsg, keyPair.getPublic());
-		if (testmsg.equals(MsgCrypto.decryptMessage(crypted, keyPair.getPrivate()))) {
+		String crypted = MsgCrypto.encryptAndSignMessage(testmsg, keyPair.getPublic(), keyPair.getPrivate());
+		if (testmsg.equals(MsgCrypto.decryptAndVerifyMessage(crypted, keyPair.getPrivate(), keyPair.getPublic()))) {
 			core_log.i("Crypto test successful!");
 		} else {
 			core_log.e("Crypto test failed!");

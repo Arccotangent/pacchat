@@ -48,7 +48,7 @@ public class Server extends Thread {
 				
 				connection_id++;
 				server_log.i("Handing connection over to connection handler " + connection_id);
-				ConnectionHandler conn = new ConnectionHandler(input, output, connection_id);
+				ConnectionHandler conn = new ConnectionHandler(input, output, connection_id, src_ip_addr);
 				conn.start();
 			}
 		} catch (IOException e) {

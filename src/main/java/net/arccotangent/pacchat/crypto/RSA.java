@@ -54,4 +54,30 @@ public class RSA {
 		return null;
 	}
 	
+	static byte[] signBytes(byte[] toSign, PrivateKey privateKey) {
+		try {
+			Signature sig = Signature.getInstance("SHA512withRSA");
+			sig.initSign(privateKey);
+			sig.update(toSign);
+			return sig.sign();
+		} catch (NoSuchAlgorithmException | InvalidKeyException | SignatureException e) {
+			rsa_log.e("Error while signing text with RSA privkey!");
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	static boolean verifyBytes(byte[] signedBytes, byte[] signature, PublicKey publicKey) {
+		try {
+			Signature sig = Signature.getInstance("SHA512withRSA");
+			sig.initVerify(publicKey);
+			sig.update(signedBytes);
+			return sig.verify(signature);
+		} catch (NoSuchAlgorithmException | InvalidKeyException | SignatureException e) {
+			rsa_log.e("Error while signing text with RSA privkey!");
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
 }

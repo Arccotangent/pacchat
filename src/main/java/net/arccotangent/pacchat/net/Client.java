@@ -1,5 +1,6 @@
 package net.arccotangent.pacchat.net;
 
+import net.arccotangent.pacchat.Main;
 import net.arccotangent.pacchat.crypto.MsgCrypto;
 import net.arccotangent.pacchat.filesystem.KeyManager;
 import net.arccotangent.pacchat.logging.Logger;
@@ -9,6 +10,7 @@ import java.io.*;
 import java.net.*;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
@@ -22,6 +24,7 @@ public class Client {
 		client_log.i("Connecting to server...");
 		
 		PublicKey pub;
+		PrivateKey priv;
 		Socket socket;
 		BufferedReader input;
 		BufferedWriter output;
@@ -86,8 +89,9 @@ public class Client {
 		}
 		
 		pub = KeyManager.loadKeyByIP(ip_address);
+		priv = Main.getKeypair().getPrivate();
 		
-		String cryptedMsg = MsgCrypto.encryptMessage(msg, pub);
+		String cryptedMsg = MsgCrypto.encryptAndSignMessage(msg, pub, priv);
 		try {
 			client_log.i("Sending message to recipient.");
 			output.write(cryptedMsg);

@@ -2,13 +2,19 @@ package net.arccotangent.pacchat.net;
 
 import net.arccotangent.pacchat.Main;
 import net.arccotangent.pacchat.crypto.MsgCrypto;
+import net.arccotangent.pacchat.filesystem.KeyManager;
 import net.arccotangent.pacchat.logging.Logger;
 import org.apache.commons.codec.binary.Base64;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.IOException;
+import java.io.*;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.Socket;
+import java.security.KeyFactory;
+import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.X509EncodedKeySpec;
 
 class ConnectionHandler extends Thread {
 	
@@ -16,12 +22,14 @@ class ConnectionHandler extends Thread {
 	private BufferedWriter output;
 	private long connection_id;
 	private Logger ch_log;
+	private String ip;
 	
-	ConnectionHandler(BufferedReader in, BufferedWriter out, long conn_id) {
+	ConnectionHandler(BufferedReader in, BufferedWriter out, long conn_id, String source_ip) {
 		input = in;
 		output = out;
 		connection_id = conn_id;
 		ch_log = new Logger("SERVER/CONNECTION-" + connection_id);
+		ip = source_ip;
 	}
 	
 	public void run() {
@@ -44,10 +52,41 @@ class ConnectionHandler extends Thread {
 					output.close();
 					break;
 				default: //incoming encrypted message
-					ch_log.i("Client sent what appears to be a message, attempting decryption.");
+					ch_log.i("Client sent what appears to be a message, attempting decryption and verification.");
 					PrivateKey privkey = Main.getKeypair().getPrivate();
-					String cryptedMsg = line1 + "\n" + input.readLine();
-					String msg = MsgCrypto.decryptMessage(cryptedMsg, privkey);
+					String cryptedMsg = line1 + "\n" + input.readLine() + "\n" + input.readLine();
+					
+					ch_log.i("Checking for sender's public key.");
+					if (KeyManager.checkIfIPKeyExists(ip)) {
+						ch_log.i("Public key found.");
+					} else {
+						ch_log.i("Public key not found, requesting key from their server.");
+						try {
+							Socket socketGetkey = new Socket();
+							socketGetkey.connect(new InetSocketAddress(InetAddress.getByName(ip), Server.PORT), 1000);
+							BufferedReader inputGetkey = new BufferedReader(new InputStreamReader(socketGetkey.getInputStream()));
+							BufferedWriter outputGetkey = new BufferedWriter(new OutputStreamWriter(socketGetkey.getOutputStream()));
+							
+							outputGetkey.write("301 getkey");
+							outputGetkey.newLine();
+							outputGetkey.flush();
+							
+							String sender_pubkeyB64 = inputGetkey.readLine();
+							byte[] pubEncoded = Base64.decodeBase64(sender_pubkeyB64);
+							X509EncodedKeySpec pubSpec = new X509EncodedKeySpec(pubEncoded);
+							KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+							
+							outputGetkey.close();
+							inputGetkey.close();
+							
+							KeyManager.saveKeyByIP(ip, keyFactory.generatePublic(pubSpec));
+						} catch (IOException | NoSuchAlgorithmException | InvalidKeySpecException e) {
+							ch_log.e("Error saving sender's key!");
+							e.printStackTrace();
+						}
+					}
+					
+					String msg = MsgCrypto.decryptAndVerifyMessage(cryptedMsg, privkey, KeyManager.loadKeyByIP(ip));
 					System.out.println("-----BEGIN MESSAGE-----");
 					System.out.println(msg);
 					System.out.println("-----END MESSAGE-----");
