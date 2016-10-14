@@ -43,7 +43,11 @@ public class NetUtils {
 					if (i instanceof Inet4Address)
 					{
 						System.out.println(i.getHostAddress());
-						i4.add((Inet4Address) i);
+						if (n.getName().toLowerCase().startsWith("tun")) {
+							nu_log.w("Ignoring tunnel interface " + n.getName());
+						} else {
+							i4.add((Inet4Address) i);
+						}
 					}
 				}
 			}

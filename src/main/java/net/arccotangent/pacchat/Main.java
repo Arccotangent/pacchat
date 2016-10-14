@@ -14,18 +14,21 @@ import java.util.Scanner;
 public class Main {
 	
 	private static Logger core_log = new Logger("CORE");
-	private static final String VERSION = "20161014";
+	private static final String VERSION = "20161014-1";
 	private static KeyPair keyPair;
+	private static final String ANSI_BOLD = "\u001B[1m";
+	private static final String ANSI_BLUE = "\u001B[34m";
+	private static final String ANSI_RESET = "\u001B[0m";
 	
 	public static KeyPair getKeypair(){
 		return keyPair;
 	}
 	
 	private static void printHelpMsg() {
-		System.out.println("help - This help message");
-		System.out.println("exit - Exit chat mode and shut down PacChat.");
-		System.out.println("send/s <ip address> - Send a message. PacChat will prompt you to enter your message after you enter the command.");
-		System.out.println("reply/r - Reply to the last person to send you a message.");
+		System.out.println(ANSI_BOLD + ANSI_BLUE + "help - This help message" + ANSI_RESET);
+		System.out.println(ANSI_BOLD + ANSI_BLUE + "exit - Exit chat mode and shut down PacChat." + ANSI_RESET);
+		System.out.println(ANSI_BOLD + ANSI_BLUE + "send/s <ip address> - Send a message. PacChat will prompt you to enter your message after you enter the command." + ANSI_RESET);
+		System.out.println(ANSI_BOLD + ANSI_BLUE + "reply/r - Reply to the last person to send you a message." + ANSI_RESET);
 	}
 	
 	public static void main(String[] args) {
@@ -64,7 +67,7 @@ public class Main {
 		Scanner stdin = new Scanner(System.in);
 		
 		while (active) {
-			System.out.print("Command: ");
+			System.out.print(ANSI_BOLD + ANSI_BLUE + "Command: " + ANSI_RESET);
 			String cmd_str = stdin.nextLine();
 			String[] cmd = cmd_str.split(" "); //command and arguments
 			
