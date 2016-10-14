@@ -14,7 +14,7 @@ import java.util.Scanner;
 public class Main {
 	
 	private static Logger core_log = new Logger("CORE");
-	private static final String VERSION = "20161009";
+	private static final String VERSION = "20161014";
 	private static KeyPair keyPair;
 	
 	public static KeyPair getKeypair(){
@@ -106,6 +106,10 @@ public class Main {
 					break;
 				case "r":
 				case "reply":
+					if (server.getLastSender().isEmpty()) {
+						core_log.e("No one has sent us a message yet.");
+						break;
+					}
 					core_log.i("Replying to last sender IP address.");
 					core_log.i("Preparing to send message to IP address " + server.getLastSender());
 					core_log.i("Enter your message below, end with a single dot on its own line when finished, end with a single comma to cancel.");
@@ -140,7 +144,7 @@ public class Main {
 		if (UPNPManager.isOpen())
 			UPNPManager.UPNPClosePorts();
 		server.closeServer();
-		System.gc();
+		
 		System.exit(0);
 	}
 	

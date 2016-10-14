@@ -32,11 +32,10 @@ public class MsgCrypto {
 	
 	public static String decryptAndVerifyMessage(String cryptedMsg, PrivateKey privateKey, PublicKey publicKey) {
 		mc_log.i("Decrypting and verifying message.");
-		String cryptedKeyB64 = cryptedMsg.substring(0, cryptedMsg.indexOf("\n"));
-		int firstNewline = cryptedMsg.indexOf("\n") + 1;
-		int lastNewline = cryptedMsg.indexOf("\n", firstNewline);
-		String cryptedTextB64 = cryptedMsg.substring(firstNewline, lastNewline);
-		String signatureB64 = cryptedMsg.substring(lastNewline + 1);
+		String[] messageComponents = cryptedMsg.split("\n");
+		String cryptedKeyB64 = messageComponents[0];
+		String cryptedTextB64 = messageComponents[1];
+		String signatureB64 = messageComponents[2];
 		
 		if (RSA.verifyBytes(Base64.decodeBase64(cryptedKeyB64), Base64.decodeBase64(signatureB64), publicKey))
 			mc_log.i("Message authenticity verified!");
