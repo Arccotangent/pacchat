@@ -14,7 +14,7 @@ import java.util.Scanner;
 public class Main {
 	
 	private static Logger core_log = new Logger("CORE");
-	private static final String VERSION = "20161014-1";
+	private static final String VERSION = "20161018";
 	private static KeyPair keyPair;
 	private static final String ANSI_BOLD = "\u001B[1m";
 	private static final String ANSI_BLUE = "\u001B[34m";

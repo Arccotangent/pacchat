@@ -23,6 +23,9 @@ class ConnectionHandler extends Thread {
 	private long connection_id;
 	private Logger ch_log;
 	private String ip;
+	private final String ANSI_BOLD = "\u001B[1m";
+	private final String ANSI_CYAN = "\u001B[36m";
+	private final String ANSI_RESET = "\u001B[0m";
 	
 	ConnectionHandler(BufferedReader in, BufferedWriter out, long conn_id, String source_ip) {
 		input = in;
@@ -87,9 +90,9 @@ class ConnectionHandler extends Thread {
 					}
 					
 					String msg = MsgCrypto.decryptAndVerifyMessage(cryptedMsg, privkey, KeyManager.loadKeyByIP(ip));
-					System.out.println("-----BEGIN MESSAGE-----");
-					System.out.println(msg);
-					System.out.println("-----END MESSAGE-----");
+					System.out.println(ANSI_BOLD + ANSI_CYAN + "-----BEGIN MESSAGE-----" + ANSI_RESET);
+					System.out.println(ANSI_BOLD + ANSI_CYAN + msg + ANSI_RESET);
+					System.out.println(ANSI_BOLD + ANSI_CYAN + "-----END MESSAGE-----" + ANSI_RESET);
 					break;
 			}
 		} catch (IOException e) {
