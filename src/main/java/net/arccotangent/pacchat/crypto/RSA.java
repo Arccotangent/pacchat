@@ -59,16 +59,17 @@ public class RSA {
 		return null;
 	}
 	
-	static byte[] decryptBytes(byte[] toDecrypt, PrivateKey privateKey) {
+	static DecryptStatus decryptBytes(byte[] toDecrypt, PrivateKey privateKey) {
 		try {
 			Cipher c = Cipher.getInstance("RSA");
 			c.init(Cipher.DECRYPT_MODE, privateKey);
-			return c.doFinal(toDecrypt);
+			byte[] msg = c.doFinal(toDecrypt);
+			return new DecryptStatus(msg, true);
 		} catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException e) {
 			rsa_log.e("Error while decrypting text with RSA privkey!");
 			e.printStackTrace();
 		}
-		return null;
+		return new DecryptStatus(null, false);
 	}
 	
 	static byte[] signBytes(byte[] toSign, PrivateKey privateKey) {

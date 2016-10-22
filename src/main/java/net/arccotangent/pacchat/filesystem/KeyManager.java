@@ -135,6 +135,10 @@ public class KeyManager {
 		X509EncodedKeySpec pubSpec = new X509EncodedKeySpec(publicKey.getEncoded());
 		File pubFile = new File(installationPath + File.separator + ip_address + ".pub");
 		
+		km_log.i("Deleting old key if it exists.");
+		if (pubFile.exists())
+			pubFile.delete();
+		
 		try {
 			km_log.i(pubFile.createNewFile() ? "Creation of public key file successful." : "Creation of public key file failed!");
 			

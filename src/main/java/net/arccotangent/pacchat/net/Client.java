@@ -35,6 +35,15 @@ import java.security.spec.X509EncodedKeySpec;
 public class Client {
 	
 	private static Logger client_log = new Logger("CLIENT");
+	private static long kuc_id = 0;
+	
+	public static void incrementKUC_ID() {
+		kuc_id++;
+	}
+	
+	public static long getKUC_ID() {
+		return kuc_id;
+	}
 	
 	public static void sendMessage(String msg, String ip_address) {
 		client_log.i("Sending message to " + ip_address);
@@ -111,11 +120,39 @@ public class Client {
 		String cryptedMsg = MsgCrypto.encryptAndSignMessage(msg, pub, priv);
 		try {
 			client_log.i("Sending message to recipient.");
+			output.write("200 encrypted message");
+			output.newLine();
 			output.write(cryptedMsg);
 			output.newLine();
 			output.flush();
 			
-			client_log.i("Transmission successful, closing sockets.");
+			String ack = input.readLine();
+			switch (ack) {
+				case "201 message acknowledgement":
+					client_log.i("Transmission successful, received server acknowledgement.");
+					break;
+				case "202 unable to decrypt":
+					client_log.e("Transmission failure! Server reports that the message could not be decrypted. Did your keys change? Asking recipient for key update.");
+					kuc_id++;
+					KeyUpdateClient kuc = new KeyUpdateClient(kuc_id, ip_address);
+					kuc.start();
+					break;
+				case "203 unable to verify":
+					client_log.w("**********************************************");
+					client_log.w("Transmission successful, but the receiving server reports that the authenticity of the message could not be verified!");
+					client_log.w("Someone may be tampering with your connection! This is an unlikely, but not impossible scenario!");
+					client_log.w("If you are sure the connection was not tampered with, consider requesting a key update.");
+					client_log.w("**********************************************");
+					break;
+				case "400 invalid transmission header":
+					client_log.e("Transmission failure! Server reports that the message is invalid. Try updating your software and have the recipient do the same. If this does not fix the problem, report the error to developers.");
+					break;
+				default:
+					client_log.w("Server responded with unexpected code: " + ack);
+					client_log.w("Transmission might not have been successful.");
+					break;
+			}
+			
 			output.close();
 			input.close();
 		} catch (IOException e) {

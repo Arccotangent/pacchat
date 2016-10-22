@@ -53,16 +53,17 @@ class AES {
 		return null;
 	}
 	
-	static byte[] decryptBytes(byte[] toDecrypt, SecretKey aes) {
+	static DecryptStatus decryptBytes(byte[] toDecrypt, SecretKey aes) {
 		try {
 			Cipher c = Cipher.getInstance("AES");
 			c.init(Cipher.DECRYPT_MODE, aes);
-			return c.doFinal(toDecrypt);
+			byte[] decrypted = c.doFinal(toDecrypt);
+			return new DecryptStatus(decrypted, true);
 		} catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException e) {
 			aes_log.e("Error while decrypting text with AES key!");
 			e.printStackTrace();
 		}
-		return null;
+		return new DecryptStatus(null, false);
 	}
 	
 }

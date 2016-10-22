@@ -25,13 +25,13 @@ import java.net.Socket;
 
 public class Server extends Thread {
 	
-	static final int PORT = 14761;
+	static int PORT = 14761;
 	private static Logger server_log = new Logger("SERVER");
 	private ServerSocket serverSocket = null;
-	private Socket clientSocket = null;
 	private boolean active = true;
 	private long connection_id = 0;
 	private String last_sender = "";
+	private boolean shutting_down = false;
 	
 	public Server() {
 		server_log.i("New server created.");
@@ -41,7 +41,12 @@ public class Server extends Thread {
 		return last_sender;
 	}
 	
+	public boolean isActive() {
+		return active;
+	}
+	
 	public void run() {
+		active = true;
 		server_log.i("Starting PacChat server on port " + PORT);
 		server_log.i("Attempting to open UPNP ports if not already open...");
 		if (UPNPManager.isOpen()) {
@@ -55,7 +60,7 @@ public class Server extends Thread {
 			serverSocket = new ServerSocket(PORT);
 			while (active) {
 				server_log.i("Server listening for connections...");
-				clientSocket = serverSocket.accept();
+				Socket clientSocket = serverSocket.accept();
 				
 				String src_ip_addr = clientSocket.getInetAddress().getHostAddress();
 				last_sender = src_ip_addr;
@@ -69,14 +74,16 @@ public class Server extends Thread {
 				conn.start();
 			}
 		} catch (IOException e) {
-			server_log.e("Error in server operation!");
-			server_log.w("If the server is being terminated, this is normal. Otherwise, please report this error to developers.");
-			e.printStackTrace();
+			if (!shutting_down) {
+				server_log.e("Error in server operation!");
+				e.printStackTrace();
+			}
 		}
 	}
 	
 	public void closeServer() {
 		server_log.i("Terminating server.");
+		shutting_down = true;
 		
 		if (!serverSocket.isClosed()) {
 			try {
@@ -86,17 +93,6 @@ public class Server extends Thread {
 				e.printStackTrace();
 			}
 		}
-		
-		if (!clientSocket.isClosed()) {
-			try {
-				clientSocket.close();
-			} catch (IOException e) {
-				server_log.e("Error while closing client socket!");
-				e.printStackTrace();
-			}
-		}
-		
-		server_log.i("Ignore any SocketException errors thrown by server, those are normal.");
 		
 		active = false;
 	}

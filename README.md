@@ -1,4 +1,4 @@
-# pacchat
+# PacChat
 
 PacChat is a direct P2P chat application that will encrypt and sign all messages you send, and verify the authenticity of all messages you receive.
 
@@ -16,7 +16,7 @@ This program is still in beta.
 ### Cons
 
 * Port forwarding required on both ends, however this should be taken care of automatically by PacChat through UPNP
-* Port forwarding means that PacChat is working on any public, school, or workplace network is highly unlikely
+* Port forwarding means that PacChat working on any public, school, or workplace network is highly unlikely
 
 ## Downloading & Building
 

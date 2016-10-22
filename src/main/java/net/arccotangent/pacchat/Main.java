@@ -21,22 +21,25 @@ package net.arccotangent.pacchat;
 import net.arccotangent.pacchat.crypto.MsgCrypto;
 import net.arccotangent.pacchat.filesystem.KeyManager;
 import net.arccotangent.pacchat.logging.Logger;
-import net.arccotangent.pacchat.net.Client;
-import net.arccotangent.pacchat.net.NetUtils;
-import net.arccotangent.pacchat.net.Server;
-import net.arccotangent.pacchat.net.UPNPManager;
+import net.arccotangent.pacchat.net.*;
 
 import java.security.KeyPair;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Scanner;
 
 public class Main {
 	
 	private static Logger core_log = new Logger("CORE");
-	private static final String VERSION = "20161021";
+	public static final String VERSION = "20161022";
 	private static KeyPair keyPair;
 	private static final String ANSI_BOLD = "\u001B[1m";
 	private static final String ANSI_BLUE = "\u001B[34m";
+	private static final String ANSI_CYAN = "\u001B[36m";
+	private static final String ANSI_WHITE = "\u001B[37m";
 	private static final String ANSI_RESET = "\u001B[0m";
+	
+	private static Scanner stdin = new Scanner(System.in);
 	
 	private static void printCopyright() {
 		System.out.println("PacChat Copyright (C) 2016 Arccotangent");
@@ -60,11 +63,30 @@ public class Main {
 	}
 	
 	private static void printHelpMsg() {
+		System.out.println(ANSI_BOLD + ANSI_CYAN + "---Help/Exit---" + ANSI_RESET);
 		System.out.println(ANSI_BOLD + ANSI_BLUE + "help - This help message" + ANSI_RESET);
 		System.out.println(ANSI_BOLD + ANSI_BLUE + "exit - Exit chat mode and shut down PacChat." + ANSI_RESET);
+		System.out.println();
+		System.out.println(ANSI_BOLD + ANSI_CYAN + "---Chatting---" + ANSI_RESET);
 		System.out.println(ANSI_BOLD + ANSI_BLUE + "send/s <ip address> - Send a message. PacChat will prompt you to enter your message after you enter the command." + ANSI_RESET);
 		System.out.println(ANSI_BOLD + ANSI_BLUE + "reply/r - Reply to the last person to send you a message." + ANSI_RESET);
-		System.out.println(ANSI_BOLD + ANSI_BLUE + "copyright - Show the full copyright message");
+		System.out.println();
+		System.out.println(ANSI_BOLD + ANSI_CYAN + "---Server Management---" + ANSI_RESET);
+		System.out.println(ANSI_BOLD + ANSI_BLUE + "haltserver/hs - Halt the server if it is running." + ANSI_RESET);
+		System.out.println(ANSI_BOLD + ANSI_BLUE + "startserver/ss - Start the server if it is not currently running." + ANSI_RESET);
+		System.out.println(ANSI_BOLD + ANSI_BLUE + "restartserver/rs - Restart the server. If the server is not running, has the same effect as startserver." + ANSI_RESET);
+		System.out.println(ANSI_BOLD + ANSI_WHITE + "Note: If you halt your server, you will not be able to receive messages until you start it again." + ANSI_RESET);
+		System.out.println();
+		System.out.println(ANSI_BOLD + ANSI_CYAN + "---Key Management---" + ANSI_RESET);
+		System.out.println(ANSI_BOLD + ANSI_BLUE + "update/u <ip address> - Request that the server at the specified IP address update their copy of your key." + ANSI_RESET);
+		System.out.println(ANSI_BOLD + ANSI_BLUE + "updateaccept/ua <ID> - Accept a pending update request with the specified ID." + ANSI_RESET);
+		System.out.println(ANSI_BOLD + ANSI_BLUE + "updatereject/ur <ID> - Reject a pending update request with the specified ID." + ANSI_RESET);
+		System.out.println(ANSI_BOLD + ANSI_BLUE + "updatelist/ul <ID> - List all pending update IDs." + ANSI_RESET);
+		System.out.println(ANSI_BOLD + ANSI_BLUE + "updateinfo/ui <ID> - Print info about a pending update request with the specified ID." + ANSI_RESET);
+		System.out.println(ANSI_BOLD + ANSI_WHITE + "Note: If you update a key, it will permanently delete the old key, so be careful!" + ANSI_RESET);
+		System.out.println();
+		System.out.println(ANSI_BOLD + ANSI_CYAN + "---Miscellaneous---" + ANSI_RESET);
+		System.out.println(ANSI_BOLD + ANSI_BLUE + "copyright/c - Show the full copyright message." + ANSI_RESET);
 	}
 	
 	public static void main(String[] args) {
@@ -82,13 +104,14 @@ public class Main {
 		core_log.i("Performing crypto test..");
 		String testmsg = "test message";
 		String crypted = MsgCrypto.encryptAndSignMessage(testmsg, keyPair.getPublic(), keyPair.getPrivate());
-		if (testmsg.equals(MsgCrypto.decryptAndVerifyMessage(crypted, keyPair.getPrivate(), keyPair.getPublic()))) {
+		if (testmsg.equals(MsgCrypto.decryptAndVerifyMessage(crypted, keyPair.getPrivate(), keyPair.getPublic()).getMessage())) {
 			core_log.i("Crypto test successful!");
 		} else {
 			core_log.e("Crypto test failed!");
 		}
 		
 		NetUtils.updateLocalIPAddr();
+		core_log.i("Starting server.");
 		Server server = new Server();
 		server.start();
 		
@@ -102,7 +125,6 @@ public class Main {
 		core_log.i("Entering chat mode, type exit to exit, and type send <ip address> to send a message.");
 		core_log.i("Type 'help' for command help.");
 		boolean active = true;
-		Scanner stdin = new Scanner(System.in);
 		
 		while (active) {
 			System.out.print(ANSI_BOLD + ANSI_BLUE + "Command: " + ANSI_RESET);
@@ -122,6 +144,7 @@ public class Main {
 						core_log.i("The message will not include the single dot at the end.");
 						StringBuilder msgBuilder = new StringBuilder();
 						String buf;
+						
 						while (!(buf = stdin.nextLine()).equals(".")) {
 							if (!buf.equals(",")) {
 								msgBuilder.append(buf).append("\n");
@@ -129,6 +152,7 @@ public class Main {
 								break;
 							}
 						}
+						
 						if (buf.equals(".")) {
 							core_log.i("Message accepted, attempting to send to target.");
 							String msg = msgBuilder.toString();
@@ -147,10 +171,16 @@ public class Main {
 					break;
 				case "r":
 				case "reply":
+					
+					if (server == null) {
+						core_log.e("Server is not running.");
+						break;
+					}
 					if (server.getLastSender().isEmpty()) {
 						core_log.e("No one has sent us a message yet.");
 						break;
 					}
+					
 					core_log.i("Replying to last sender IP address.");
 					core_log.i("Preparing to send message to IP address " + server.getLastSender());
 					core_log.i("Enter your message below, end with a single dot on its own line when finished, end with a single comma to cancel.");
@@ -172,6 +202,129 @@ public class Main {
 						core_log.i("Message cancelled.");
 					}
 					break;
+				case "ss":
+				case "startserver":
+					if (server == null || !server.isActive()) {
+						core_log.i("Starting server.");
+						server = new Server();
+						server.start();
+						try {
+							Thread.sleep(500); //wait for the server to start
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+					} else
+						core_log.i("Server is already running.");
+					break;
+				case "hs":
+				case "haltserver":
+					if (server != null && server.isActive()) {
+						core_log.i("Stopping server.");
+						server.closeServer();
+						server = null;
+					} else
+						core_log.i("Server is not running.");
+					break;
+				case "rs":
+				case "restartserver":
+					if (server != null && server.isActive()) {
+						core_log.i("Restarting server.");
+						server.closeServer();
+						server = new Server();
+						server.start();
+						try {
+							Thread.sleep(500); //wait for the server to start
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+					} else {
+						core_log.i("Server is not running. Starting server.");
+						server = new Server();
+						server.start();
+						try {
+							Thread.sleep(500); //wait for the server to start
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+					}
+					break;
+				case "u":
+				case "update":
+					if (cmd.length >= 2 && !cmd[1].isEmpty()) {
+						core_log.i("Requesting that the server at " + cmd[1] + " update their copy of your key.");
+						Client.incrementKUC_ID();
+						KeyUpdateClient kuc = new KeyUpdateClient(Client.getKUC_ID(), cmd[1]);
+						kuc.start();
+						try {
+							Thread.sleep(500); //wait for request to be made, makes output less sloppy
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+					} else {
+						core_log.e("An IP address was not specified.");
+					}
+					break;
+				case "ua":
+				case "updateaccept":
+					if (cmd.length >= 2 && !cmd[1].isEmpty()) {
+						core_log.i("Accepting update with ID " + cmd[1]);
+						KeyUpdate update = KeyUpdateManager.getPendingUpdate(Long.parseLong(cmd[1]));
+						if (update == null) {
+							core_log.e("Update ID " + cmd[1] + " does not exist.");
+							break;
+						}
+						update.acceptUpdate();
+						KeyUpdateManager.updatePendingUpdate(Long.parseLong(cmd[1]), update);
+					} else {
+						core_log.e("An update ID was not specified.");
+					}
+					break;
+				case "ur":
+				case "updatereject":
+					if (cmd.length >= 2 && !cmd[1].isEmpty()) {
+						core_log.i("Rejecting update with ID " + cmd[1]);
+						KeyUpdate update = KeyUpdateManager.getPendingUpdate(Long.parseLong(cmd[1]));
+						if (update == null) {
+							core_log.e("Update ID " + cmd[1] + " does not exist.");
+							break;
+						}
+						update.rejectUpdate();
+						KeyUpdateManager.updatePendingUpdate(Long.parseLong(cmd[1]), update);
+					} else {
+						core_log.e("An update ID was not specified.");
+					}
+					break;
+				case "ui":
+				case "updateinfo":
+					if (cmd.length >= 2 && !cmd[1].isEmpty()) {
+						KeyUpdate update = KeyUpdateManager.getPendingUpdate(Long.parseLong(cmd[1]));
+						if (update == null) {
+							core_log.e("Update ID " + cmd[1] + " does not exist.");
+							break;
+						}
+						core_log.i("Update ID " + cmd[1] + " source IP = " + update.getSource());
+					} else {
+						core_log.e("An update ID was not specified.");
+					}
+					break;
+				case "ul":
+				case "updatelist":
+					Collection<Long> keys = KeyUpdateManager.getAllKeys();
+					ArrayList<Long> ids = new ArrayList<>();
+					keys.addAll(ids);
+					for (Long id : ids) {
+						KeyUpdate update = KeyUpdateManager.getPendingUpdate(id);
+						if (update == null) {
+							core_log.e("Update ID " + id + " does not exist.");
+							break;
+						}
+						core_log.i("Update ID " + id + " source IP = " + update.getSource());
+					}
+					if (keys.size() == 0) {
+						core_log.i("No pending updates.");
+					}
+					break;
+				case "c":
 				case "copyright":
 					printFullCopyright();
 					break;
@@ -185,9 +338,12 @@ public class Main {
 		core_log.i("Shutting down now.");
 		
 		//Shutdown sequence
+		
 		if (UPNPManager.isOpen())
 			UPNPManager.UPNPClosePorts();
-		server.closeServer();
+		
+		if (server != null)
+			server.closeServer();
 		
 		System.exit(0);
 	}

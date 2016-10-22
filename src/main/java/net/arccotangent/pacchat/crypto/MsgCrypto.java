@@ -47,25 +47,33 @@ public class MsgCrypto {
 		return cryptedKeyB64 + "\n" + cryptedTextB64 + "\n" + signatureB64;
 	}
 	
-	public static String decryptAndVerifyMessage(String cryptedMsg, PrivateKey privateKey, PublicKey publicKey) {
+	public static PacchatMessage decryptAndVerifyMessage(String cryptedMsg, PrivateKey privateKey, PublicKey publicKey) {
 		mc_log.i("Decrypting and verifying message.");
 		String[] messageComponents = cryptedMsg.split("\n");
 		String cryptedKeyB64 = messageComponents[0];
 		String cryptedTextB64 = messageComponents[1];
 		String signatureB64 = messageComponents[2];
 		
-		if (RSA.verifyBytes(Base64.decodeBase64(cryptedKeyB64), Base64.decodeBase64(signatureB64), publicKey))
+		boolean verified = RSA.verifyBytes(Base64.decodeBase64(cryptedKeyB64), Base64.decodeBase64(signatureB64), publicKey);
+		if (verified)
 			mc_log.i("Message authenticity verified!");
-		else
+		else {
+			mc_log.w("**********************************************");
 			mc_log.w("Message authenticity NOT VERIFIED! Will continue decryption anyway.");
+			mc_log.w("Someone may be tampering with your connection! This is an unlikely, but not impossible scenario!");
+			mc_log.w("If you are sure the connection was not tampered with, consider asking the sender to send out a key update.");
+			mc_log.w("**********************************************");
+		}
 		
-		byte[] aesKey = RSA.decryptBytes(Base64.decodeBase64(cryptedKeyB64), privateKey);
-		assert aesKey != null;
+		DecryptStatus rsa = RSA.decryptBytes(Base64.decodeBase64(cryptedKeyB64), privateKey);
+		byte[] aesKey = rsa.getMessage();
 		SecretKey aes = new SecretKeySpec(aesKey, "AES");
 		
-		byte[] msg = AES.decryptBytes(Base64.decodeBase64(cryptedTextB64), aes);
-		assert msg != null;
-		return new String(msg);
+		DecryptStatus message = AES.decryptBytes(Base64.decodeBase64(cryptedTextB64), aes);
+		byte[] msg = message.getMessage();
+		boolean decrypted = message.isDecryptedSuccessfully();
+		
+		return new PacchatMessage(new String(msg), verified, decrypted);
 	}
 	
 }

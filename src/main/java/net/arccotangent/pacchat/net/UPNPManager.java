@@ -17,6 +17,7 @@ along with PacChat.  If not, see <http://www.gnu.org/licenses/>.
 
 package net.arccotangent.pacchat.net;
 
+import net.arccotangent.pacchat.Main;
 import net.arccotangent.pacchat.logging.Logger;
 import org.fourthline.cling.UpnpService;
 import org.fourthline.cling.UpnpServiceImpl;
@@ -87,7 +88,7 @@ public class UPNPManager {
 	{
 		PortMapping[] ports = new PortMapping[1];
 		upnp_log.i("Listing ports to be mapped");
-		ports[0] = new PortMapping(Server.PORT, NetUtils.getLocalIPAddr(), PortMapping.Protocol.TCP, "PacChat TCP");
+		ports[0] = new PortMapping(Server.PORT, NetUtils.getLocalIPAddr(), PortMapping.Protocol.TCP, "PacChat " + Main.VERSION + " TCP");
 		//arr[index] = new PortMapping(port, ipaddr, protocol, description);
 		for (int i = 0; i < ports.length; i++)
 		{
