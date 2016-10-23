@@ -31,7 +31,7 @@ import java.util.Scanner;
 public class Main {
 	
 	private static Logger core_log = new Logger("CORE");
-	public static final String VERSION = "20161022";
+	public static final String VERSION = "20161023";
 	private static KeyPair keyPair;
 	private static final String ANSI_BOLD = "\u001B[1m";
 	private static final String ANSI_BLUE = "\u001B[34m";
@@ -311,7 +311,7 @@ public class Main {
 				case "updatelist":
 					Collection<Long> keys = KeyUpdateManager.getAllKeys();
 					ArrayList<Long> ids = new ArrayList<>();
-					keys.addAll(ids);
+					ids.addAll(keys);
 					for (Long id : ids) {
 						KeyUpdate update = KeyUpdateManager.getPendingUpdate(id);
 						if (update == null) {
