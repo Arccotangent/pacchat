@@ -25,7 +25,7 @@ import java.util.Enumeration;
 
 public class NetUtils {
 	
-	private static Logger nu_log = new Logger("NETWORK");
+	private static final Logger nu_log = new Logger("NETWORK");
 	private static String ip_address = "";
 	
 	static String getLocalIPAddr() {

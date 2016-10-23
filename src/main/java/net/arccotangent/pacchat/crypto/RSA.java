@@ -27,7 +27,7 @@ import java.security.*;
 
 public class RSA {
 	
-	private static Logger rsa_log = new Logger("CRYPTO/RSA");
+	private static final Logger rsa_log = new Logger("CRYPTO/RSA");
 	
 	public static KeyPair generateRSAKeypair(int bitsize) {
 		try {

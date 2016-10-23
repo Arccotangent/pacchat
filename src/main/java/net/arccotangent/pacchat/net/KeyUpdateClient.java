@@ -26,8 +26,8 @@ import java.net.*;
 
 public class KeyUpdateClient extends Thread {
 	
-	private Logger kuc_log;
-	private String server_ip;
+	private final Logger kuc_log;
+	private final String server_ip;
 	
 	public KeyUpdateClient(long keyupdate_id, String server) {
 		kuc_log = new Logger("CLIENT/KEY-UPDATE-" + keyupdate_id);

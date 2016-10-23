@@ -27,7 +27,7 @@ import java.security.PublicKey;
 
 public class MsgCrypto {
 	
-	private static Logger mc_log = new Logger("CRYPTO/MSGCRYPTO");
+	private static final Logger mc_log = new Logger("CRYPTO/MSGCRYPTO");
 	
 	public static String encryptAndSignMessage(String msg, PublicKey publicKey, PrivateKey privateKey) {
 		mc_log.i("Encrypting and signing message.");

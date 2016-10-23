@@ -32,9 +32,9 @@ import org.fourthline.cling.support.model.PortMapping;
 
 public class UPNPManager {
 	
-	private static Logger upnp_log = new Logger("UPNP");
-	private static Logger registry_log = new Logger("UPNP/REGISTRY");
-	private static Logger control_point_log = new Logger("UPNP/CONTROL-POINT");
+	private static final Logger upnp_log = new Logger("UPNP");
+	private static final Logger registry_log = new Logger("UPNP/REGISTRY");
+	private static final Logger control_point_log = new Logger("UPNP/CONTROL-POINT");
 	private static UpnpService UPNP_SERVICE = null;
 	private static boolean upnp_open = false;
 	

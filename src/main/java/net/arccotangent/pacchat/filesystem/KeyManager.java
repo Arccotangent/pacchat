@@ -32,7 +32,7 @@ import java.security.spec.X509EncodedKeySpec;
 
 public class KeyManager {
 	
-	private static Logger km_log = new Logger("FILESYSTEM/KEYMANAGER");
+	private static final Logger km_log = new Logger("FILESYSTEM/KEYMANAGER");
 	private static final String user_home = System.getProperty("user.home");
 	private static final String installationPath = user_home + File.separator + ".pacchat";
 	private static final File installationFile = new File(installationPath);
@@ -130,7 +130,8 @@ public class KeyManager {
 		return pubFile.exists();
 	}
 	
-	public static PublicKey saveKeyByIP(String ip_address, PublicKey publicKey) {
+	@SuppressWarnings("ResultOfMethodCallIgnored")
+	public static void saveKeyByIP(String ip_address, PublicKey publicKey) {
 		km_log.i("Saving public key for " + ip_address);
 		X509EncodedKeySpec pubSpec = new X509EncodedKeySpec(publicKey.getEncoded());
 		File pubFile = new File(installationPath + File.separator + ip_address + ".pub");
@@ -151,7 +152,6 @@ public class KeyManager {
 			km_log.e("Error while saving public key for " + ip_address + "!");
 			e.printStackTrace();
 		}
-		return null;
 	}
 	
 	public static void createInstallationIfNotExist() {
@@ -186,6 +186,7 @@ public class KeyManager {
 		return (privkeyFile.exists() && pubkeyFile.exists());
 	}
 	
+	@SuppressWarnings("ResultOfMethodCallIgnored")
 	private static void deleteLocalKeysIfExist() {
 		if (pubkeyFile.exists())
 			pubkeyFile.delete();

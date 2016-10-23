@@ -38,14 +38,11 @@ import java.security.spec.X509EncodedKeySpec;
 
 class ConnectionHandler extends Thread {
 	
-	private BufferedReader input;
-	private BufferedWriter output;
-	private long connection_id;
-	private Logger ch_log;
-	private String ip;
-	private final String ANSI_BOLD = "\u001B[1m";
-	private final String ANSI_CYAN = "\u001B[36m";
-	private final String ANSI_RESET = "\u001B[0m";
+	private final BufferedReader input;
+	private final BufferedWriter output;
+	private final long connection_id;
+	private final Logger ch_log;
+	private final String ip;
 	
 	/*
 	
@@ -81,7 +78,7 @@ class ConnectionHandler extends Thread {
 					ch_log.i("Client is requesting a key update.");
 					KeyUpdate update = new KeyUpdate(ip);
 					KeyUpdateManager.addPendingUpdate(connection_id, update);
-					while (!KeyUpdateManager.getPendingUpdate(connection_id).isProcessed()) {
+					while (KeyUpdateManager.getUpdate(connection_id).isProcessed()) {
 						try {
 							Thread.sleep(50);
 						} catch (InterruptedException e) {
@@ -89,8 +86,8 @@ class ConnectionHandler extends Thread {
 						}
 					}
 					
-					boolean accepted = KeyUpdateManager.getPendingUpdate(connection_id).isAccepted();
-					KeyUpdateManager.removeCompletedUpdate(connection_id);
+					boolean accepted = KeyUpdateManager.getUpdate(connection_id).isAccepted();
+					KeyUpdateManager.completeIncomingUpdate(connection_id, KeyUpdateManager.getUpdate(connection_id));
 					if (accepted) {
 						ch_log.i("Accepting key update");
 						try {
@@ -169,6 +166,9 @@ class ConnectionHandler extends Thread {
 					boolean verified = message.isVerified();
 					boolean decrypted = message.isDecryptedSuccessfully();
 					
+					String ANSI_RESET = "\u001B[0m";
+					String ANSI_CYAN = "\u001B[36m";
+					String ANSI_BOLD = "\u001B[1m";
 					if (verified && decrypted) {
 						ch_log.i("Acknowledging message.");
 						output.write("201 message acknowledgement");

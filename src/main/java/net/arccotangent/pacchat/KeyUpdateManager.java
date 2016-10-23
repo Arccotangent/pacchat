@@ -24,42 +24,37 @@ import java.util.HashMap;
 
 public class KeyUpdateManager {
 	
-	//TODO add HashMap for both outgoing and incoming, and both pending and completed updates
-	private static HashMap<Long, KeyUpdate> pending_updates = new HashMap<>();
-	private static Logger kum_log = new Logger("KEY UPDATES");
+	//TODO add HashMap for outgoing updates
+	private static final HashMap<Long, KeyUpdate> incoming_updates = new HashMap<>();
+	private static final Logger kum_log = new Logger("KEY UPDATES");
 	
 	public static void addPendingUpdate(long id, KeyUpdate update) {
-		if (!pending_updates.containsKey(id)) {
-			pending_updates.put(id, update);
+		if (!incoming_updates.containsKey(id)) {
+			incoming_updates.put(id, update);
 		}
 		kum_log.i("Pending update added to list: ID " + id + ", IP " + update.getSource());
 		kum_log.w("**********************************************");
 		kum_log.w("NOTICE: Updating this key will permanently delete the old key.");
+		kum_log.w("To accept this update, run this command: ua " + id);
+		kum_log.w("To reject this update, run this command: ur " + id);
 		kum_log.w("**********************************************");
 	}
 	
-	static void updatePendingUpdate(long id, KeyUpdate newUpdate) {
-		if (pending_updates.containsKey(id) && !pending_updates.get(id).isProcessed()) {
-			pending_updates.put(id, newUpdate);
+	public static void completeIncomingUpdate(long id, KeyUpdate newUpdate) {
+		if (incoming_updates.containsKey(id) && incoming_updates.get(id).isProcessed()) {
+			incoming_updates.put(id, newUpdate);
 		}
 	}
 	
-	static Collection<Long> getAllKeys() {
-		return pending_updates.keySet();
+	static Collection<Long> getAllIncomingKeys() {
+		return incoming_updates.keySet();
 	}
 	
-	public static void removeCompletedUpdate(long id) {
-		if (pending_updates.get(id).isProcessed()) {
-			pending_updates.remove(id);
-		}
-	}
-	
-	public static KeyUpdate getPendingUpdate(long id) {
-		if (pending_updates.containsKey(id)) {
-			return pending_updates.get(id);
-		} else {
+	public static KeyUpdate getUpdate(long id) {
+		if (incoming_updates.containsKey(id))
+			return incoming_updates.get(id);
+		else
 			return null;
-		}
 	}
 	
 }

@@ -19,7 +19,7 @@ package net.arccotangent.pacchat;
 
 public class KeyUpdate {
 	
-	private String source;
+	private final String source;
 	private boolean accepted = false;
 	private boolean processed = false;
 	

@@ -25,8 +25,8 @@ import java.net.Socket;
 
 public class Server extends Thread {
 	
-	static int PORT = 14761;
-	private static Logger server_log = new Logger("SERVER");
+	static final int PORT = 14761;
+	private static final Logger server_log = new Logger("SERVER");
 	private ServerSocket serverSocket = null;
 	private boolean active = true;
 	private long connection_id = 0;

@@ -19,9 +19,9 @@ package net.arccotangent.pacchat.crypto;
 
 public class PacchatMessage {
 	
-	private String msg;
-	private boolean verify;
-	private boolean decrypt;
+	private final String msg;
+	private final boolean verify;
+	private final boolean decrypt;
 	
 	PacchatMessage(String message, boolean verified, boolean decrypted) {
 		msg = message;
@@ -45,8 +45,8 @@ public class PacchatMessage {
 
 class DecryptStatus {
 	
-	private byte[] message;
-	private boolean decrypt;
+	private final byte[] message;
+	private final boolean decrypt;
 	
 	DecryptStatus(byte[] bytes, boolean decrypted) {
 		message = bytes;

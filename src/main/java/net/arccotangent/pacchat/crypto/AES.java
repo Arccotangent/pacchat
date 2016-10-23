@@ -25,7 +25,7 @@ import java.security.NoSuchAlgorithmException;
 
 class AES {
 	
-	private static Logger aes_log = new Logger("CRYPTO/AES");
+	private static final Logger aes_log = new Logger("CRYPTO/AES");
 	
 	static SecretKey generateAESKey() {
 		try {

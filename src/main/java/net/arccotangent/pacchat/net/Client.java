@@ -34,7 +34,7 @@ import java.security.spec.X509EncodedKeySpec;
 
 public class Client {
 	
-	private static Logger client_log = new Logger("CLIENT");
+	private static final Logger client_log = new Logger("CLIENT");
 	private static long kuc_id = 0;
 	
 	public static void incrementKUC_ID() {

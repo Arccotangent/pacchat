@@ -30,8 +30,8 @@ import java.util.Scanner;
 
 public class Main {
 	
-	private static Logger core_log = new Logger("CORE");
-	public static final String VERSION = "20161023";
+	private static final Logger core_log = new Logger("CORE");
+	public static final String VERSION = "20161023-1";
 	private static KeyPair keyPair;
 	private static final String ANSI_BOLD = "\u001B[1m";
 	private static final String ANSI_BLUE = "\u001B[34m";
@@ -39,7 +39,7 @@ public class Main {
 	private static final String ANSI_WHITE = "\u001B[37m";
 	private static final String ANSI_RESET = "\u001B[0m";
 	
-	private static Scanner stdin = new Scanner(System.in);
+	private static final Scanner stdin = new Scanner(System.in);
 	
 	private static void printCopyright() {
 		System.out.println("PacChat Copyright (C) 2016 Arccotangent");
@@ -107,7 +107,7 @@ public class Main {
 		if (testmsg.equals(MsgCrypto.decryptAndVerifyMessage(crypted, keyPair.getPrivate(), keyPair.getPublic()).getMessage())) {
 			core_log.i("Crypto test successful!");
 		} else {
-			core_log.e("Crypto test failed!");
+			core_log.e("Crypto test failed! Something might break later on.");
 		}
 		
 		NetUtils.updateLocalIPAddr();
@@ -268,13 +268,13 @@ public class Main {
 				case "updateaccept":
 					if (cmd.length >= 2 && !cmd[1].isEmpty()) {
 						core_log.i("Accepting update with ID " + cmd[1]);
-						KeyUpdate update = KeyUpdateManager.getPendingUpdate(Long.parseLong(cmd[1]));
+						KeyUpdate update = KeyUpdateManager.getUpdate(Long.parseLong(cmd[1]));
 						if (update == null) {
 							core_log.e("Update ID " + cmd[1] + " does not exist.");
 							break;
 						}
 						update.acceptUpdate();
-						KeyUpdateManager.updatePendingUpdate(Long.parseLong(cmd[1]), update);
+						KeyUpdateManager.completeIncomingUpdate(Long.parseLong(cmd[1]), update);
 					} else {
 						core_log.e("An update ID was not specified.");
 					}
@@ -283,13 +283,13 @@ public class Main {
 				case "updatereject":
 					if (cmd.length >= 2 && !cmd[1].isEmpty()) {
 						core_log.i("Rejecting update with ID " + cmd[1]);
-						KeyUpdate update = KeyUpdateManager.getPendingUpdate(Long.parseLong(cmd[1]));
+						KeyUpdate update = KeyUpdateManager.getUpdate(Long.parseLong(cmd[1]));
 						if (update == null) {
 							core_log.e("Update ID " + cmd[1] + " does not exist.");
 							break;
 						}
 						update.rejectUpdate();
-						KeyUpdateManager.updatePendingUpdate(Long.parseLong(cmd[1]), update);
+						KeyUpdateManager.completeIncomingUpdate(Long.parseLong(cmd[1]), update);
 					} else {
 						core_log.e("An update ID was not specified.");
 					}
@@ -297,31 +297,47 @@ public class Main {
 				case "ui":
 				case "updateinfo":
 					if (cmd.length >= 2 && !cmd[1].isEmpty()) {
-						KeyUpdate update = KeyUpdateManager.getPendingUpdate(Long.parseLong(cmd[1]));
+						KeyUpdate update = KeyUpdateManager.getUpdate(Long.parseLong(cmd[1]));
 						if (update == null) {
 							core_log.e("Update ID " + cmd[1] + " does not exist.");
 							break;
 						}
-						core_log.i("Update ID " + cmd[1] + " source IP = " + update.getSource());
+						if (update.isProcessed()) {
+							core_log.w("[PENDING] Update ID " + cmd[1] + " source IP = " + update.getSource());
+						} else {
+							if (update.isAccepted()) {
+								core_log.i("[ACCEPTED] Update ID " + cmd[1] + " source IP = " + update.getSource());
+							} else {
+								core_log.i("[REJECTED] Update ID " + cmd[1] + " source IP = " + update.getSource());
+							}
+						}
 					} else {
 						core_log.e("An update ID was not specified.");
 					}
 					break;
 				case "ul":
 				case "updatelist":
-					Collection<Long> keys = KeyUpdateManager.getAllKeys();
+					Collection<Long> keys = KeyUpdateManager.getAllIncomingKeys();
 					ArrayList<Long> ids = new ArrayList<>();
 					ids.addAll(keys);
 					for (Long id : ids) {
-						KeyUpdate update = KeyUpdateManager.getPendingUpdate(id);
+						KeyUpdate update = KeyUpdateManager.getUpdate(id);
 						if (update == null) {
 							core_log.e("Update ID " + id + " does not exist.");
 							break;
 						}
-						core_log.i("Update ID " + id + " source IP = " + update.getSource());
+						if (update.isProcessed()) {
+							core_log.w("[PENDING] Update ID " + id + " source IP = " + update.getSource());
+						} else {
+							if (update.isAccepted()) {
+								core_log.i("[ACCEPTED] Update ID " + id + " source IP = " + update.getSource());
+							} else {
+								core_log.i("[REJECTED] Update ID " + id + " source IP = " + update.getSource());
+							}
+						}
 					}
-					if (keys.size() == 0) {
-						core_log.i("No pending updates.");
+					if (ids.size() == 0) {
+						core_log.i("No key updates.");
 					}
 					break;
 				case "c":
