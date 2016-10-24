@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: org.seamless:seamless-http:1.1.1">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.seamless/seamless-http/1.1.1/18cc72baf8fbb8f85993dfc4e252c5b6b8cc0139/seamless-http-1.1.1.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.seamless/seamless-http/1.1.1/8fc603bacfdbb1510d234f1fa3150471259cb000/seamless-http-1.1.1-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
