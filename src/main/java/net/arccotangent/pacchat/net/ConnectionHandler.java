@@ -44,17 +44,6 @@ class ConnectionHandler extends Thread {
 	private final Logger ch_log;
 	private final String ip;
 	
-	/*
-	
-	301 getkey - Client requested public key, server must send back base 64 encrypted public key. The response has no header, only the key.
-	302 request key update - Client wants server to update keys, server operator must confirm
-	303 update - Server accepted key update request, client responds with key and key only
-	304 no update - Server rejected key update request, connection is closed
-	305 update unavailable - Server cannot update at the time for whatever reason
-	
-	400 invalid transmission header - Client sent an invalid request header, respond with this and this only.
-	 */
-	
 	ConnectionHandler(BufferedReader in, BufferedWriter out, long conn_id, String source_ip) {
 		input = in;
 		output = out;
