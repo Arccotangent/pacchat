@@ -19,11 +19,13 @@ package net.arccotangent.pacchat.filesystem;
 
 import net.arccotangent.pacchat.crypto.RSA;
 import net.arccotangent.pacchat.logging.Logger;
+import net.arccotangent.pacchat.net.Server;
 import org.apache.commons.codec.binary.Base64;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.Socket;
 import java.nio.file.Files;
 import java.security.*;
 import java.security.spec.InvalidKeySpecException;
@@ -176,6 +178,34 @@ public class KeyManager {
 				km_log.e("Installation creation failed! Could not create directory.");
 			}
 		}
+	}
+	
+	public static PublicKey downloadKeyFromIP(String ip_address) {
+		try {
+			km_log.i("Downloading key from IP " + ip_address);
+			Socket socketGetkey = new Socket();
+			socketGetkey.connect(new InetSocketAddress(InetAddress.getByName(ip_address), Server.PORT), 1000);
+			BufferedReader inputGetkey = new BufferedReader(new InputStreamReader(socketGetkey.getInputStream()));
+			BufferedWriter outputGetkey = new BufferedWriter(new OutputStreamWriter(socketGetkey.getOutputStream()));
+			
+			outputGetkey.write("301 getkey");
+			outputGetkey.newLine();
+			outputGetkey.flush();
+			
+			String pubkeyB64 = inputGetkey.readLine();
+			byte[] pubEncoded = Base64.decodeBase64(pubkeyB64);
+			X509EncodedKeySpec pubSpec = new X509EncodedKeySpec(pubEncoded);
+			KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+			
+			outputGetkey.close();
+			inputGetkey.close();
+			
+			return keyFactory.generatePublic(pubSpec);
+		} catch (IOException | NoSuchAlgorithmException | InvalidKeySpecException e) {
+			km_log.e("Error saving recipient's key!");
+			e.printStackTrace();
+		}
+		return null;
 	}
 	
 	private static boolean checkInstallation() {

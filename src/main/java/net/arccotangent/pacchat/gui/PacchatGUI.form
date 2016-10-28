@@ -8,7 +8,7 @@
     <properties/>
     <border type="none"/>
     <children>
-      <tabbedpane id="ffd0b" binding="tabbedPane1" default-binding="true">
+      <tabbedpane id="ffd0b" binding="tabbedPane1">
         <constraints>
           <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false">
             <preferred-size width="200" height="200"/>
@@ -46,7 +46,7 @@
             <border type="none"/>
             <children/>
           </grid>
-          <grid id="d29d5" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+          <grid id="d29d5" layout-manager="GridLayoutManager" row-count="2" column-count="3" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
             <margin top="0" left="0" bottom="0" right="0"/>
             <constraints>
               <tabbedpane title="Key Manager"/>
@@ -55,7 +55,43 @@
               <enabled value="true"/>
             </properties>
             <border type="none"/>
-            <children/>
+            <children>
+              <component id="ea871" class="javax.swing.JTextArea" binding="keyTextArea">
+                <constraints>
+                  <grid row="0" column="0" row-span="1" col-span="3" vsize-policy="6" hsize-policy="6" anchor="0" fill="3" indent="0" use-parent-layout="false">
+                    <preferred-size width="150" height="50"/>
+                  </grid>
+                </constraints>
+                <properties>
+                  <lineWrap value="true"/>
+                  <wrapStyleWord value="true"/>
+                </properties>
+              </component>
+              <component id="e7e70" class="javax.swing.JButton" binding="downloadKeyButton" default-binding="true">
+                <constraints>
+                  <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <text value="Download Key"/>
+                </properties>
+              </component>
+              <component id="5177b" class="javax.swing.JButton" binding="requestKeyUpdateButton" default-binding="true">
+                <constraints>
+                  <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <text value="Request Key Update"/>
+                </properties>
+              </component>
+              <component id="10968" class="javax.swing.JButton" binding="viewRawKeyButton" default-binding="true">
+                <constraints>
+                  <grid row="1" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <text value="View Raw Key"/>
+                </properties>
+              </component>
+            </children>
           </grid>
           <grid id="38031" layout-manager="GridLayoutManager" row-count="2" column-count="3" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
             <margin top="0" left="0" bottom="0" right="0"/>
@@ -89,13 +125,17 @@
                   <text value="Start Server"/>
                 </properties>
               </component>
-              <component id="48dba" class="javax.swing.JTextPane" binding="textPane1" default-binding="true">
+              <component id="791df" class="javax.swing.JTextArea" binding="serverTextArea">
                 <constraints>
                   <grid row="0" column="0" row-span="1" col-span="3" vsize-policy="6" hsize-policy="6" anchor="0" fill="3" indent="0" use-parent-layout="false">
                     <preferred-size width="150" height="50"/>
                   </grid>
                 </constraints>
-                <properties/>
+                <properties>
+                  <editable value="false"/>
+                  <lineWrap value="true"/>
+                  <wrapStyleWord value="true"/>
+                </properties>
               </component>
             </children>
           </grid>
@@ -114,10 +154,13 @@
                 <properties/>
                 <border type="none"/>
                 <children>
-                  <component id="e1621" class="javax.swing.JTextPane" binding="copyrightPanel">
+                  <component id="5bbc2" class="javax.swing.JTextArea" binding="copyrightPanel">
                     <constraints/>
                     <properties>
                       <editable value="false"/>
+                      <lineWrap value="true"/>
+                      <text value=""/>
+                      <wrapStyleWord value="true"/>
                     </properties>
                   </component>
                 </children>

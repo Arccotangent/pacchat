@@ -130,6 +130,7 @@ public class Main {
 		core_log.i("PacChat is ready for use!");
 		core_log.i("Entering chat mode, type exit to exit, and type send <ip address> to send a message.");
 		core_log.i("Type 'help' for command help.");
+		core_log.i("If applicable, run 'gui' to start the PacChat GUI.");
 		active = true;
 		while (active) {
 			System.out.print(ANSI_BOLD + ANSI_BLUE + "Command: " + ANSI_RESET);
