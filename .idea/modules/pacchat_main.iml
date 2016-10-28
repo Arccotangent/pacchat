@@ -13,9 +13,15 @@
     <orderEntry type="library" name="Gradle: commons-codec:commons-codec:1.10" level="project" />
     <orderEntry type="library" name="Gradle: org.fourthline.cling:cling-core:2.1.0" level="project" />
     <orderEntry type="library" name="Gradle: org.fourthline.cling:cling-support:2.1.0" level="project" />
+    <orderEntry type="library" name="Gradle: com.intellij:forms_rt:7.0.3" level="project" />
     <orderEntry type="library" name="Gradle: org.seamless:seamless-util:1.1.1" level="project" />
     <orderEntry type="library" name="Gradle: org.seamless:seamless-http:1.1.1" level="project" />
     <orderEntry type="library" name="Gradle: org.seamless:seamless-xml:1.1.1" level="project" />
     <orderEntry type="library" name="Gradle: org.seamless:seamless-swing:1.1.1" level="project" />
+    <orderEntry type="library" name="Gradle: asm:asm-commons:3.0" level="project" />
+    <orderEntry type="library" name="Gradle: com.jgoodies:forms:1.1-preview" level="project" />
+    <orderEntry type="library" name="Gradle: jdom:jdom:1.0" level="project" />
+    <orderEntry type="library" name="Gradle: asm:asm-tree:3.0" level="project" />
+    <orderEntry type="library" name="Gradle: asm:asm:3.0" level="project" />
   </component>
 </module>
