@@ -24,6 +24,7 @@ import net.arccotangent.pacchat.gui.PacchatGUI;
 import net.arccotangent.pacchat.logging.Logger;
 import net.arccotangent.pacchat.net.*;
 
+import java.awt.*;
 import java.security.KeyPair;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -31,7 +32,7 @@ import java.util.Scanner;
 
 public class Main {
 	private static final Logger core_log = new Logger("CORE");
-	public static final String VERSION = "0.1-B1";
+	public static final String VERSION = "0.1-B2";
 	private static KeyPair keyPair;
 	private static final String ANSI_BOLD = "\u001B[1m";
 	private static final String ANSI_BLUE = "\u001B[34m";
@@ -41,6 +42,7 @@ public class Main {
 	private static boolean active = false;
 	private static Server server;
 	private static PacchatGUI gui;
+	private static final boolean guiPossible = !GraphicsEnvironment.isHeadless();
 	
 	private static Scanner stdin = new Scanner(System.in);
 
@@ -370,7 +372,12 @@ public class Main {
 				break;
 			case "g":
 			case "gui":
-				gui.setVisible(true);
+				if (guiPossible) {
+					core_log.i("Opening GUI.");
+					gui.setVisible(true);
+				} else {
+					core_log.e("Cannot open GUI, graphics environment is headless.");
+				}
 				break;
 			case "c":
 			case "copyright":
