@@ -22,14 +22,13 @@ import net.arccotangent.pacchat.crypto.MsgCrypto;
 import net.arccotangent.pacchat.filesystem.KeyManager;
 import net.arccotangent.pacchat.logging.Logger;
 import net.arccotangent.pacchat.net.*;
+import net.arccotangent.pacchat.gui.*;
 
 import java.security.KeyPair;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Scanner;
 
 public class Main {
-	
 	private static final Logger core_log = new Logger("CORE");
 	public static final String VERSION = "20161023-1";
 	private static KeyPair keyPair;
@@ -39,8 +38,8 @@ public class Main {
 	private static final String ANSI_WHITE = "\u001B[37m";
 	private static final String ANSI_RESET = "\u001B[0m";
 	
-	private static final Scanner stdin = new Scanner(System.in);
-	
+	public static String[] cmd;
+
 	private static void printCopyright() {
 		System.out.println("PacChat Copyright (C) 2016 Arccotangent");
 		System.out.println("This program comes with ABSOLUTELY NO WARRANTY");
@@ -90,17 +89,19 @@ public class Main {
 	}
 	
 	public static void main(String[] args) {
+		launchGui launch = new launchGui();
+
 		printCopyright();
 		System.out.println();
 		core_log.i("Initializing PacChat " + VERSION);
 		core_log.i("Creating installation if it doesn't already exist.");
 		KeyManager.createInstallationIfNotExist(); //This function handles everything from the installation to key gen
-		
+
 		core_log.i("Loading keys from disk.");
 		keyPair = KeyManager.loadRSAKeys();
-		
+
 		assert keyPair != null;
-		
+
 		core_log.i("Performing crypto test..");
 		String testmsg = "test message";
 		String crypted = MsgCrypto.encryptAndSignMessage(testmsg, keyPair.getPublic(), keyPair.getPrivate());
@@ -109,89 +110,79 @@ public class Main {
 		} else {
 			core_log.e("Crypto test failed! Something might break later on.");
 		}
-		
+
 		NetUtils.updateLocalIPAddr();
 		core_log.i("Starting server.");
 		Server server = new Server();
 		server.start();
-		
+
 		try {
 			Thread.sleep(1000); //wait a little bit for the server and UPNP to start
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		
+
 		core_log.i("PacChat is ready for use!");
 		core_log.i("Entering chat mode, type exit to exit, and type send <ip address> to send a message.");
 		core_log.i("Type 'help' for command help.");
 		boolean active = true;
-		
 		while (active) {
-			System.out.print(ANSI_BOLD + ANSI_BLUE + "Command: " + ANSI_RESET);
-			String cmd_str = stdin.nextLine();
-			String[] cmd = cmd_str.split(" "); //command and arguments
-			
-			switch (cmd[0]) {
-				case "exit":
+			String cmd = gui.getCommand(); //command and arguments
+
+			if (cmd != null) {
+				if (cmd.equals("exit")) {
 					core_log.i("Exiting chat mode.");
 					active = false;
-					break;
-				case "s":
-				case "send":
-					if (cmd.length >= 2 && !cmd[1].isEmpty()) {
-						core_log.i("Preparing to send message to IP address " + cmd[1]);
+				}
+				else if (cmd.equals("send")) {
+					if (cmd.length() >= 2 && !cmd.isEmpty()) {
+						core_log.i("Preparing to send message to IP address " + cmd);
 						core_log.i("Enter your message below, end with a single dot on its own line when finished, end with a single comma to cancel.");
 						core_log.i("The message will not include the single dot at the end.");
 						StringBuilder msgBuilder = new StringBuilder();
-						String buf;
-						
-						while (!(buf = stdin.nextLine()).equals(".")) {
+						String buf = "";
+
+						while (!(buf).equals(".")) {
 							if (!buf.equals(",")) {
 								msgBuilder.append(buf).append("\n");
 							} else {
 								break;
 							}
 						}
-						
+
 						if (buf.equals(".")) {
 							core_log.i("Message accepted, attempting to send to target.");
 							String msg = msgBuilder.toString();
-							Client.sendMessage(msg, cmd[1]);
+							Client.sendMessage(msg, cmd);
 						} else if (buf.equals(",")) {
 							core_log.i("Message cancelled.");
 						}
 					} else {
 						core_log.e("An IP address was not specified.");
 					}
-					break;
-				case "help":
+				}
+				else if (cmd.equals("help")) {
 					printHelpMsg();
-					break;
-				case "":
-					break;
-				case "r":
-				case "reply":
-					
+				}
+				else if (cmd.equals("reply")) {
+
 					if (server == null) {
 						core_log.e("Server is not running.");
-						break;
 					}
 					if (server.getLastSender().isEmpty()) {
 						core_log.e("No one has sent us a message yet.");
-						break;
 					}
-					
+
 					core_log.i("Replying to last sender IP address.");
 					core_log.i("Preparing to send message to IP address " + server.getLastSender());
 					core_log.i("Enter your message below, end with a single dot on its own line when finished, end with a single comma to cancel.");
 					core_log.i("The message will not include the single dot at the end.");
 					StringBuilder msgBuilder = new StringBuilder();
-					String buf;
-					while (!(buf = stdin.nextLine()).equals(".")) {
+					String buf = "";
+					while (!(buf).equals(".")) {
 						if (!buf.equals(",")) {
 							msgBuilder.append(buf).append("\n");
 						} else {
-							break;
 						}
 					}
 					if (buf.equals(".")) {
@@ -202,8 +193,8 @@ public class Main {
 						core_log.i("Message cancelled.");
 					}
 					break;
-				case "ss":
-				case "startserver":
+				}
+				else if (cmd.equals("startserver")) {
 					if (server == null || !server.isActive()) {
 						core_log.i("Starting server.");
 						server = new Server();
@@ -215,18 +206,17 @@ public class Main {
 						}
 					} else
 						core_log.i("Server is already running.");
-					break;
-				case "hs":
-				case "haltserver":
+				}
+				else if (cmd.equals("haltserver")) {
 					if (server != null && server.isActive()) {
 						core_log.i("Stopping server.");
+						System.out.println("test213");
 						server.closeServer();
 						server = null;
 					} else
 						core_log.i("Server is not running.");
-					break;
-				case "rs":
-				case "restartserver":
+				}
+				else if (cmd.equals("restartserver")) {
 					if (server != null && server.isActive()) {
 						core_log.i("Restarting server.");
 						server.closeServer();
@@ -247,13 +237,12 @@ public class Main {
 							e.printStackTrace();
 						}
 					}
-					break;
-				case "u":
-				case "update":
-					if (cmd.length >= 2 && !cmd[1].isEmpty()) {
-						core_log.i("Requesting that the server at " + cmd[1] + " update their copy of your key.");
+				}
+				else if (cmd.equals("none")) {
+					if (cmd.length() >= 2 && !cmd.isEmpty()) {
+						core_log.i("Requesting that the server at " + cmd + " update their copy of your key.");
 						Client.incrementKUC_ID();
-						KeyUpdateClient kuc = new KeyUpdateClient(Client.getKUC_ID(), cmd[1]);
+						KeyUpdateClient kuc = new KeyUpdateClient(Client.getKUC_ID(), cmd);
 						kuc.start();
 						try {
 							Thread.sleep(500); //wait for request to be made, makes output less sloppy
@@ -263,60 +252,55 @@ public class Main {
 					} else {
 						core_log.e("An IP address was not specified.");
 					}
-					break;
-				case "ua":
-				case "updateaccept":
-					if (cmd.length >= 2 && !cmd[1].isEmpty()) {
-						core_log.i("Accepting update with ID " + cmd[1]);
-						KeyUpdate update = KeyUpdateManager.getUpdate(Long.parseLong(cmd[1]));
+				}
+				else if (cmd.equals("updateaccept")) {
+					if (cmd.length() >= 2 && !cmd.isEmpty()) {
+						core_log.i("Accepting update with ID " + cmd);
+						KeyUpdate update = KeyUpdateManager.getUpdate(Long.parseLong(cmd));
 						if (update == null) {
-							core_log.e("Update ID " + cmd[1] + " does not exist.");
-							break;
+							core_log.e("Update ID " + cmd + " does not exist.");
 						}
 						update.acceptUpdate();
-						KeyUpdateManager.completeIncomingUpdate(Long.parseLong(cmd[1]), update);
+						KeyUpdateManager.completeIncomingUpdate(Long.parseLong(cmd), update);
 					} else {
 						core_log.e("An update ID was not specified.");
 					}
-					break;
-				case "ur":
-				case "updatereject":
-					if (cmd.length >= 2 && !cmd[1].isEmpty()) {
-						core_log.i("Rejecting update with ID " + cmd[1]);
-						KeyUpdate update = KeyUpdateManager.getUpdate(Long.parseLong(cmd[1]));
+				}
+				else if (cmd.equals("updatereject")) {
+					if (cmd.length() >= 2 && !cmd.isEmpty()) {
+						core_log.i("Rejecting update with ID " + cmd);
+						KeyUpdate update = KeyUpdateManager.getUpdate(Long.parseLong(cmd));
 						if (update == null) {
-							core_log.e("Update ID " + cmd[1] + " does not exist.");
-							break;
+							core_log.e("Update ID " + cmd + " does not exist.");
 						}
 						update.rejectUpdate();
-						KeyUpdateManager.completeIncomingUpdate(Long.parseLong(cmd[1]), update);
+						KeyUpdateManager.completeIncomingUpdate(Long.parseLong(cmd), update);
 					} else {
 						core_log.e("An update ID was not specified.");
 					}
 					break;
-				case "ui":
-				case "updateinfo":
-					if (cmd.length >= 2 && !cmd[1].isEmpty()) {
-						KeyUpdate update = KeyUpdateManager.getUpdate(Long.parseLong(cmd[1]));
+				}
+				else if (cmd.equals("updateinfo")) {
+					if (cmd.length() >= 2 && !cmd.isEmpty()) {
+						KeyUpdate update = KeyUpdateManager.getUpdate(Long.parseLong(cmd));
 						if (update == null) {
-							core_log.e("Update ID " + cmd[1] + " does not exist.");
+							core_log.e("Update ID " + cmd + " does not exist.");
 							break;
 						}
 						if (update.isProcessed()) {
-							core_log.w("[PENDING] Update ID " + cmd[1] + " source IP = " + update.getSource());
+							core_log.w("[PENDING] Update ID " + cmd + " source IP = " + update.getSource());
 						} else {
 							if (update.isAccepted()) {
-								core_log.i("[ACCEPTED] Update ID " + cmd[1] + " source IP = " + update.getSource());
+								core_log.i("[ACCEPTED] Update ID " + cmd + " source IP = " + update.getSource());
 							} else {
-								core_log.i("[REJECTED] Update ID " + cmd[1] + " source IP = " + update.getSource());
+								core_log.i("[REJECTED] Update ID " + cmd + " source IP = " + update.getSource());
 							}
 						}
 					} else {
 						core_log.e("An update ID was not specified.");
 					}
-					break;
-				case "ul":
-				case "updatelist":
+				}
+				else if (cmd.equals("updatelist")) {
 					Collection<Long> keys = KeyUpdateManager.getAllIncomingKeys();
 					ArrayList<Long> ids = new ArrayList<>();
 					ids.addAll(keys);
@@ -324,7 +308,6 @@ public class Main {
 						KeyUpdate update = KeyUpdateManager.getUpdate(id);
 						if (update == null) {
 							core_log.e("Update ID " + id + " does not exist.");
-							break;
 						}
 						if (update.isProcessed()) {
 							core_log.w("[PENDING] Update ID " + id + " source IP = " + update.getSource());
@@ -339,29 +322,33 @@ public class Main {
 					if (ids.size() == 0) {
 						core_log.i("No key updates.");
 					}
-					break;
-				case "c":
-				case "copyright":
+				}
+				else if (cmd.equals("copyright")) {
 					printFullCopyright();
-					break;
-				default:
+				}
+				else if (cmd.equals("default")) {
 					core_log.e("Invalid chat command!");
 					printHelpMsg();
-					break;
+				}
 			}
 		}
-		
+
 		core_log.i("Shutting down now.");
-		
+
 		//Shutdown sequence
-		
+
 		if (UPNPManager.isOpen())
 			UPNPManager.UPNPClosePorts();
-		
+
 		if (server != null)
 			server.closeServer();
-		
+
 		System.exit(0);
 	}
-	
 }
+
+class launchGui extends gui {
+	mainGui mainGui = new mainGui();
+}
+
+
