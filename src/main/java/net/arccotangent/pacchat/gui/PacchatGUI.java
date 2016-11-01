@@ -109,8 +109,8 @@ public class PacchatGUI extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 String rawContact = (String) contactList.getSelectedValue();
                 String[] ip = rawContact.split(":");
-                contactName.setText(ip[0]);
-                ipField.setText(ip[1]);
+                contactName.setText(ip[1]);
+                ipField.setText(ip[0]);
                 tabbedPane1.setSelectedIndex(1);
             }
         });
