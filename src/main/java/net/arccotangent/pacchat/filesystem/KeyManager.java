@@ -172,7 +172,7 @@ public class KeyManager {
 			km_log.w("Installation does not exist. Creating new installation now.");
 			boolean mkdirSuccessful = installationFile.mkdir();
 			if (mkdirSuccessful) {
-				km_log.i("Installation creation successful.");
+				km_log.i("Installation creation successful. Generating new keys.");
 				generateNewKeys();
 			} else {
 				km_log.e("Installation creation failed! Could not create directory.");

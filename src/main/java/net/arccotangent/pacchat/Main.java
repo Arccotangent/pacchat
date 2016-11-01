@@ -32,7 +32,7 @@ import java.util.Scanner;
 
 public class Main {
 	private static final Logger core_log = new Logger("CORE");
-	public static final String VERSION = "0.1-B2";
+	public static final String VERSION = "0.1-B3";
 	private static KeyPair keyPair;
 	private static final String ANSI_BOLD = "\u001B[1m";
 	private static final String ANSI_BLUE = "\u001B[34m";
@@ -96,7 +96,6 @@ public class Main {
 	}
 	
 	public static void main(String[] args) {
-		gui = new PacchatGUI();
 
 		printCopyright();
 		System.out.println();
@@ -374,6 +373,7 @@ public class Main {
 			case "gui":
 				if (guiPossible) {
 					core_log.i("Opening GUI.");
+					gui = new PacchatGUI();
 					gui.setVisible(true);
 				} else {
 					core_log.e("Cannot open GUI, graphics environment is headless.");
