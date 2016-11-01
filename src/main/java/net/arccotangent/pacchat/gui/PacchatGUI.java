@@ -28,6 +28,11 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
 
 public class PacchatGUI extends JFrame {
     private JTextArea copyrightPanel;
@@ -47,8 +52,9 @@ public class PacchatGUI extends JFrame {
     private JButton selectButton;
     private JButton addButton;
     private JButton deleteButton;
-    private JList list1;
+    private JList contactList;
     private JTextPane messagePanel;
+    private JLabel contactName;
 
     public PacchatGUI() {
         super("PacChat GUI");
@@ -56,6 +62,7 @@ public class PacchatGUI extends JFrame {
         initKeyManager();
         initServerManager();
         initMessages();
+        contactManager();
         initCopyrightGui();
         pack();
         setSize(700, 400);
@@ -76,6 +83,61 @@ public class PacchatGUI extends JFrame {
                 Client.sendMessage(msg, ip);
             }
         });
+    }
+
+    private void contactManager() {
+        addButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                String addIp = JOptionPane.showInputDialog(null, "Enter IP of new contact", JOptionPane.QUESTION_MESSAGE);
+                String addName = JOptionPane.showInputDialog(null, "Enter name of new contact, " + addIp, JOptionPane.QUESTION_MESSAGE);
+
+                try {
+                    String fileName = "contacts.priv";
+                    FileWriter writeContact = new FileWriter(fileName, true);
+                    writeContact.write(addIp + ":" + addName + "\n");
+                    writeContact.close();
+                } catch (IOException ioe) {
+                    System.err.println("IOException: " + ioe.getMessage());
+                }
+            }
+        });
+
+        selectButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String rawContact = (String) contactList.getSelectedValue();
+                String[] ip = rawContact.split(":");
+                contactName.setText(ip[1]);
+                ipField.setText(ip[0]);
+                tabbedPane1.setSelectedIndex(1);
+            }
+        });
+
+        try {
+            DefaultListModel<String> model = new DefaultListModel<>();
+            ArrayList<String> listOfContacts = new ArrayList<>();
+
+            BufferedReader reader = new BufferedReader(new FileReader("contacts.priv"));
+
+            while (true) {
+                String line = reader.readLine();
+                if (line == null) {
+                    break;
+                }
+                listOfContacts.add(line);
+            }
+
+            reader.close();
+
+            for (String line : listOfContacts) {
+                model.addElement(line);
+            }
+            contactList.setModel(model);
+        } catch (IOException ioe) {
+            System.err.println("IOException: " + ioe.getMessage());
+        }
     }
 
     private void initServerManager() {
@@ -167,31 +229,36 @@ public class PacchatGUI extends JFrame {
         panel1.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
         tabbedPane1.addTab("Welcome", panel1);
         final JPanel panel2 = new JPanel();
-        panel2.setLayout(new GridLayoutManager(3, 4, new Insets(0, 0, 0, 0), -1, -1));
+        panel2.setLayout(new GridLayoutManager(3, 5, new Insets(0, 0, 0, 0), -1, -1));
         tabbedPane1.addTab("Messages", panel2);
-        ipField = new JTextField();
-        ipField.setText("IP");
-        panel2.add(ipField, new GridConstraints(2, 0, 1, 3, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
         sendButton = new JButton();
         sendButton.setText("Send");
-        panel2.add(sendButton, new GridConstraints(2, 3, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        panel2.add(sendButton, new GridConstraints(2, 4, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final JScrollPane scrollPane1 = new JScrollPane();
-        panel2.add(scrollPane1, new GridConstraints(0, 0, 1, 4, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
+        panel2.add(scrollPane1, new GridConstraints(0, 0, 1, 5, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
         messagePanel = new JTextPane();
         messagePanel.setEnabled(false);
         messagePanel.putClientProperty("JEditorPane.w3cLengthUnits", Boolean.FALSE);
         messagePanel.putClientProperty("JEditorPane.honorDisplayProperties", Boolean.FALSE);
         scrollPane1.setViewportView(messagePanel);
         enteredText = new JTextArea();
-        panel2.add(enteredText, new GridConstraints(1, 0, 1, 4, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_WANT_GROW, null, new Dimension(150, 50), null, 0, false));
+        panel2.add(enteredText, new GridConstraints(1, 0, 1, 5, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_WANT_GROW, null, new Dimension(150, 50), null, 0, false));
+        ipField = new JTextField();
+        ipField.setText("IP");
+        panel2.add(ipField, new GridConstraints(2, 2, 1, 2, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
+        contactName = new JLabel();
+        contactName.setText("Label");
+        panel2.add(contactName, new GridConstraints(2, 0, 1, 2, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final JPanel panel3 = new JPanel();
         panel3.setLayout(new GridLayoutManager(2, 3, new Insets(0, 0, 0, 0), -1, -1));
         tabbedPane1.addTab("Contacts", panel3);
         addButton = new JButton();
         addButton.setText("Add");
         panel3.add(addButton, new GridConstraints(1, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        list1 = new JList();
-        panel3.add(list1, new GridConstraints(0, 0, 1, 3, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_WANT_GROW, null, new Dimension(150, 50), null, 0, false));
+        contactList = new JList();
+        final DefaultListModel defaultListModel1 = new DefaultListModel();
+        contactList.setModel(defaultListModel1);
+        panel3.add(contactList, new GridConstraints(0, 0, 1, 3, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_WANT_GROW, null, new Dimension(150, 50), null, 0, false));
         deleteButton = new JButton();
         deleteButton.setText("Delete");
         panel3.add(deleteButton, new GridConstraints(1, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
