@@ -32,7 +32,7 @@ import java.util.Scanner;
 
 public class Main {
 	private static final Logger core_log = new Logger("CORE");
-	public static final String VERSION = "0.1-B5";
+	public static final String VERSION = "0.1-B6";
 	private static KeyPair keyPair;
 	private static final String ANSI_BOLD = "\u001B[1m";
 	private static final String ANSI_BLUE = "\u001B[34m";
@@ -339,7 +339,7 @@ public class Main {
 						core_log.e("Update ID " + cmd[1] + " does not exist.");
 						break;
 					}
-					if (update.isProcessed()) {
+					if (!update.isProcessed()) {
 						core_log.w("[PENDING] Update ID " + cmd[1] + " source IP = " + update.getSource());
 					} else {
 						if (update.isAccepted()) {
@@ -363,7 +363,7 @@ public class Main {
 						core_log.e("Update ID " + id + " does not exist.");
 						break;
 					}
-					if (update.isProcessed()) {
+					if (!update.isProcessed()) {
 						core_log.w("[PENDING] Update ID " + id + " source IP = " + update.getSource());
 					} else {
 						if (update.isAccepted()) {
