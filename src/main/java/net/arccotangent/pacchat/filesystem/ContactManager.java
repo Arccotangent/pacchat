@@ -29,7 +29,8 @@ public class ContactManager {
 	private static final File contactsFile = new File(user_home + File.separator + ".pacchat" + File.separator + "contacts.txt");
 	
 	@SuppressWarnings("ResultOfMethodCallIgnored")
-	public static void createContactFileIfNotExist() {
+	private static void createContactFileIfNotExist() {
+		cm_log.i("Creating new contact file.");
 		try {
 			contactsFile.createNewFile();
 		} catch (IOException e) {
@@ -52,6 +53,8 @@ public class ContactManager {
 	}
 	
 	public static ArrayList<String> getAllContacts() {
+		if (!contactsFile.exists())
+			createContactFileIfNotExist();
 		cm_log.i("Reading all contacts.");
 		ArrayList<String> contacts = new ArrayList<>();
 		try {
@@ -74,28 +77,6 @@ public class ContactManager {
 		
 		return contacts;
 	}
-	
-	/*
-	public static void deleteByName(String name) {
-		cm_log.i("Deleting all contacts matching '" + name + "'");
-		ArrayList<String> contacts = getAllContacts();
-		
-		assert contacts != null;
-		
-		for (int i = 0; i < contacts.size(); i++) {
-			String contact = contacts.get(i);
-			
-			String[] contactArray = contact.split(":");
-			if (contactArray[0].equals(name)) {
-				cm_log.i("Found matching contact with name '" + name + "' and IP " + contactArray[1] + ", deleting.");
-				contacts.remove(i);
-			}
-		}
-		writeContactList(contacts);
-		
-		cm_log.i("Finished deleting.");
-	}
-	*/
 	
 	public static void deleteByIndex(int index) {
 		cm_log.i("Deleting contact at index " + index);

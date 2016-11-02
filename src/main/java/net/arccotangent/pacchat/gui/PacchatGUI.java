@@ -73,11 +73,6 @@ public class PacchatGUI extends JFrame {
 		ArrayList<String> contacts = ContactManager.getAllContacts();
 		DefaultListModel<String> model = (DefaultListModel<String>) contactList.getModel();
 		
-		if (contacts == null) {
-			ContactManager.createContactFileIfNotExist();
-			contacts = ContactManager.getAllContacts();
-		}
-		
 		assert contacts != null;
 		model.clear();
 		
@@ -136,8 +131,8 @@ public class PacchatGUI extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				String rawContact = contactList.getSelectedValue();
 				String[] ip = rawContact.split(":");
-				contactName.setText(ip[1]);
-				ipField.setText(ip[0]);
+				contactName.setText(ip[0]);
+				ipField.setText(ip[1]);
 				tabbedPane1.setSelectedIndex(1); //Message tab
 			}
 		});
@@ -237,6 +232,7 @@ public class PacchatGUI extends JFrame {
 		mainGui = new JPanel();
 		mainGui.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
 		tabbedPane1 = new JTabbedPane();
+		tabbedPane1.setForeground(new Color(-16777216));
 		tabbedPane1.setTabPlacement(1);
 		mainGui.add(tabbedPane1, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, new Dimension(200, 200), null, 0, false));
 		final JPanel panel1 = new JPanel();
@@ -249,23 +245,28 @@ public class PacchatGUI extends JFrame {
 		sendButton.setText("Send");
 		panel2.add(sendButton, new GridConstraints(2, 4, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
 		final JScrollPane scrollPane1 = new JScrollPane();
-		panel2.add(scrollPane1, new GridConstraints(0, 0, 1, 5, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
+		panel2.add(scrollPane1, new GridConstraints(0, 0, 1, 5, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
 		messagePanel = new JTextPane();
 		messagePanel.setEnabled(false);
+		messagePanel.setForeground(new Color(-16777216));
 		messagePanel.putClientProperty("JEditorPane.w3cLengthUnits", Boolean.FALSE);
 		messagePanel.putClientProperty("JEditorPane.honorDisplayProperties", Boolean.FALSE);
 		scrollPane1.setViewportView(messagePanel);
-		enteredText = new JTextArea();
-		enteredText.setLineWrap(true);
-		enteredText.setText("Message");
-		enteredText.setWrapStyleWord(true);
-		panel2.add(enteredText, new GridConstraints(1, 0, 1, 5, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_WANT_GROW, null, new Dimension(150, 50), null, 0, false));
 		ipField = new JTextField();
+		ipField.setForeground(new Color(-16777216));
 		ipField.setText("IP");
 		panel2.add(ipField, new GridConstraints(2, 2, 1, 2, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
 		contactName = new JLabel();
 		contactName.setText("No Contact Selected");
 		panel2.add(contactName, new GridConstraints(2, 0, 1, 2, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+		final JScrollPane scrollPane2 = new JScrollPane();
+		panel2.add(scrollPane2, new GridConstraints(1, 0, 1, 5, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+		enteredText = new JTextArea();
+		enteredText.setForeground(new Color(-16777216));
+		enteredText.setLineWrap(true);
+		enteredText.setText("Message");
+		enteredText.setWrapStyleWord(true);
+		scrollPane2.setViewportView(enteredText);
 		final JPanel panel3 = new JPanel();
 		panel3.setLayout(new GridLayoutManager(2, 3, new Insets(0, 0, 0, 0), -1, -1));
 		tabbedPane1.addTab("Contacts", panel3);
@@ -273,6 +274,7 @@ public class PacchatGUI extends JFrame {
 		addButton.setText("Add");
 		panel3.add(addButton, new GridConstraints(1, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
 		contactList = new JList();
+		contactList.setForeground(new Color(-16777216));
 		final DefaultListModel defaultListModel1 = new DefaultListModel();
 		contactList.setModel(defaultListModel1);
 		panel3.add(contactList, new GridConstraints(0, 0, 1, 3, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_WANT_GROW, null, new Dimension(150, 50), null, 0, false));
@@ -288,6 +290,7 @@ public class PacchatGUI extends JFrame {
 		tabbedPane1.addTab("Key Manager", panel4);
 		keyTextArea = new JTextArea();
 		keyTextArea.setEditable(false);
+		keyTextArea.setForeground(new Color(-16777216));
 		keyTextArea.setLineWrap(true);
 		keyTextArea.setWrapStyleWord(true);
 		panel4.add(keyTextArea, new GridConstraints(0, 0, 1, 3, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_WANT_GROW, null, new Dimension(150, 50), null, 0, false));
@@ -314,20 +317,22 @@ public class PacchatGUI extends JFrame {
 		panel5.add(startServerButton, new GridConstraints(1, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
 		serverTextArea = new JTextArea();
 		serverTextArea.setEditable(false);
+		serverTextArea.setForeground(new Color(-16777216));
 		serverTextArea.setLineWrap(true);
 		serverTextArea.setWrapStyleWord(true);
 		panel5.add(serverTextArea, new GridConstraints(0, 0, 1, 3, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_WANT_GROW, null, new Dimension(150, 50), null, 0, false));
 		final JPanel panel6 = new JPanel();
 		panel6.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
 		tabbedPane1.addTab("About", panel6);
-		final JScrollPane scrollPane2 = new JScrollPane();
-		panel6.add(scrollPane2, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
+		final JScrollPane scrollPane3 = new JScrollPane();
+		panel6.add(scrollPane3, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
 		copyrightPanel = new JTextArea();
 		copyrightPanel.setEditable(false);
+		copyrightPanel.setForeground(new Color(-16777216));
 		copyrightPanel.setLineWrap(true);
 		copyrightPanel.setText("");
 		copyrightPanel.setWrapStyleWord(true);
-		scrollPane2.setViewportView(copyrightPanel);
+		scrollPane3.setViewportView(copyrightPanel);
 	}
 	
 	/**
