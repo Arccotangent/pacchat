@@ -32,7 +32,7 @@ import java.util.Scanner;
 
 public class Main {
 	private static final Logger core_log = new Logger("CORE");
-	public static final String VERSION = "0.1-B3";
+	public static final String VERSION = "0.1-B4";
 	private static KeyPair keyPair;
 	private static final String ANSI_BOLD = "\u001B[1m";
 	private static final String ANSI_BLUE = "\u001B[34m";
@@ -45,6 +45,14 @@ public class Main {
 	private static final boolean guiPossible = !GraphicsEnvironment.isHeadless();
 	
 	private static Scanner stdin = new Scanner(System.in);
+	
+	public static void addReceivedMessageToGui(String sender, String msg, boolean verified) {
+		gui.addReceivedMessage(sender, msg, verified);
+	}
+	
+	public static boolean isGuiVisible() {
+		return gui.isVisible();
+	}
 
 	private static void printCopyright() {
 		System.out.println("PacChat Copyright (C) 2016 Arccotangent");

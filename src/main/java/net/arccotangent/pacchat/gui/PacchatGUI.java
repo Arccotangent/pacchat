@@ -95,11 +95,11 @@ public class PacchatGUI extends JFrame {
 		return df.format(d);
 	}
 	
+	public void addReceivedMessage(String sender, String msg, boolean verified) {
+		messagePanel.setText(messagePanel.getText() + "\n[" + getTime() + "] [" + (verified ? "VERIFIED" : "NOT VERIFIED") + "] " + sender + ": " + msg);
+	}
+	
 	private void initMessages() {
-		// Receive Messages
-		// WIP
-		
-		// Send Messages
 		sendButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -108,6 +108,7 @@ public class PacchatGUI extends JFrame {
 				Client.sendMessage(msg, ip);
 				
 				messagePanel.setText(messagePanel.getText() + "\n[" + getTime() + "] You: " + msg);
+				enteredText.setText("");
 			}
 		});
 	}

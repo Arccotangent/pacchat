@@ -183,6 +183,10 @@ class ConnectionHandler extends Thread {
 						output.flush();
 						output.close();
 					}
+					
+					if (Main.isGuiVisible()) {
+						Main.addReceivedMessageToGui(ip, msg, verified);
+					}
 					break;
 				case "201 message acknowledgement":
 					ch_log.i("Client sent an invalid message acknowledgement.");
