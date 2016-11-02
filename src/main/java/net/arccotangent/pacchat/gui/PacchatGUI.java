@@ -54,7 +54,7 @@ public class PacchatGUI extends JFrame {
 	private JButton addButton;
 	private JButton deleteButton;
 	private JList<String> contactList;
-	private JTextPane messagePanel;
+	private JTextArea messagePanel;
 	private JLabel contactName;
 	
 	public PacchatGUI() {
@@ -246,11 +246,11 @@ public class PacchatGUI extends JFrame {
 		panel2.add(sendButton, new GridConstraints(2, 4, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
 		final JScrollPane scrollPane1 = new JScrollPane();
 		panel2.add(scrollPane1, new GridConstraints(0, 0, 1, 5, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-		messagePanel = new JTextPane();
+		messagePanel = new JTextArea();
 		messagePanel.setEnabled(false);
 		messagePanel.setForeground(new Color(-16777216));
-		messagePanel.putClientProperty("JEditorPane.w3cLengthUnits", Boolean.FALSE);
-		messagePanel.putClientProperty("JEditorPane.honorDisplayProperties", Boolean.FALSE);
+		messagePanel.setLineWrap(true);
+		messagePanel.setWrapStyleWord(true);
 		scrollPane1.setViewportView(messagePanel);
 		ipField = new JTextField();
 		ipField.setForeground(new Color(-16777216));

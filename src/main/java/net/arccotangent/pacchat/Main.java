@@ -32,7 +32,7 @@ import java.util.Scanner;
 
 public class Main {
 	private static final Logger core_log = new Logger("CORE");
-	public static final String VERSION = "0.1-B6";
+	public static final String VERSION = "0.1-B7";
 	private static KeyPair keyPair;
 	private static final String ANSI_BOLD = "\u001B[1m";
 	private static final String ANSI_BLUE = "\u001B[34m";
@@ -51,7 +51,7 @@ public class Main {
 	}
 	
 	public static boolean isGuiVisible() {
-		return gui.isVisible();
+		return gui != null && gui.isVisible();
 	}
 
 	private static void printCopyright() {

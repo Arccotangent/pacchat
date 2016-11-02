@@ -52,16 +52,14 @@
                 <properties/>
                 <border type="none"/>
                 <children>
-                  <component id="f434d" class="javax.swing.JTextPane" binding="messagePanel">
+                  <component id="43f81" class="javax.swing.JTextArea" binding="messagePanel">
                     <constraints/>
                     <properties>
                       <enabled value="false"/>
                       <foreground color="-16777216"/>
+                      <lineWrap value="true"/>
+                      <wrapStyleWord value="true"/>
                     </properties>
-                    <clientProperties>
-                      <JEditorPane.honorDisplayProperties class="java.lang.Boolean" value="false"/>
-                      <JEditorPane.w3cLengthUnits class="java.lang.Boolean" value="false"/>
-                    </clientProperties>
                   </component>
                 </children>
               </scrollpane>
