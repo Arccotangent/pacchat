@@ -194,18 +194,21 @@ class ConnectionHandler extends Thread {
 					output.newLine();
 					output.flush();
 					output.close();
+					break;
 				case "202 unable to decrypt":
 					ch_log.i("Client sent an invalid 'unable to decrypt' transmission.");
 					output.write("400 invalid transmission header");
 					output.newLine();
 					output.flush();
 					output.close();
+					break;
 				case "203 unable to verify":
 					ch_log.i("Client sent an invalid 'unable to verify' transmission.");
 					output.write("400 invalid transmission header");
 					output.newLine();
 					output.flush();
 					output.close();
+					break;
 				default:
 					ch_log.i("Client sent an invalid request header: " + line1);
 					output.write("400 invalid transmission header");

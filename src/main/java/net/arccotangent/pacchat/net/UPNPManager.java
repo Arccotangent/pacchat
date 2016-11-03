@@ -19,16 +19,12 @@ package net.arccotangent.pacchat.net;
 
 import net.arccotangent.pacchat.Main;
 import net.arccotangent.pacchat.logging.Logger;
+import net.arccotangent.pacchat.net.p2p.P2PServer;
 import org.fourthline.cling.UpnpService;
 import org.fourthline.cling.UpnpServiceImpl;
 import org.fourthline.cling.model.message.header.STAllHeader;
 import org.fourthline.cling.support.igd.PortMappingListener;
 import org.fourthline.cling.support.model.PortMapping;
-
-//import org.fourthline.cling.model.meta.LocalDevice;
-//import org.fourthline.cling.model.meta.RemoteDevice;
-//import org.fourthline.cling.registry.Registry;
-//import org.fourthline.cling.registry.RegistryListener;
 
 public class UPNPManager {
 	
@@ -42,53 +38,12 @@ public class UPNPManager {
 		return upnp_open;
 	}
 	
-	/*
-	private static RegistryListener REGISTRY_LISTENER = new RegistryListener() {
-		
-		public void remoteDeviceDiscoveryStarted(Registry registry, RemoteDevice device) {
-			registry_log.i("Discovery started: " + device.getDisplayString());
-		}
-		
-		public void remoteDeviceDiscoveryFailed(Registry registry, RemoteDevice device, Exception ex) {
-			registry_log.e("Discovery failed: " + device.getDisplayString() + " => " + ex);
-		}
-		
-		public void remoteDeviceAdded(Registry registry, RemoteDevice device) {
-			registry_log.i("Remote device available: " + device.getDisplayString());
-		}
-		
-		public void remoteDeviceUpdated(Registry registry, RemoteDevice device) {
-			registry_log.i("Remote device updated: " + device.getDisplayString());
-		}
-		
-		public void remoteDeviceRemoved(Registry registry, RemoteDevice device) {
-			registry_log.w("Remote device removed: " + device.getDisplayString());
-		}
-		
-		public void localDeviceAdded(Registry registry, LocalDevice device) {
-			registry_log.i("Local device added: " + device.getDisplayString());
-		}
-		
-		public void localDeviceRemoved(Registry registry, LocalDevice device) {
-			registry_log.w("Local device removed: " + device.getDisplayString());
-		}
-		
-		public void beforeShutdown(Registry registry) {
-			registry_log.i("Before shutdown, the registry has devices: " + registry.getDevices().size());
-		}
-		
-		public void afterShutdown() {
-			registry_log.i("Shutdown of registry complete!");
-			
-		}
-	};
-	*/
-	
-	static void UPNPOpenPorts()
+	public static void UPNPOpenPorts()
 	{
-		PortMapping[] ports = new PortMapping[1];
+		PortMapping[] ports = new PortMapping[2];
 		upnp_log.i("Listing ports to be mapped");
 		ports[0] = new PortMapping(Server.PORT, NetUtils.getLocalIPAddr(), PortMapping.Protocol.TCP, "PacChat " + Main.VERSION + " TCP");
+		ports[1] = new PortMapping(P2PServer.P2P_PORT, NetUtils.getLocalIPAddr(), PortMapping.Protocol.TCP, "PacChat " + Main.VERSION + " P2P TCP");
 		//arr[index] = new PortMapping(port, ipaddr, protocol, description);
 		for (int i = 0; i < ports.length; i++)
 		{
