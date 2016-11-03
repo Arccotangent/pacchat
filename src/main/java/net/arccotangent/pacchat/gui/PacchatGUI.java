@@ -56,6 +56,8 @@ public class PacchatGUI extends JFrame {
 	private JList<String> contactList;
 	private JTextArea messagePanel;
 	private JLabel contactName;
+	private JScrollPane messagePanelScroll;
+	private JTextPane instructionsArea;
 	
 	public PacchatGUI() {
 		super("PacChat GUI");
@@ -95,6 +97,7 @@ public class PacchatGUI extends JFrame {
 	}
 	
 	private void initMessages() {
+		
 		sendButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -102,7 +105,11 @@ public class PacchatGUI extends JFrame {
 				String msg = enteredText.getText();
 				Client.sendMessage(msg, ip);
 				
-				messagePanel.setText(messagePanel.getText() + "\n[" + getTime() + "] You: " + msg);
+				messagePanel.append("\n[" + getTime() + "] You -> " + ip + ": " + msg);
+				
+				JScrollBar verticalBar = messagePanelScroll.getVerticalScrollBar();
+				verticalBar.setValue(verticalBar.getMaximum()); //scroll to bottom
+				
 				enteredText.setText("");
 			}
 		});
@@ -238,23 +245,33 @@ public class PacchatGUI extends JFrame {
 		final JPanel panel1 = new JPanel();
 		panel1.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
 		tabbedPane1.addTab("Welcome", panel1);
+		final JScrollPane scrollPane1 = new JScrollPane();
+		panel1.add(scrollPane1, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
+		instructionsArea = new JTextPane();
+		instructionsArea.setContentType("text/html");
+		instructionsArea.setEditable(false);
+		instructionsArea.setFont(UIManager.getFont("Label.font"));
+		instructionsArea.setText("<html>\n  <head>\n    \n  </head>\n  <body>\n    <h1>\n      PacChat GUI Usage Instructions\n    </h1>\n    <br>\n    \n\n    <h2>\n      Tabs\n    </h2>\n    <p>\n      Messages - Send and receive messages.<br>Contacts - Manage your contacts.<br>Key \n      Manager - Manage keys, key updates, and download public keys from other \n      people.<br>Server Manager - Manage your server, essentially whether you \n      can receive messages or not.<br>About - For the time being, a simple \n      copyright message.<br>\n    </p>\n    <h2>\n      Basic Usage\n    </h2>\n    <p>\n      To send messages to other people, you need their IP address or a domain \n      that resolves to their IP address.<br>Navigate to the Messages tab.<br><br>1. \n      Type the IP address/domain in the small bottom text box.<br>2. Type your \n      message in the text box directly above the IP text box.<br>3. Click \n      Send, and your message has been sent.<br>\n    </p>\n    <h2>\n      Miscellaneous\n    </h2>\n    <h3>\n      Links\n    </h3>\n    <p>\n      If you would like to follow development or contribute, check out our \n      GitHub repository linked below.<br>GitHub Repository: <a href=\"https://github.com/Arccotangent/pacchat\">https://github.com/Arccotangent/pacchat</a><br>\n    </p>\n    <h3>\n      Bug Reporting\n    </h3>\n    <p>\n      Bugs should be reported on the GitHub issue tracker.<br>Link: <a href=\"https://github.com/Arccotangent/pacchat/issues\">https://github.com/Arccotangent/pacchat/issues</a><br>\n    </p>\n  </body>\n</html>\n");
+		scrollPane1.setViewportView(instructionsArea);
 		final JPanel panel2 = new JPanel();
 		panel2.setLayout(new GridLayoutManager(3, 5, new Insets(0, 0, 0, 0), -1, -1));
 		tabbedPane1.addTab("Messages", panel2);
 		sendButton = new JButton();
 		sendButton.setText("Send");
 		panel2.add(sendButton, new GridConstraints(2, 4, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-		final JScrollPane scrollPane1 = new JScrollPane();
-		panel2.add(scrollPane1, new GridConstraints(0, 0, 1, 5, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+		messagePanelScroll = new JScrollPane();
+		panel2.add(messagePanelScroll, new GridConstraints(0, 0, 1, 5, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
 		messagePanel = new JTextArea();
 		messagePanel.setEnabled(false);
 		messagePanel.setForeground(new Color(-16777216));
 		messagePanel.setLineWrap(true);
+		messagePanel.setToolTipText("Sent/received messages are displayed here");
 		messagePanel.setWrapStyleWord(true);
-		scrollPane1.setViewportView(messagePanel);
+		messagePanelScroll.setViewportView(messagePanel);
 		ipField = new JTextField();
 		ipField.setForeground(new Color(-16777216));
 		ipField.setText("IP");
+		ipField.setToolTipText("Type the IP address of the person to whom you are sending this message");
 		panel2.add(ipField, new GridConstraints(2, 2, 1, 2, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
 		contactName = new JLabel();
 		contactName.setText("No Contact Selected");
@@ -265,6 +282,7 @@ public class PacchatGUI extends JFrame {
 		enteredText.setForeground(new Color(-16777216));
 		enteredText.setLineWrap(true);
 		enteredText.setText("Message");
+		enteredText.setToolTipText("Type your message here");
 		enteredText.setWrapStyleWord(true);
 		scrollPane2.setViewportView(enteredText);
 		final JPanel panel3 = new JPanel();
