@@ -1,6 +1,6 @@
 # PacChat P2P Protocol Documentation
 
-PacChat P2P is still in development. The protocol will be documented here as development progresses.
+PacChat P2P communicates over TCP port 14581. The protocol is still in development and will be documented here as development progresses.
 
 ## 101 ping
 

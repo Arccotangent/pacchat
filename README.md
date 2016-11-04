@@ -1,4 +1,4 @@
-# PacChat GUI Implementation
+# PacChat
 
 PacChat is a direct P2P chat application that will encrypt and sign all messages you send, and verify the authenticity of all messages you receive.
 
