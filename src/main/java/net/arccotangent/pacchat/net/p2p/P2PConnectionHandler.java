@@ -50,6 +50,9 @@ class P2PConnectionHandler extends Thread {
 					output.flush();
 					output.close();
 					break;
+				case "300 getaddr":
+					ch_log.i("Client requested a list of peers.");
+					break;
 				default:
 					ch_log.i("Client sent an invalid request header: " + line1);
 					output.write("401 invalid p2p transmission header");

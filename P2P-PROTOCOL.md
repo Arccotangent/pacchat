@@ -9,3 +9,17 @@ Currently unused by PacChat, but the functionality is still built in. You can te
 ## 102 pong
 
 Ping response message.
+
+## 300 getaddr
+
+Sent by a client to a server, the server will then respond with `301 peers`
+
+## 301 peers
+
+Multi-line message sent by a server to a client in response to `300 getaddr`
+
+Contains a minimum of 2 lines below the header
+
+Line 1 = amount of peers, maximum not yet determined
+
+Lines 2 and on = peers
