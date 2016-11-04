@@ -23,3 +23,9 @@ Contains a minimum of 2 lines below the header
 Line 1 = amount of peers, maximum not yet determined
 
 Lines 2 and on = peers
+
+## 302 no peers
+
+Sent by a server to a client in response to `300 getaddr`
+
+This is sent if the server has no peers other than the client.

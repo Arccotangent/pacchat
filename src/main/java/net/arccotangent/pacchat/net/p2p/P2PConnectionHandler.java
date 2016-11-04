@@ -22,6 +22,7 @@ import net.arccotangent.pacchat.logging.Logger;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 
 class P2PConnectionHandler extends Thread {
 	
@@ -37,6 +38,7 @@ class P2PConnectionHandler extends Thread {
 		connection_id = conn_id;
 		ch_log = new Logger("P2P SERVER/CONNECTION-" + connection_id);
 		ip = source_ip;
+		PeerManager.addPeer(ip);
 	}
 	
 	public void run() {
@@ -52,6 +54,23 @@ class P2PConnectionHandler extends Thread {
 					break;
 				case "300 getaddr":
 					ch_log.i("Client requested a list of peers.");
+					ArrayList<String> peers = PeerManager.getPeers();
+					if (peers.size() <= 1) {
+						output.write("302 no peers");
+						output.newLine();
+						output.flush();
+						output.close();
+						break;
+					}
+					
+					output.write(peers.size());
+					
+					for (String peer : peers) {
+						output.write(peer);
+						output.newLine();
+						output.flush();
+					}
+					output.close();
 					break;
 				default:
 					ch_log.i("Client sent an invalid request header: " + line1);

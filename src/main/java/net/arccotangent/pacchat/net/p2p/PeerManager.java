@@ -19,11 +19,14 @@ package net.arccotangent.pacchat.net.p2p;
 
 import net.arccotangent.pacchat.logging.Logger;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 
 public class PeerManager {
 	
@@ -31,16 +34,28 @@ public class PeerManager {
 	private static ArrayList<String> peers = new ArrayList<>();
 	private static String user_home = System.getProperty("user.home");
 	private static final File peerFile = new File(user_home + File.separator + ".pacchat" + File.separator + "peers.txt");
+	private static boolean peerListUpToDate = false;
+	public static boolean log_write = true;
+	private static ArrayList<String> allPeers = new ArrayList<>();
 	
-	private static ArrayList<String> readAllPeers() {
+	private static void readAllPeers() {
+		p2p_log.i("Reading all peers from disk.");
 		try {
 			String peers_raw = new String(Files.readAllBytes(peerFile.toPath()));
-			ArrayList<String> peers_list = new ArrayList<>(Arrays.asList(peers_raw.split("\n")));
-			return peers_list;
+			allPeers = new ArrayList<>(Arrays.asList(peers_raw.split("\n")));
+			peerListUpToDate = true;
 		} catch (IOException e) {
+			p2p_log.e("Error reading peers from disk!");
 			e.printStackTrace();
 		}
-		return null;
+	}
+	
+	private static void updatePeerDB() {
+		for (String peer : peers) {
+			if (!allPeers.contains(peer))
+				allPeers.add(peer);
+		}
+		p2p_log.i("Updated peer DB.");
 	}
 	
 	private static boolean existsInList(String addr) {
@@ -51,19 +66,67 @@ public class PeerManager {
 		return false;
 	}
 	
+	static ArrayList<String> getPeers() {
+		return peers;
+	}
+	
+	static ArrayList<String> getAllPeers() {
+		return allPeers;
+	}
+	
 	private static boolean existsOnDisk(String addr) {
-		ArrayList<String> peerList = readAllPeers();
-		for (String peer : peerList) {
+		if (!peerListUpToDate)
+			readAllPeers();
+		for (String peer : allPeers) {
 			if (peer.equals(addr))
 				return true;
 		}
 		return false;
 	}
 	
-	public static void addPeer(String peer) {
+	static void randomizePeers() {
+		p2p_log.i("Shuffling peer lists, fetching new peers from database.");
+		Collections.shuffle(allPeers);
+		
+		peers.clear();
+		
+		for (int i = 0; i < 16; i++) {
+			if (i >= allPeers.size())
+				break;
+			
+			peers.add(allPeers.get(i));
+		}
+	}
+	
+	private static void writePeersToDisk() {
+		if (log_write)
+			p2p_log.i("Writing peer database to disk.");
+		try {
+			BufferedWriter peerWriter = new BufferedWriter(new FileWriter(peerFile));
+			
+			for (String peer : allPeers) {
+				if (!existsOnDisk(peer)) {
+					peerWriter.write(peer);
+					peerWriter.newLine();
+					peerWriter.flush();
+				}
+			}
+			
+			peerWriter.close();
+		} catch (IOException e) {
+			p2p_log.e("Error writing peer database to disk!");
+			e.printStackTrace();
+		}
+	}
+	
+	static void addPeer(String peer) {
 		if (!existsInList(peer)) {
+			p2p_log.i("Adding peer " + peer + " to database.");
 			peers.add(peer);
 		}
+		
+		updatePeerDB();
+		writePeersToDisk();
 	}
 	
 }

@@ -67,6 +67,7 @@ public class P2PClient {
 			p2p_client_log.e("Error sending getaddr message, client is not connected.");
 		}
 		try {
+			p2p_client_log.i("Asking peer for more nodes.");
 			output.write("300 getaddr");
 			output.newLine();
 			output.flush();
@@ -75,9 +76,20 @@ public class P2PClient {
 			
 			switch (response) {
 				case "301 peers":
+					int peers = Integer.parseInt(input.readLine());
+					p2p_client_log.i("Server sent us " + peers + " peers.");
+					PeerManager.log_write = false;
+					for (int i = 1; i <= peers; i++) {
+						PeerManager.addPeer(input.readLine());
+					}
+					PeerManager.log_write = true;
+					PeerManager.randomizePeers();
+					break;
+				case "302 no peers":
+					p2p_client_log.i("Server sent us no peers.");
 					break;
 				default:
-					p2p_client_log.e("Server sent invalid response " + response);
+					p2p_client_log.e("Server sent invalid response: " + response);
 					output.close();
 					input.close();
 					break;
