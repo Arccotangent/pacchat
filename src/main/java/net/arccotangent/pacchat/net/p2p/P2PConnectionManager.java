@@ -57,6 +57,9 @@ public class P2PConnectionManager {
 	}
 	
 	public static void connectToPeer(String peer_addr) {
+		if (peer_addr.isEmpty())
+			return;
+		
 		P2PClient peer = new P2PClient(peer_addr);
 		
 		if (!connectedToPeer(peer_addr)) {

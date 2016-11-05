@@ -102,6 +102,7 @@ public class PeerManager {
 	
 	static void randomizePeers() {
 		p2p_log.i("Shuffling peer lists, fetching new peers from database.");
+		readAllPeers();
 		Collections.shuffle(allPeers);
 		writePeersToDisk();
 		
