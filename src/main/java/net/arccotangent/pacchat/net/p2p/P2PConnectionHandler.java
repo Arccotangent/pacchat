@@ -94,7 +94,7 @@ class P2PConnectionHandler extends Thread {
 					output.write("301 peers");
 					output.newLine();
 					
-					output.write(peers.size());
+					output.write(Integer.toString(peers.size()));
 					output.newLine();
 					
 					for (String peer : peers) {
