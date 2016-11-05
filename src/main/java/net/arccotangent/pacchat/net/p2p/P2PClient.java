@@ -32,7 +32,7 @@ public class P2PClient {
 	private boolean connected = false;
 	
 	P2PClient(String ip_address) {
-		if (ip.equals("127.0.0.1"))
+		if (ip_address.equals("127.0.0.1"))
 			return;
 		ip = ip_address;
 		p2p_client_log = new Logger("P2P/CLIENT/" + ip);
