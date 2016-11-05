@@ -2,6 +2,8 @@
 
 PacChat P2P communicates over TCP port 14581. The protocol is still in development and will be documented here as development progresses.
 
+The experimental P2P protocol is very messy and most certainly has serious bugs. It might not work at all in its current state.
+
 ## 101 ping
 
 Currently unused by PacChat, but the functionality is still built in. You can telnet to a PacChat server and send `101 ping` to it, it will respond with `102 pong`
@@ -9,6 +11,20 @@ Currently unused by PacChat, but the functionality is still built in. You can te
 ## 102 pong
 
 Ping response message.
+
+## 200 message
+
+Multi-line message sent from peer to peer.
+
+Contains 4 lines below the header
+
+Line 1 = Origin key fingerprint
+
+Line 2 = Destination key fingerprint
+
+Line 3 = Timestamp in milliseconds
+
+Line 4 = Base 64 encoded message, to be passed to the regular server.
 
 ## 300 getaddr
 

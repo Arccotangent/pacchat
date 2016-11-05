@@ -24,10 +24,10 @@ import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-public class P2PServer {
+public class P2PServer extends Thread {
 	
 	public static final int P2P_PORT = 14581;
-	private static final Logger p2p_server_log = new Logger("P2P SERVER");
+	private static final Logger p2p_server_log = new Logger("P2P/SERVER");
 	private ServerSocket serverSocket = null;
 	private boolean active = true;
 	private long connection_id = 0;

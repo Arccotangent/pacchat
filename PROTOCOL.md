@@ -2,6 +2,8 @@
 
 PacChat communicates over TCP port 14761. Most transmissions sent over the network include 1 line headers. The only exception is the transmission of a public key.
 
+Some types of transmissions cannot be sent over the P2P network for security reasons.
+
 ## 101 ping
 
 Currently unused by PacChat, but the functionality is still built in. You can telnet to a PacChat server and send `101 ping` to it, it will respond with `102 pong`

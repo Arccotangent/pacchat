@@ -21,6 +21,7 @@ import net.arccotangent.pacchat.crypto.RSA;
 import net.arccotangent.pacchat.logging.Logger;
 import net.arccotangent.pacchat.net.Server;
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.codec.binary.Hex;
 
 import java.io.*;
 import java.net.InetAddress;
@@ -222,6 +223,18 @@ public class KeyManager {
 			pubkeyFile.delete();
 		if (privkeyFile.exists())
 			privkeyFile.delete();
+	}
+	
+	public static String fingerprint(PublicKey pubkey) {
+		byte[] keyBytes = pubkey.getEncoded();
+		try {
+			MessageDigest hasher = MessageDigest.getInstance("SHA512");
+			hasher.update(keyBytes);
+			return Hex.encodeHexString(hasher.digest());
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 	
 }

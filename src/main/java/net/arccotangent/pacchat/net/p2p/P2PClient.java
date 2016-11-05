@@ -31,18 +31,26 @@ public class P2PClient {
 	private BufferedWriter output;
 	private boolean connected = false;
 	
-	public P2PClient(String ip_address) {
+	P2PClient(String ip_address) {
+		if (ip.equals("127.0.0.1"))
+			return;
 		ip = ip_address;
-		p2p_client_log = new Logger("P2P CLIENT/" + ip);
+		p2p_client_log = new Logger("P2P/CLIENT/" + ip);
 	}
 	
-	public void connect() {
+	String getConnectedAddress() {
+		return ip;
+	}
+	
+	void connect() {
+		p2p_client_log.i("Connecting to peer.");
 		try {
 			socket = new Socket();
 			socket.connect(new InetSocketAddress(InetAddress.getByName(ip), P2PServer.P2P_PORT), 1000);
 			input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 			output = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
 			connected = true;
+			PeerManager.addPeer(ip);
 		} catch (SocketTimeoutException e) {
 			p2p_client_log.e("Connection to server timed out!");
 			e.printStackTrace();
@@ -90,11 +98,53 @@ public class P2PClient {
 					break;
 				default:
 					p2p_client_log.e("Server sent invalid response: " + response);
-					output.close();
-					input.close();
 					break;
 			}
 		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	void sendMessage(String origin, String destination, String base64Message, long mid) {
+		p2p_client_log.i("Sending P2P message.");
+		try {
+			output.write("200 message");
+			output.newLine();
+			output.write(origin);
+			output.newLine();
+			output.write(destination);
+			output.newLine();
+			output.write(Long.toString(System.currentTimeMillis()));
+			output.newLine();
+			output.write(Long.toString(mid));
+			output.newLine();
+			output.write(base64Message);
+			output.newLine();
+			output.flush();
+		} catch (IOException e) {
+			p2p_client_log.e("Error while sending message!");
+			e.printStackTrace();
+		}
+	}
+	
+	void sendMessage(String origin, String destination, String base64Message, long mid, long timestamp) {
+		p2p_client_log.i("Sending P2P message.");
+		try {
+			output.write("200 message");
+			output.newLine();
+			output.write(origin);
+			output.newLine();
+			output.write(destination);
+			output.newLine();
+			output.write(Long.toString(timestamp));
+			output.newLine();
+			output.write(Long.toString(mid));
+			output.newLine();
+			output.write(base64Message);
+			output.newLine();
+			output.flush();
+		} catch (IOException e) {
+			p2p_client_log.e("Error while sending message!");
 			e.printStackTrace();
 		}
 	}

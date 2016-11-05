@@ -18,7 +18,13 @@ along with PacChat.  If not, see <http://www.gnu.org/licenses/>.
 package net.arccotangent.pacchat.net;
 
 import net.arccotangent.pacchat.logging.Logger;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.BasicResponseHandler;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 
+import java.io.IOException;
 import java.net.*;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -27,9 +33,14 @@ public class NetUtils {
 	
 	private static final Logger nu_log = new Logger("NETWORK");
 	private static String ip_address = "";
+	private static String external_ip = "";
 	
 	static String getLocalIPAddr() {
 		return ip_address;
+	}
+	
+	public static String getExternalIPAddr() {
+		return external_ip;
 	}
 	
 	public static void updateLocalIPAddr()
@@ -93,6 +104,23 @@ public class NetUtils {
 				e.printStackTrace();
 			}
 			nu_log.i("[NON-LINUX] IP address detected as: " + ip_address);
+		}
+	}
+	
+	public static void updateExternalIPAddr() {
+		nu_log.i("Retrieving external IP address.");
+		CloseableHttpClient cli = HttpClients.createDefault();
+		
+		HttpGet req = new HttpGet("http://checkip.amazonaws.com");
+		
+		try {
+			CloseableHttpResponse res = cli.execute(req);
+			
+			BasicResponseHandler handler = new BasicResponseHandler();
+			external_ip = handler.handleResponse(res);
+		} catch (IOException e) {
+			nu_log.e("Error while retrieving external IP!");
+			e.printStackTrace();
 		}
 	}
 	

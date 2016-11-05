@@ -35,10 +35,26 @@ public class PeerManager {
 	private static String user_home = System.getProperty("user.home");
 	private static final File peerFile = new File(user_home + File.separator + ".pacchat" + File.separator + "peers.txt");
 	private static boolean peerListUpToDate = false;
-	public static boolean log_write = true;
+	static boolean log_write = true;
 	private static ArrayList<String> allPeers = new ArrayList<>();
 	
-	private static void readAllPeers() {
+	public static boolean firstTime() {
+		return !peerFile.exists();
+	}
+	
+	private static void createPeerFileIfNotExist() {
+		if (!peerFile.exists()) {
+			p2p_log.i("Creating new peer database on disk.");
+			try {
+				peerFile.createNewFile();
+			} catch (IOException e) {
+				p2p_log.e("Error creating peer database!");
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	static void readAllPeers() {
 		p2p_log.i("Reading all peers from disk.");
 		try {
 			String peers_raw = new String(Files.readAllBytes(peerFile.toPath()));
@@ -87,6 +103,7 @@ public class PeerManager {
 	static void randomizePeers() {
 		p2p_log.i("Shuffling peer lists, fetching new peers from database.");
 		Collections.shuffle(allPeers);
+		writePeersToDisk();
 		
 		peers.clear();
 		
@@ -101,6 +118,7 @@ public class PeerManager {
 	private static void writePeersToDisk() {
 		if (log_write)
 			p2p_log.i("Writing peer database to disk.");
+		createPeerFileIfNotExist();
 		try {
 			BufferedWriter peerWriter = new BufferedWriter(new FileWriter(peerFile));
 			
@@ -120,7 +138,8 @@ public class PeerManager {
 	}
 	
 	static void addPeer(String peer) {
-		if (!existsInList(peer)) {
+		createPeerFileIfNotExist();
+		if (!existsInList(peer) && !peer.equals("127.0.0.1")) {
 			p2p_log.i("Adding peer " + peer + " to database.");
 			peers.add(peer);
 		}

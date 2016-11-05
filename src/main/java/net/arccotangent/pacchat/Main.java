@@ -23,16 +23,21 @@ import net.arccotangent.pacchat.filesystem.KeyManager;
 import net.arccotangent.pacchat.gui.PacchatGUI;
 import net.arccotangent.pacchat.logging.Logger;
 import net.arccotangent.pacchat.net.*;
+import net.arccotangent.pacchat.net.p2p.P2PClient;
+import net.arccotangent.pacchat.net.p2p.P2PConnectionManager;
+import net.arccotangent.pacchat.net.p2p.P2PServer;
+import net.arccotangent.pacchat.net.p2p.PeerManager;
 
 import java.awt.*;
 import java.security.KeyPair;
+import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Scanner;
 
 public class Main {
 	private static final Logger core_log = new Logger("CORE");
-	public static final String VERSION = "0.2-B2";
+	public static final String VERSION = "0.2-B3";
 	private static KeyPair keyPair;
 	private static final String ANSI_BOLD = "\u001B[1m";
 	private static final String ANSI_BLUE = "\u001B[34m";
@@ -41,6 +46,7 @@ public class Main {
 	private static final String ANSI_RESET = "\u001B[0m";
 	private static boolean active = false;
 	private static Server server;
+	private static P2PServer p2p_server;
 	private static PacchatGUI gui;
 	private static final boolean guiPossible = !GraphicsEnvironment.isHeadless();
 	
@@ -48,6 +54,10 @@ public class Main {
 	
 	public static void addReceivedMessageToGui(String sender, String msg, boolean verified) {
 		gui.addReceivedMessage(sender, msg, verified);
+	}
+	
+	public static Server getServer() {
+		return server;
 	}
 	
 	public static boolean isGuiVisible() {
@@ -96,7 +106,11 @@ public class Main {
 		System.out.println(ANSI_BOLD + ANSI_BLUE + "updatereject/ur <ID> - Reject a pending update request with the specified ID." + ANSI_RESET);
 		System.out.println(ANSI_BOLD + ANSI_BLUE + "updatelist/ul <ID> - List all pending update IDs." + ANSI_RESET);
 		System.out.println(ANSI_BOLD + ANSI_BLUE + "updateinfo/ui <ID> - Print info about a pending update request with the specified ID." + ANSI_RESET);
+		System.out.println(ANSI_BOLD + ANSI_BLUE + "getkey/gk <ip address> - Download a key from the specified IP address." + ANSI_RESET);
 		System.out.println(ANSI_BOLD + ANSI_WHITE + "Note: If you update a key, it will permanently delete the old key, so be careful!" + ANSI_RESET);
+		System.out.println();
+		System.out.println(ANSI_BOLD + ANSI_CYAN + "---Decentralized Network Testing---" + ANSI_RESET);
+		System.out.println(ANSI_BOLD + ANSI_BLUE + "p2pconnect/p2p - Connect to the P2P network. If this is your first time connecting to the network, you will need to specify a node to connect to." + ANSI_RESET);
 		System.out.println();
 		System.out.println(ANSI_BOLD + ANSI_CYAN + "---Miscellaneous---" + ANSI_RESET);
 		System.out.println(ANSI_BOLD + ANSI_BLUE + "copyright/c - Show the full copyright message." + ANSI_RESET);
@@ -126,20 +140,30 @@ public class Main {
 		}
 
 		NetUtils.updateLocalIPAddr();
+		NetUtils.updateExternalIPAddr();
 		core_log.i("Starting server.");
 		server = new Server();
 		server.start();
+		
+		try {
+			Thread.sleep(500); //wait a little bit for the server and UPNP to start
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		
+		p2p_server = new P2PServer();
+		p2p_server.start();
 
 		try {
-			Thread.sleep(1000); //wait a little bit for the server and UPNP to start
+			Thread.sleep(500); //wait a little bit for P2P server
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
 
 		core_log.i("PacChat is ready for use!");
 		core_log.i("Entering chat mode, type exit to exit, and type send <ip address> to send a message.");
-		core_log.i("Type 'help' for command help.");
-		core_log.i("If applicable, run 'gui' to start the PacChat GUI.");
+		core_log.w("Type 'help' for command help.");
+		core_log.w("If applicable, run 'gui' to start the PacChat GUI.");
 		active = true;
 		while (active) {
 			System.out.print(ANSI_BOLD + ANSI_BLUE + "Command: " + ANSI_RESET);
@@ -158,6 +182,9 @@ public class Main {
 
 		if (server != null)
 			server.closeServer();
+		
+		if (p2p_server != null)
+			p2p_server.closeP2PServer();
 
 		System.exit(0);
 	}
@@ -385,6 +412,29 @@ public class Main {
 					gui.setVisible(true);
 				} else {
 					core_log.e("Cannot open GUI, graphics environment is headless.");
+				}
+				break;
+			case "p2p":
+			case "p2pconnect":
+				core_log.i("Connecting to P2P network.");
+				if (PeerManager.firstTime()) {
+					core_log.w("It appears that this is your first time connecting to the PacChat network.");
+					core_log.i("You will need to provide 1 node's IP address to connect to the P2P network.");
+					System.out.print(ANSI_BOLD + ANSI_BLUE + "Peer IP: " + ANSI_RESET);
+					String ip = stdin.nextLine();
+					P2PConnectionManager.connectToPeer(ip);
+					P2PClient peer = P2PConnectionManager.getConnectedPeers().get(0);
+					peer.getaddr();
+				} else
+					P2PConnectionManager.init();
+				break;
+			case "getkey":
+			case "gk":
+				if (cmd.length >= 2 && !cmd[1].isEmpty()) {
+					PublicKey key = KeyManager.downloadKeyFromIP(cmd[1]);
+					KeyManager.saveKeyByIP(cmd[1], key);
+				} else {
+					core_log.e("An IP address was not specified.");
 				}
 				break;
 			case "c":
