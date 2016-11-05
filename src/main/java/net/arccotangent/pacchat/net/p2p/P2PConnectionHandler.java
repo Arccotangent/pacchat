@@ -91,6 +91,9 @@ class P2PConnectionHandler extends Thread {
 						break;
 					}
 					
+					output.write("301 peers");
+					output.newLine();
+					
 					output.write(peers.size());
 					output.newLine();
 					
@@ -98,8 +101,8 @@ class P2PConnectionHandler extends Thread {
 						output.write(peer);
 						output.newLine();
 						output.flush();
-						run();
 					}
+					run();
 					break;
 				default:
 					p2p_ch_log.i("Client sent an invalid request header: " + line1);
