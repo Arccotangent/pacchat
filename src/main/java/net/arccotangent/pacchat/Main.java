@@ -37,7 +37,7 @@ import java.util.Scanner;
 
 public class Main {
 	private static final Logger core_log = new Logger("CORE");
-	public static final String VERSION = "0.2-B3";
+	public static final String VERSION = "0.2-B4";
 	private static KeyPair keyPair;
 	private static final String ANSI_BOLD = "\u001B[1m";
 	private static final String ANSI_BLUE = "\u001B[34m";
@@ -47,6 +47,7 @@ public class Main {
 	private static boolean active = false;
 	private static Server server;
 	private static P2PServer p2p_server;
+	private static boolean p2p = false;
 	private static PacchatGUI gui;
 	private static final boolean guiPossible = !GraphicsEnvironment.isHeadless();
 	
@@ -58,6 +59,10 @@ public class Main {
 	
 	public static Server getServer() {
 		return server;
+	}
+	
+	public static boolean isP2PEnabled() {
+		return p2p;
 	}
 	
 	public static boolean isGuiVisible() {
@@ -111,6 +116,7 @@ public class Main {
 		System.out.println();
 		System.out.println(ANSI_BOLD + ANSI_CYAN + "---Decentralized Network Testing---" + ANSI_RESET);
 		System.out.println(ANSI_BOLD + ANSI_BLUE + "p2pconnect/p2p - Connect to the P2P network. If this is your first time connecting to the network, you will need to specify a node to connect to." + ANSI_RESET);
+		System.out.println(ANSI_BOLD + ANSI_BLUE + "p2pdisconnect/unp2p - Disconnect from the P2P network." + ANSI_RESET);
 		System.out.println();
 		System.out.println(ANSI_BOLD + ANSI_CYAN + "---Miscellaneous---" + ANSI_RESET);
 		System.out.println(ANSI_BOLD + ANSI_BLUE + "copyright/c - Show the full copyright message." + ANSI_RESET);
@@ -206,6 +212,8 @@ public class Main {
 					core_log.i("Preparing to send message to IP address " + cmd[1]);
 					core_log.i("Enter your message below, end with a single dot on its own line when finished, end with a single comma to cancel.");
 					core_log.i("The message will not include the single dot at the end.");
+					if (p2p)
+						core_log.w("This message will be sent over the P2P network.");
 					StringBuilder msgBuilder = new StringBuilder();
 					String buf;
 					
@@ -220,7 +228,14 @@ public class Main {
 					if (buf.equals(".")) {
 						core_log.i("Message accepted, attempting to send to target.");
 						String msg = msgBuilder.toString();
-						Client.sendMessage(msg, cmd[1]);
+						if (!KeyManager.checkIfIPKeyExists(cmd[1])) {
+							KeyManager.downloadKeyFromIP(cmd[1]);
+						}
+						
+						if (p2p)
+							P2PConnectionManager.sendChat(msg, KeyManager.loadKeyByIP(cmd[1]), keyPair.getPrivate());
+						else
+							Client.sendMessage(msg, cmd[1]);
 					} else if (buf.equals(",")) {
 						core_log.i("Message cancelled.");
 					}
@@ -235,7 +250,6 @@ public class Main {
 				break;
 			case "r":
 			case "reply":
-				
 				if (server == null) {
 					core_log.e("Server is not running.");
 					break;
@@ -261,6 +275,7 @@ public class Main {
 				if (buf.equals(".")) {
 					core_log.i("Message accepted, attempting to send to target.");
 					String msg = msgBuilder.toString();
+					//TODO reply over P2P
 					Client.sendMessage(msg, server.getLastSender());
 				} else if (buf.equals(",")) {
 					core_log.i("Message cancelled.");
@@ -425,9 +440,15 @@ public class Main {
 					P2PConnectionManager.connectToPeer(ip);
 					P2PClient peer = P2PConnectionManager.getConnectedPeers().get(0);
 					peer.getaddr();
+					core_log.i("Initialized P2P network. Please run 'p2pconnect' or 'p2p' again to connect to any new peers.");
+					p2p = true;
+					core_log.i("P2P network is now preferred over direct communication and it will be used when applicable.");
 				} else
 					P2PConnectionManager.init();
 				break;
+			case "unp2p":
+			case "p2pdisconnect":
+				core_log.i("Disabling P2P network usage, though connections will still be open.");
 			case "getkey":
 			case "gk":
 				if (cmd.length >= 2 && !cmd[1].isEmpty()) {

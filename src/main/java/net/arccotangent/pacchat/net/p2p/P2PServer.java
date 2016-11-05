@@ -64,7 +64,6 @@ public class P2PServer extends Thread {
 				Socket clientSocket = serverSocket.accept();
 				
 				String src_ip_addr = clientSocket.getInetAddress().getHostAddress();
-				last_sender = src_ip_addr;
 				p2p_server_log.i("Incoming P2P transmission from " + src_ip_addr);
 				BufferedReader input = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 				BufferedWriter output = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream()));
@@ -73,8 +72,10 @@ public class P2PServer extends Thread {
 				p2p_server_log.i("Handing connection over to P2P connection handler " + connection_id);
 				P2PConnectionHandler conn = new P2PConnectionHandler(input, output, connection_id, src_ip_addr);
 				conn.start();
+				Thread.sleep(250);
+				last_sender = conn.getOrigin();
 			}
-		} catch (IOException e) {
+		} catch (IOException | InterruptedException e) {
 			if (!shutting_down) {
 				p2p_server_log.e("Error in server operation!");
 				e.printStackTrace();

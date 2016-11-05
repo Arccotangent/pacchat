@@ -23,6 +23,7 @@ import net.arccotangent.pacchat.Main;
 import net.arccotangent.pacchat.filesystem.ContactManager;
 import net.arccotangent.pacchat.filesystem.KeyManager;
 import net.arccotangent.pacchat.net.Client;
+import net.arccotangent.pacchat.net.p2p.P2PConnectionManager;
 import org.apache.commons.codec.binary.Base64;
 
 import javax.swing.*;
@@ -103,9 +104,13 @@ public class PacchatGUI extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				String ip = ipField.getText();
 				String msg = enteredText.getText();
-				Client.sendMessage(msg, ip);
-				
-				messagePanel.append("\n[" + getTime() + "] You -> " + ip + ": " + msg);
+				if (Main.isP2PEnabled()) {
+					P2PConnectionManager.sendChat(msg, KeyManager.loadKeyByIP(ip), Main.getKeypair().getPrivate());
+					messagePanel.append("\n[" + getTime() + "] You -> P2P Network -> " + ip + ": " + msg);
+				} else {
+					Client.sendMessage(msg, ip);
+					messagePanel.append("\n[" + getTime() + "] You -> " + ip + ": " + msg);
+				}
 				
 				JScrollBar verticalBar = messagePanelScroll.getVerticalScrollBar();
 				verticalBar.setValue(verticalBar.getMaximum()); //scroll to bottom

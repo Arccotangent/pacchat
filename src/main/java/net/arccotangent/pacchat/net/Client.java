@@ -115,7 +115,7 @@ public class Client {
 					client_log.w("**********************************************");
 					client_log.w("Transmission successful, but the receiving server reports that the authenticity of the message could not be verified!");
 					client_log.w("Someone may be tampering with your connection! This is an unlikely, but not impossible scenario!");
-					client_log.w("If you are sure the connection was not tampered with, consider requesting a key update.");
+					client_log.w("If you are sure the connection was not tampered with, consider downloading the key from the sender's server by running 'getkey " + ip_address + "'.");
 					client_log.w("**********************************************");
 					break;
 				case "400 invalid transmission header":

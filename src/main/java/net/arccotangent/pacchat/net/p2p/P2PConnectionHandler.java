@@ -36,6 +36,7 @@ class P2PConnectionHandler extends Thread {
 	private final long connection_id;
 	private final Logger p2p_ch_log;
 	private final String ip;
+	private String origin = "";
 	
 	P2PConnectionHandler(BufferedReader in, BufferedWriter out, long conn_id, String source_ip) {
 		input = in;
@@ -44,6 +45,10 @@ class P2PConnectionHandler extends Thread {
 		p2p_ch_log = new Logger("P2P/SERVER/CONNECTION-" + connection_id);
 		ip = source_ip;
 		PeerManager.addPeer(ip);
+	}
+	
+	String getOrigin() {
+		return origin;
 	}
 	
 	public void run() {
@@ -59,6 +64,7 @@ class P2PConnectionHandler extends Thread {
 					break;
 				case "200 message":
 					String origin = input.readLine();
+					this.origin = origin;
 					String destination = input.readLine();
 					long timestamp = Long.parseLong(input.readLine());
 					long mid = Long.parseLong(input.readLine());
@@ -113,7 +119,7 @@ class P2PConnectionHandler extends Thread {
 		String line1 = messageLines[0];
 		switch (line1) {
 			case "101 ping":
-				P2PConnectionManager.propagate(destination, origin, System.currentTimeMillis(), mid, P2PConnectionManager.encode("102 pong"));
+				P2PConnectionManager.propagate(destination, origin, System.currentTimeMillis(), P2PConnectionManager.getRandomMID(), P2PConnectionManager.encode("102 pong"));
 				break;
 			case "200 encrypted message":
 				p2p_ch_log.i("Client sent an encrypted message, attempting verification and decryption.");
@@ -132,9 +138,9 @@ class P2PConnectionHandler extends Thread {
 					break;
 					/*
 					* ==============================================================================================================================
-					* The below code, if executed, would request a public key over the P2P network.
+					* The below code, if executed, would request a public key over the P2P network. However, the recipient would not recognize the message.
 					* Requesting a raw public key over the P2P network is VERY INSECURE and is subject to man in the middle attacks.
-					* The real key can be captured and replaced with a forged key.
+					* The real key can be captured and replaced with a forged key under the control of a third party.
 					* For this reason, 301 getkey is not implemented on the P2P network.
 					* ==============================================================================================================================
 					*

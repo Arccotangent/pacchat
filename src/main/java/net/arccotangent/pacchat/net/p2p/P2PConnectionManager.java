@@ -18,12 +18,15 @@ along with PacChat.  If not, see <http://www.gnu.org/licenses/>.
 package net.arccotangent.pacchat.net.p2p;
 
 import net.arccotangent.pacchat.Main;
+import net.arccotangent.pacchat.crypto.MsgCrypto;
 import net.arccotangent.pacchat.filesystem.KeyManager;
 import net.arccotangent.pacchat.logging.Logger;
 import org.apache.commons.codec.binary.Base64;
 
-import java.security.SecureRandom;
+import java.security.PrivateKey;
+import java.security.PublicKey;
 import java.util.ArrayList;
+import java.util.Random;
 
 public class P2PConnectionManager {
 	
@@ -72,7 +75,7 @@ public class P2PConnectionManager {
 	}
 	
 	static long getRandomMID() {
-		SecureRandom random = new SecureRandom();
+		Random random = new Random();
 		return random.nextLong();
 	}
 	
@@ -92,6 +95,18 @@ public class P2PConnectionManager {
 			}
 			messageIDs.add(mid);
 		}
+	}
+	
+	public static void sendChat(String chat_message, PublicKey targetKey, PrivateKey ownPriv) {
+		String origin = KeyManager.fingerprint(Main.getKeypair().getPublic());
+		String destination = KeyManager.fingerprint(targetKey);
+		long mid = getRandomMID();
+		long timestamp = System.currentTimeMillis();
+		
+		String cryptedMsg = MsgCrypto.encryptAndSignMessage(chat_message, targetKey, ownPriv);
+		String packet = "200 encrypted message\n" + cryptedMsg;
+		
+		propagate(origin, destination, timestamp, mid, packet);
 	}
 	
 }
