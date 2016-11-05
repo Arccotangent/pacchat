@@ -38,7 +38,7 @@ public class P2PClient {
 		p2p_client_log = new Logger("P2P/CLIENT/" + ip);
 	}
 	
-	String getConnectedAddress() {
+	public String getConnectedAddress() {
 		return ip;
 	}
 	

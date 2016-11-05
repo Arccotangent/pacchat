@@ -37,7 +37,7 @@ import java.util.Scanner;
 
 public class Main {
 	private static final Logger core_log = new Logger("CORE");
-	public static final String VERSION = "0.2-B7";
+	public static final String VERSION = "0.2-B8";
 	private static KeyPair keyPair;
 	private static final String ANSI_BOLD = "\u001B[1m";
 	private static final String ANSI_BLUE = "\u001B[34m";
@@ -114,9 +114,10 @@ public class Main {
 		System.out.println(ANSI_BOLD + ANSI_BLUE + "getkey/gk <ip address> - Download a key from the specified IP address." + ANSI_RESET);
 		System.out.println(ANSI_BOLD + ANSI_WHITE + "Note: If you update a key, it will permanently delete the old key, so be careful!" + ANSI_RESET);
 		System.out.println();
-		System.out.println(ANSI_BOLD + ANSI_CYAN + "---Decentralized Network Testing---" + ANSI_RESET);
+		System.out.println(ANSI_BOLD + ANSI_CYAN + "---P2P Network---" + ANSI_RESET);
 		System.out.println(ANSI_BOLD + ANSI_BLUE + "p2pconnect/p2p - Connect to the P2P network. If this is your first time connecting to the network, you will need to specify a node to connect to." + ANSI_RESET);
 		System.out.println(ANSI_BOLD + ANSI_BLUE + "p2pdisconnect/unp2p - Disconnect from the P2P network." + ANSI_RESET);
+		System.out.println(ANSI_BOLD + ANSI_BLUE + "viewpeers/vp - View all connected peer addresses." + ANSI_RESET);
 		System.out.println();
 		System.out.println(ANSI_BOLD + ANSI_CYAN + "---Miscellaneous---" + ANSI_RESET);
 		System.out.println(ANSI_BOLD + ANSI_BLUE + "copyright/c - Show the full copyright message." + ANSI_RESET);
@@ -449,6 +450,15 @@ public class Main {
 			case "unp2p":
 			case "p2pdisconnect":
 				core_log.i("Disabling P2P network usage, though connections will still be open.");
+				p2p = false;
+				break;
+			case "vp":
+			case "viewpeers":
+				ArrayList<P2PClient> peers = P2PConnectionManager.getConnectedPeers();
+				for (int i = 0; i < peers.size(); i++) {
+					core_log.i("Peer " + i + ": " + peers.get(i).getConnectedAddress());
+				}
+				break;
 			case "getkey":
 			case "gk":
 				if (cmd.length >= 2 && !cmd[1].isEmpty()) {
