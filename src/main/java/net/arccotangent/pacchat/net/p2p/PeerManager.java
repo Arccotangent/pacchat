@@ -40,7 +40,7 @@ public class PeerManager {
 	private static ArrayList<String> allPeers = new ArrayList<>();
 	
 	public static boolean firstTime() {
-		return !peerFile.exists();
+		return !peerFile.exists() && (peerFile.length() != 0);
 	}
 	
 	private static void createPeerFileIfNotExist() {
@@ -117,7 +117,7 @@ public class PeerManager {
 		}
 	}
 	
-	static void writePeersToDisk() {
+	public static void writePeersToDisk() {
 		if (log_write)
 			p2p_log.i("Writing peer database to disk.");
 		createPeerFileIfNotExist();

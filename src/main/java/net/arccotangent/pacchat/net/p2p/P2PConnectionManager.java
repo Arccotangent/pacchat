@@ -73,6 +73,7 @@ public class P2PConnectionManager {
 			peer.connect();
 			connectedPeers.add(peer);
 			PeerManager.addPeer(peer_addr);
+			PeerManager.writePeersToDisk();
 		}
 	}
 	
@@ -124,7 +125,7 @@ public class P2PConnectionManager {
 		String cryptedMsg = MsgCrypto.encryptAndSignMessage(chat_message, targetKey, ownPriv);
 		String packet = "200 encrypted message\n" + cryptedMsg;
 		
-		propagate(origin, destination, timestamp, mid, packet);
+		propagate(origin, destination, timestamp, mid, Base64.encodeBase64String(packet.getBytes()));
 	}
 	
 }

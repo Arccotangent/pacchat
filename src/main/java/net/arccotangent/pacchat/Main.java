@@ -37,7 +37,7 @@ import java.util.Scanner;
 
 public class Main {
 	private static final Logger core_log = new Logger("CORE");
-	public static final String VERSION = "0.2-B12";
+	public static final String VERSION = "0.2-B13";
 	private static KeyPair keyPair;
 	private static final String ANSI_BOLD = "\u001B[1m";
 	private static final String ANSI_BLUE = "\u001B[34m";
@@ -447,6 +447,7 @@ public class Main {
 					P2PConnectionManager.connectToPeer(ip);
 					P2PClient peer = P2PConnectionManager.getConnectedPeers().get(0);
 					peer.getaddr();
+					PeerManager.writePeersToDisk();
 					core_log.i("Initialized P2P network. Please run 'p2pconnect' or 'p2p' again to connect to any new peers.");
 					p2p = true;
 					core_log.i("P2P network is now preferred over direct communication and it will be used when applicable.");
