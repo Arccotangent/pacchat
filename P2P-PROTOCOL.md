@@ -49,3 +49,7 @@ Lines 2 and on = peers
 Sent by a server to a client in response to `300 getaddr`
 
 This is sent if the server has no peers other than the client.
+
+## 401 invalid p2p transmission header
+
+Sent if the sender has sent an invalid message header.

@@ -43,14 +43,6 @@ public class P2PConnectionManager {
 		}
 	}
 	
-	public static void disconnectFromAllPeers() {
-		p2p_cm_log.i("Disconnecting from all peers.");
-		for (P2PClient peer : connectedPeers) {
-			peer.disconnect();
-			connectedPeers.remove(peer);
-		}
-	}
-	
 	static boolean connectedToPeer(String peer_addr) {
 		for (P2PClient peer : connectedPeers) {
 			if (peer.getConnectedAddress().equals(peer_addr))

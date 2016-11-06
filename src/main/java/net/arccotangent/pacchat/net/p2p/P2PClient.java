@@ -42,10 +42,6 @@ public class P2PClient {
 		return ip;
 	}
 	
-	public boolean isConnected() {
-		return connected;
-	}
-	
 	void connect() {
 		p2p_client_log.i("Connecting to peer.");
 		try {
@@ -95,6 +91,7 @@ public class P2PClient {
 						PeerManager.addPeer(input.readLine());
 					}
 					PeerManager.log_write = true;
+					PeerManager.writePeersToDisk();
 					PeerManager.randomizePeers();
 					break;
 				case "302 no peers":

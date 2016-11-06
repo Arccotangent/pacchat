@@ -117,7 +117,7 @@ public class PeerManager {
 		}
 	}
 	
-	private static void writePeersToDisk() {
+	static void writePeersToDisk() {
 		if (log_write)
 			p2p_log.i("Writing peer database to disk.");
 		createPeerFileIfNotExist();
@@ -128,10 +128,10 @@ public class PeerManager {
 				if (!existsOnDisk(peer)) {
 					peerWriter.write(peer);
 					peerWriter.newLine();
-					peerWriter.flush();
 				}
 			}
 			
+			peerWriter.flush();
 			peerWriter.close();
 		} catch (IOException e) {
 			p2p_log.e("Error writing peer database to disk!");
@@ -147,7 +147,6 @@ public class PeerManager {
 		}
 		
 		updatePeerDB();
-		writePeersToDisk();
 	}
 	
 }

@@ -87,8 +87,10 @@ class P2PConnectionHandler extends Thread {
 					break;
 				case "300 getaddr":
 					p2p_ch_log.i("Client requested a list of peers.");
+					PeerManager.randomizePeers();
 					ArrayList<String> peers = PeerManager.getPeers();
 					if (peers.size() <= 1) {
+						p2p_ch_log.i("We have no peers to send to client.");
 						output.write("302 no peers");
 						output.newLine();
 						output.flush();
@@ -96,6 +98,7 @@ class P2PConnectionHandler extends Thread {
 						break;
 					}
 					
+					p2p_ch_log.i("Sending peers to client.");
 					output.write("301 peers");
 					output.newLine();
 					
