@@ -12,6 +12,10 @@ Currently unused by PacChat, but the functionality is still built in. You can te
 
 Ping response message.
 
+## 103 disconnecting
+
+Sent from peer to peer, indicates that the sender will be disconnecting the receiver. The connection is then closed.
+
 ## 200 message
 
 Multi-line message sent from peer to peer.
