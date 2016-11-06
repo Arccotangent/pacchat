@@ -73,7 +73,6 @@ public class P2PConnectionManager {
 			peer.connect();
 			connectedPeers.add(peer);
 			PeerManager.addPeer(peer_addr);
-			PeerManager.writePeersToDisk();
 		}
 	}
 	

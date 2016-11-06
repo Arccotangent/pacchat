@@ -51,6 +51,7 @@ public class P2PClient {
 			output = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
 			connected = true;
 			PeerManager.addPeer(ip);
+			PeerManager.writePeersToDisk();
 		} catch (SocketTimeoutException e) {
 			p2p_client_log.e("Connection to server timed out!");
 			e.printStackTrace();

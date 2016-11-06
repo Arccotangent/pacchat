@@ -40,7 +40,7 @@ public class PeerManager {
 	private static ArrayList<String> allPeers = new ArrayList<>();
 	
 	public static boolean firstTime() {
-		return !peerFile.exists() || (peerFile.length() != 0);
+		return !peerFile.exists() || (peerFile.length() == 0);
 	}
 	
 	private static void createPeerFileIfNotExist() {
@@ -91,16 +91,6 @@ public class PeerManager {
 		return allPeers;
 	}
 	
-	private static boolean existsOnDisk(String addr) {
-		if (!peerListUpToDate)
-			readAllPeers();
-		for (String peer : allPeers) {
-			if (peer.equals(addr))
-				return true;
-		}
-		return false;
-	}
-	
 	static void randomizePeers() {
 		p2p_log.i("Shuffling peer lists, fetching new peers from database.");
 		readAllPeers();
@@ -121,14 +111,13 @@ public class PeerManager {
 		if (log_write)
 			p2p_log.i("Writing peer database to disk.");
 		createPeerFileIfNotExist();
+		updatePeerDB();
 		try {
-			BufferedWriter peerWriter = new BufferedWriter(new FileWriter(peerFile));
+			BufferedWriter peerWriter = new BufferedWriter(new FileWriter(peerFile, false));
 			
 			for (String peer : allPeers) {
-				if (!existsOnDisk(peer)) {
-					peerWriter.write(peer);
-					peerWriter.newLine();
-				}
+				peerWriter.write(peer);
+				peerWriter.newLine();
 			}
 			
 			peerWriter.flush();
