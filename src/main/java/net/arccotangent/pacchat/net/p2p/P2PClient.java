@@ -32,7 +32,7 @@ public class P2PClient {
 	private boolean connected = false;
 	
 	P2PClient(String ip_address) {
-		if (ip_address.equals("127.0.0.1"))
+		if (ip_address.equals("127.0.0.1") || ip_address.isEmpty() || P2PConnectionManager.connectedToPeer(ip_address))
 			return;
 		ip = ip_address;
 		p2p_client_log = new Logger("P2P/CLIENT/" + ip);
@@ -40,6 +40,10 @@ public class P2PClient {
 	
 	public String getConnectedAddress() {
 		return ip;
+	}
+	
+	public boolean isConnected() {
+		return connected;
 	}
 	
 	void connect() {
@@ -145,6 +149,22 @@ public class P2PClient {
 			output.flush();
 		} catch (IOException e) {
 			p2p_client_log.e("Error while sending message!");
+			e.printStackTrace();
+		}
+	}
+	
+	void disconnect() {
+		p2p_client_log.i("Disconnecting from peer.");
+		try {
+			output.write("103 disconnecting");
+			output.newLine();
+			output.flush();
+			connected = false;
+			output.close();
+			input.close();
+			socket.close();
+			socket = null;
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}

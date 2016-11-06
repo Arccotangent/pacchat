@@ -228,7 +228,7 @@ public class KeyManager {
 	public static String fingerprint(PublicKey pubkey) {
 		byte[] keyBytes = pubkey.getEncoded();
 		try {
-			MessageDigest hasher = MessageDigest.getInstance("SHA512");
+			MessageDigest hasher = MessageDigest.getInstance("SHA-256");
 			hasher.update(keyBytes);
 			return Hex.encodeHexString(hasher.digest());
 		} catch (NoSuchAlgorithmException e) {

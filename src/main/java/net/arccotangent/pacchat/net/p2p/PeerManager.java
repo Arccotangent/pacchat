@@ -18,6 +18,7 @@ along with PacChat.  If not, see <http://www.gnu.org/licenses/>.
 package net.arccotangent.pacchat.net.p2p;
 
 import net.arccotangent.pacchat.logging.Logger;
+import net.arccotangent.pacchat.net.NetUtils;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -54,7 +55,7 @@ public class PeerManager {
 		}
 	}
 	
-	static void readAllPeers() {
+	private static void readAllPeers() {
 		p2p_log.i("Reading all peers from disk.");
 		try {
 			String peers_raw = new String(Files.readAllBytes(peerFile.toPath()));
@@ -140,7 +141,7 @@ public class PeerManager {
 	
 	static void addPeer(String peer) {
 		createPeerFileIfNotExist();
-		if (!existsInList(peer) && !peer.equals("127.0.0.1")) {
+		if (!existsInList(peer) && !peer.equals("127.0.0.1") && !peer.equals(NetUtils.getExternalIPAddr())) {
 			p2p_log.i("Adding peer " + peer + " to database.");
 			peers.add(peer);
 		}

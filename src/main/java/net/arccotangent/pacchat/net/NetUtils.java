@@ -118,6 +118,7 @@ public class NetUtils {
 			
 			BasicResponseHandler handler = new BasicResponseHandler();
 			external_ip = handler.handleResponse(res);
+			nu_log.i("External IP address detected as: " + external_ip);
 		} catch (IOException e) {
 			nu_log.e("Error while retrieving external IP!");
 			e.printStackTrace();

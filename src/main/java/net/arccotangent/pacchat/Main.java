@@ -37,7 +37,7 @@ import java.util.Scanner;
 
 public class Main {
 	private static final Logger core_log = new Logger("CORE");
-	public static final String VERSION = "0.2-B9";
+	public static final String VERSION = "0.2-B10";
 	private static KeyPair keyPair;
 	private static final String ANSI_BOLD = "\u001B[1m";
 	private static final String ANSI_BLUE = "\u001B[34m";
@@ -183,6 +183,8 @@ public class Main {
 		core_log.i("Shutting down now.");
 
 		//Shutdown sequence
+		
+		P2PConnectionManager.disconnectFromAllPeers();
 
 		if (UPNPManager.isOpen())
 			UPNPManager.UPNPClosePorts();
@@ -449,7 +451,8 @@ public class Main {
 				break;
 			case "unp2p":
 			case "p2pdisconnect":
-				core_log.i("Disabling P2P network usage, though connections will still be open.");
+				core_log.i("Disabling P2P network usage and disconnecting from all peers.");
+				P2PConnectionManager.disconnectFromAllPeers();
 				p2p = false;
 				break;
 			case "vp":

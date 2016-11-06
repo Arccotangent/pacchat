@@ -62,6 +62,11 @@ class P2PConnectionHandler extends Thread {
 					output.flush();
 					run();
 					break;
+				case "103 disconnecting":
+					p2p_ch_log.i("Peer is disconnecting.");
+					output.close();
+					input.close();
+					break;
 				case "200 message":
 					String origin = input.readLine();
 					this.origin = origin;
@@ -74,7 +79,7 @@ class P2PConnectionHandler extends Thread {
 						String message = input.readLine();
 						String raw_message = P2PConnectionManager.decode(message);
 						String[] lines = raw_message.split("\n");
-						handleMessage(lines, origin, destination, mid);
+						handleMessage(lines, origin, destination);
 					} else {
 						P2PConnectionManager.propagate(origin, destination, timestamp, mid, input.readLine());
 					}
@@ -118,7 +123,7 @@ class P2PConnectionHandler extends Thread {
 		}
 	}
 	
-	private void handleMessage(String[] messageLines, String origin, String destination, long mid) {
+	private void handleMessage(String[] messageLines, String origin, String destination) {
 		String line1 = messageLines[0];
 		switch (line1) {
 			case "101 ping":
@@ -212,7 +217,7 @@ class P2PConnectionHandler extends Thread {
 				break;
 			default:
 				p2p_ch_log.i("Server sent invalid header: " + line1);
-				P2PConnectionManager.propagate(destination, origin, System.currentTimeMillis(), mid, P2PConnectionManager.encode("400 invalid transmission header"));
+				P2PConnectionManager.propagate(destination, origin, System.currentTimeMillis(), P2PConnectionManager.getRandomMID(), P2PConnectionManager.encode("400 invalid transmission header"));
 				break;
 		}
 	}

@@ -36,7 +36,6 @@ public class P2PConnectionManager {
 	
 	public static void init() {
 		p2p_cm_log.i("Initializing P2P network connections.");
-		PeerManager.readAllPeers();
 		PeerManager.randomizePeers();
 		ArrayList<String> peers = PeerManager.getPeers();
 		for (String peer : peers) {
@@ -44,12 +43,28 @@ public class P2PConnectionManager {
 		}
 	}
 	
-	private static boolean connectedToPeer(String peer_addr) {
+	public static void disconnectFromAllPeers() {
+		p2p_cm_log.i("Disconnecting from all peers.");
+		for (P2PClient peer : connectedPeers) {
+			peer.disconnect();
+			connectedPeers.remove(peer);
+		}
+	}
+	
+	static boolean connectedToPeer(String peer_addr) {
 		for (P2PClient peer : connectedPeers) {
 			if (peer.getConnectedAddress().equals(peer_addr))
 				return true;
 		}
 		return false;
+	}
+	
+	private static P2PClient getPeer(String peer_addr) {
+		for (P2PClient peer : connectedPeers) {
+			if (peer.getConnectedAddress().equals(peer_addr))
+				return peer;
+		}
+		return null;
 	}
 	
 	public static ArrayList<P2PClient> getConnectedPeers() {
@@ -66,6 +81,14 @@ public class P2PConnectionManager {
 			peer.connect();
 			connectedPeers.add(peer);
 			PeerManager.addPeer(peer_addr);
+		}
+	}
+	
+	public static void disconnectFromPeer(String peer_addr) {
+		P2PClient peer = getPeer(peer_addr);
+		if (connectedToPeer(peer_addr)) {
+			assert peer != null;
+			peer.disconnect();
 		}
 	}
 	
@@ -91,7 +114,7 @@ public class P2PConnectionManager {
 			return;
 		}
 		
-		if (messageIDs.contains(mid)) {
+		if (!messageIDs.contains(mid)) {
 			p2p_cm_log.i("Propagating message through network.");
 			for (P2PClient peer : connectedPeers) {
 				peer.sendMessage(origin, destination, message, mid, timestamp);
