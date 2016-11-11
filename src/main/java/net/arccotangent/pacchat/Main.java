@@ -37,7 +37,7 @@ import java.util.Scanner;
 
 public class Main {
 	private static final Logger core_log = new Logger("CORE");
-	public static final String VERSION = "0.2-B15";
+	public static final String VERSION = "0.2-B16";
 	private static KeyPair keyPair;
 	private static final String ANSI_BOLD = "\u001B[1m";
 	private static final String ANSI_BLUE = "\u001B[34m";
@@ -118,6 +118,7 @@ public class Main {
 		System.out.println(ANSI_BOLD + ANSI_BLUE + "p2pconnect/p2p - Connect to the P2P network. If this is your first time connecting to the network, you will need to specify a node to connect to." + ANSI_RESET);
 		System.out.println(ANSI_BOLD + ANSI_BLUE + "p2pdisconnect/unp2p - Disconnect from the P2P network." + ANSI_RESET);
 		System.out.println(ANSI_BOLD + ANSI_BLUE + "viewpeers/vp - View all connected peer addresses." + ANSI_RESET);
+		System.out.println(ANSI_BOLD + ANSI_BLUE + "connectpeer/cp <ip address> - Connect to a peer by IP address." + ANSI_RESET);
 		System.out.println();
 		System.out.println(ANSI_BOLD + ANSI_CYAN + "---Miscellaneous---" + ANSI_RESET);
 		System.out.println(ANSI_BOLD + ANSI_BLUE + "copyright/c - Show the full copyright message." + ANSI_RESET);
@@ -239,9 +240,12 @@ public class Main {
 							KeyManager.downloadKeyFromIP(cmd[1]);
 						}
 						
-						if (p2p)
-							P2PConnectionManager.sendChat(msg, KeyManager.loadKeyByIP(cmd[1]), keyPair.getPrivate());
-						else
+						if (p2p) {
+							if (KeyManager.checkIfIPKeyExists(cmd[1]))
+								P2PConnectionManager.sendChat(msg, KeyManager.loadKeyByIP(cmd[1]), keyPair.getPrivate());
+							else
+								core_log.e("Target's key does not exist. You can try to download their key using by running 'getkey " + cmd[1] + "'");
+						} else
 							Client.sendMessage(msg, cmd[1]);
 					} else if (buf.equals(",")) {
 						core_log.i("Message cancelled.");
@@ -445,20 +449,32 @@ public class Main {
 					System.out.print(ANSI_BOLD + ANSI_BLUE + "Peer IP: " + ANSI_RESET);
 					String ip = stdin.nextLine();
 					P2PConnectionManager.connectToPeer(ip);
+					if (!P2PConnectionManager.connectedToPeer(ip)) {
+						core_log.e("Error connecting to specified peer!");
+						break;
+					}
 					P2PClient peer = P2PConnectionManager.getConnectedPeers().get(0);
 					peer.getaddr();
 					PeerManager.writePeersToDisk();
 					core_log.i("Initialized P2P network. Please run 'p2pconnect' or 'p2p' again to connect to any new peers.");
-					p2p = true;
-					core_log.i("P2P network is now preferred over direct communication and it will be used when applicable.");
+					p2p = P2PConnectionManager.havePeers();
+					if (p2p)
+						core_log.i("P2P network is now preferred over direct communication and it will be used when applicable.");
+					else
+						core_log.e("Could not reach any peers! P2P shall remain disabled. You can run the command 'connectpeer <ip address>' to connect to peers.");
 				} else {
 					P2PConnectionManager.init();
-					p2p = true;
-					core_log.i("P2P network is now preferred over direct communication and it will be used when applicable.");
+					p2p = P2PConnectionManager.havePeers();
+					if (p2p)
+						core_log.i("P2P network is now preferred over direct communication and it will be used when applicable.");
+					else
+						core_log.e("Could not reach any peers! P2P shall remain disabled. You can run the command 'connectpeer <ip address>' to connect to peers.");
 				}
 				break;
 			case "unp2p":
 			case "p2pdisconnect":
+				if (!p2p)
+					core_log.e("P2P is already disabled.");
 				core_log.i("Disabling P2P network usage and disconnecting from all peers.");
 				ArrayList<P2PClient> peerList = P2PConnectionManager.getConnectedPeers();
 				for (P2PClient peer : peerList) {
@@ -468,9 +484,26 @@ public class Main {
 				break;
 			case "vp":
 			case "viewpeers":
+				if (!p2p) {
+					core_log.e("P2P is currently disabled. Run the 'p2p' command to enable P2P.");
+				}
 				ArrayList<P2PClient> peers = P2PConnectionManager.getConnectedPeers();
 				for (int i = 0; i < peers.size(); i++) {
 					core_log.i("Peer " + i + ": " + peers.get(i).getConnectedAddress());
+				}
+				break;
+			case "cp":
+			case "connectpeer":
+				if (cmd.length >= 2 && !cmd[1].isEmpty()) {
+					if (cmd[1].equals("127.0.0.1") || cmd[1].equalsIgnoreCase("localhost") || cmd[1].isEmpty()) {
+						core_log.e("Invalid IP address!");
+					} else if (P2PConnectionManager.connectedToPeer(cmd[1])) {
+						core_log.e("Already connected to this peer!");
+					} else {
+						P2PConnectionManager.connectToPeer(cmd[1]);
+					}
+				} else {
+					core_log.e("An IP address was not specified.");
 				}
 				break;
 			case "getkey":

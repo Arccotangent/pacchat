@@ -232,6 +232,7 @@ public class KeyManager {
 			hasher.update(keyBytes);
 			return Hex.encodeHexString(hasher.digest());
 		} catch (NoSuchAlgorithmException e) {
+			km_log.e("Error computing key fingerprint!");
 			e.printStackTrace();
 		}
 		return null;

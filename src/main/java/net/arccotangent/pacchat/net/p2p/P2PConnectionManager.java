@@ -43,7 +43,15 @@ public class P2PConnectionManager {
 		}
 	}
 	
-	static boolean connectedToPeer(String peer_addr) {
+	public static boolean havePeers() {
+		return connectedPeers.size() > 0;
+	}
+	
+	public static boolean checkIPValidity(String ip_address) {
+		return (ip_address.equals("127.0.0.1") || ip_address.equalsIgnoreCase("localhost") || ip_address.isEmpty() || P2PConnectionManager.connectedToPeer(ip_address));
+	}
+	
+	public static boolean connectedToPeer(String peer_addr) {
 		for (P2PClient peer : connectedPeers) {
 			if (peer.getConnectedAddress().equals(peer_addr))
 				return true;
@@ -64,15 +72,19 @@ public class P2PConnectionManager {
 	}
 	
 	public static void connectToPeer(String peer_addr) {
-		if (peer_addr.isEmpty())
+		if (!checkIPValidity(peer_addr))
 			return;
 		
 		P2PClient peer = new P2PClient(peer_addr);
 		
 		if (!connectedToPeer(peer_addr)) {
 			peer.connect();
-			connectedPeers.add(peer);
-			PeerManager.addPeer(peer_addr);
+			if (peer.isConnected()) {
+				connectedPeers.add(peer);
+				PeerManager.addPeer(peer_addr);
+			} else {
+				p2p_cm_log.e("Connecting to peer " + peer_addr + " was unsuccessful.");
+			}
 		}
 	}
 	

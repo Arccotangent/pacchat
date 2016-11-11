@@ -61,7 +61,7 @@ public class MsgCrypto {
 			mc_log.w("**********************************************");
 			mc_log.w("Message authenticity NOT VERIFIED! Will continue decryption anyway.");
 			mc_log.w("Someone may be tampering with your connection! This is an unlikely, but not impossible scenario!");
-			mc_log.w("If you are sure the connection was not tampered with, consider asking the sender to send out a key update.");
+			mc_log.w("If you are sure the connection was not tampered with, consider updating the sender's key with the 'getkey' command.");
 			mc_log.w("**********************************************");
 		}
 		

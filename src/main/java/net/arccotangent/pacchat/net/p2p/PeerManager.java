@@ -35,7 +35,6 @@ public class PeerManager {
 	private static ArrayList<String> peers = new ArrayList<>();
 	private static String user_home = System.getProperty("user.home");
 	private static final File peerFile = new File(user_home + File.separator + ".pacchat" + File.separator + "peers.txt");
-	private static boolean peerListUpToDate = false;
 	static boolean log_write = true;
 	private static ArrayList<String> allPeers = new ArrayList<>();
 	
@@ -60,7 +59,6 @@ public class PeerManager {
 		try {
 			String peers_raw = new String(Files.readAllBytes(peerFile.toPath()));
 			allPeers = new ArrayList<>(Arrays.asList(peers_raw.split("\n")));
-			peerListUpToDate = true;
 		} catch (IOException e) {
 			p2p_log.e("Error reading peers from disk!");
 			e.printStackTrace();

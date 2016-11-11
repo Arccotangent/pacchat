@@ -32,14 +32,20 @@ public class P2PClient {
 	private boolean connected = false;
 	
 	P2PClient(String ip_address) {
-		if (ip_address.equals("127.0.0.1") || ip_address.isEmpty() || P2PConnectionManager.connectedToPeer(ip_address))
-			return;
-		ip = ip_address;
 		p2p_client_log = new Logger("P2P/CLIENT/" + ip);
+		if (!P2PConnectionManager.checkIPValidity(ip_address)) {
+			p2p_client_log.e("Invalid IP address!");
+			return;
+		}
+		ip = ip_address;
 	}
 	
 	public String getConnectedAddress() {
 		return ip;
+	}
+	
+	boolean isConnected() {
+		return connected;
 	}
 	
 	void connect() {
