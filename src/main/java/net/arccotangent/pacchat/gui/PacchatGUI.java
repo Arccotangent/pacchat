@@ -129,7 +129,7 @@ public class PacchatGUI extends JFrame {
 				String addName = JOptionPane.showInputDialog(null, "Enter name of new contact, " + addIp, "New Contact", JOptionPane.QUESTION_MESSAGE);
 				
 				if (addName.contains(":") || addIp.contains(":")) {
-					JOptionPane.showMessageDialog(null, "The name or IP address cannot contain a comma.", "Error", JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(null, "The name or IP address cannot contain a colon.", "Error", JOptionPane.ERROR_MESSAGE);
 					return;
 				}
 				
