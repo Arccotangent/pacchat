@@ -46,7 +46,8 @@ public class PeerManager {
 		if (!peerFile.exists()) {
 			p2p_log.i("Creating new peer database on disk.");
 			try {
-				peerFile.createNewFile();
+				boolean success = peerFile.createNewFile();
+				p2p_log.d("Peer database creation " + (success ? "succeeded." : "failed."));
 			} catch (IOException e) {
 				p2p_log.e("Error creating peer database!");
 				e.printStackTrace();
@@ -59,6 +60,7 @@ public class PeerManager {
 		try {
 			String peers_raw = new String(Files.readAllBytes(peerFile.toPath()));
 			allPeers = new ArrayList<>(Arrays.asList(peers_raw.split("\n")));
+			p2p_log.d("Read " + allPeers.size() + " peers from disk.");
 		} catch (IOException e) {
 			p2p_log.e("Error reading peers from disk!");
 			e.printStackTrace();
@@ -90,7 +92,7 @@ public class PeerManager {
 	}
 	
 	static void randomizePeers() {
-		p2p_log.i("Shuffling peer lists, fetching new peers from database.");
+		p2p_log.d("Shuffling peer lists, fetching new peers from database.");
 		readAllPeers();
 		Collections.shuffle(allPeers);
 		writePeersToDisk();
@@ -108,10 +110,13 @@ public class PeerManager {
 	public static void writePeersToDisk() {
 		if (log_write)
 			p2p_log.i("Writing peer database to disk.");
+		else
+			p2p_log.d("Writing peer database to disk.");
 		createPeerFileIfNotExist();
 		updatePeerDB();
 		try {
 			BufferedWriter peerWriter = new BufferedWriter(new FileWriter(peerFile, false));
+			p2p_log.d("Peer DB file = " + peerFile);
 			
 			for (String peer : allPeers) {
 				peerWriter.write(peer);

@@ -28,11 +28,11 @@ public class ContactManager {
 	private static final String user_home = System.getProperty("user.home");
 	private static final File contactsFile = new File(user_home + File.separator + ".pacchat" + File.separator + "contacts.txt");
 	
-	@SuppressWarnings("ResultOfMethodCallIgnored")
 	private static void createContactFileIfNotExist() {
 		cm_log.i("Creating new contact file.");
+		cm_log.d("Contact file = " + contactsFile.getAbsolutePath());
 		try {
-			contactsFile.createNewFile();
+			cm_log.d(contactsFile.createNewFile() ? "Creation of contact file successful." : "Creation of contact file failed!");
 		} catch (IOException e) {
 			cm_log.e("Error creating new contact file!");
 			e.printStackTrace();
@@ -41,6 +41,7 @@ public class ContactManager {
 	
 	public static void addContact(String name, String ip) {
 		cm_log.i("Attempting to save contact '" + name + "' and IP address " + ip);
+		cm_log.d("Contact file = " + contactsFile.getAbsolutePath());
 		try {
 			FileWriter contactWriter = new FileWriter(contactsFile, true);
 			contactWriter.write(name + ":" + ip + "\n");
@@ -56,6 +57,7 @@ public class ContactManager {
 		if (!contactsFile.exists())
 			createContactFileIfNotExist();
 		cm_log.i("Reading all contacts.");
+		cm_log.d("Contact file = " + contactsFile.getAbsolutePath());
 		ArrayList<String> contacts = new ArrayList<>();
 		try {
 			BufferedReader reader = new BufferedReader(new FileReader(contactsFile));
@@ -80,6 +82,7 @@ public class ContactManager {
 	
 	public static void deleteByIndex(int index) {
 		cm_log.i("Deleting contact at index " + index);
+		cm_log.d("Contact file = " + contactsFile.getAbsolutePath());
 		ArrayList<String> contacts = getAllContacts();
 		
 		assert contacts != null;
@@ -95,6 +98,7 @@ public class ContactManager {
 	
 	private static void writeContactList(ArrayList<String> contacts) {
 		cm_log.i("Updating contact list.");
+		cm_log.d("Contact file = " + contactsFile.getAbsolutePath());
 		try {
 			FileWriter contactWriter = new FileWriter(contactsFile, false);
 			for (String contact : contacts) {

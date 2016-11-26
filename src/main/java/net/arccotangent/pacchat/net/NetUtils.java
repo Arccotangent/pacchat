@@ -111,6 +111,7 @@ public class NetUtils {
 		nu_log.i("Retrieving external IP address.");
 		CloseableHttpClient cli = HttpClients.createDefault();
 		
+		nu_log.d("IP retrieval URL = http://checkip.amazonaws.com");
 		HttpGet req = new HttpGet("http://checkip.amazonaws.com");
 		
 		try {

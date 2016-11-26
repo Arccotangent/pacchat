@@ -32,12 +32,34 @@ public class P2PClient {
 	private boolean connected = false;
 	
 	P2PClient(String ip_address) {
+		ip = ip_address;
 		p2p_client_log = new Logger("P2P/CLIENT/" + ip);
-		if (!P2PConnectionManager.checkIPValidity(ip_address)) {
+		if (!P2PConnectionManager.checkIPValidity(ip_address))
 			p2p_client_log.e("Invalid IP address!");
+	}
+	
+	boolean isInputStreamReady() {
+		if (!connected)
+			return false;
+		try {
+			return input.ready();
+		} catch (IOException e) {
+			e.printStackTrace();
+			if (e.getMessage().equalsIgnoreCase("Stream closed")) {
+				connected = false;
+			}
+		}
+		return false;
+	}
+	
+	void handleReadyConnection() {
+		if (!isInputStreamReady()) {
+			p2p_client_log.e("Attempted to handle a connection that didn't exist!");
 			return;
 		}
-		ip = ip_address;
+		p2p_client_log.d("Handling connection.");
+		
+		P2PConnectionManager.handleP2PConnection(input, output, ip);
 	}
 	
 	public String getConnectedAddress() {
@@ -50,6 +72,7 @@ public class P2PClient {
 	
 	void connect() {
 		p2p_client_log.i("Connecting to peer.");
+		p2p_client_log.d("Address = " + ip);
 		try {
 			socket = new Socket();
 			socket.connect(new InetSocketAddress(InetAddress.getByName(ip), P2PServer.P2P_PORT), 1000);
@@ -92,7 +115,7 @@ public class P2PClient {
 			switch (response) {
 				case "301 peers":
 					int peers = Integer.parseInt(input.readLine());
-					p2p_client_log.i("Server sent us " + peers + " peers.");
+					p2p_client_log.d("Server sent us " + peers + " peers.");
 					PeerManager.log_write = false;
 					for (int i = 1; i <= peers; i++) {
 						PeerManager.addPeer(input.readLine());

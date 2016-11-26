@@ -23,6 +23,7 @@ import net.arccotangent.pacchat.net.UPNPManager;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 
 public class P2PServer extends Thread {
 	
@@ -33,6 +34,7 @@ public class P2PServer extends Thread {
 	private long connection_id = 0;
 	private String last_sender = "";
 	private boolean shutting_down = false;
+	private static ArrayList<P2PConnectionHandler> clients = new ArrayList<>();
 	
 	public P2PServer() {
 		p2p_server_log.i("New P2P server created.");
@@ -40,6 +42,10 @@ public class P2PServer extends Thread {
 	
 	public String getLastSender() {
 		return last_sender;
+	}
+	
+	ArrayList<P2PConnectionHandler> getClients() {
+		return clients;
 	}
 	
 	public boolean isActive() {
@@ -72,6 +78,7 @@ public class P2PServer extends Thread {
 				p2p_server_log.i("Handing connection over to P2P connection handler " + connection_id);
 				P2PConnectionHandler conn = new P2PConnectionHandler(input, output, connection_id, src_ip_addr);
 				conn.start();
+				clients.add(conn);
 				Thread.sleep(250);
 				last_sender = conn.getOrigin();
 			}

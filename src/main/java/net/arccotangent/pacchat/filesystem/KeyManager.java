@@ -46,6 +46,7 @@ public class KeyManager {
 	private static void generateNewKeys() {
 		km_log.i("Generating new keys.");
 		KeyPair keyPair = RSA.generateRSAKeypair(4096);
+		km_log.d("4096 bit RSA key generated.");
 		
 		assert keyPair != null;
 		PrivateKey privkey = keyPair.getPrivate();
@@ -57,11 +58,14 @@ public class KeyManager {
 	private static void saveKeys(PrivateKey privkey, PublicKey pubkey) {
 		km_log.i("Saving keys to disk.");
 		
+		km_log.d("Public key file = " + pubkeyFile.getAbsolutePath());
+		km_log.d("Private key file = " + privkeyFile.getAbsolutePath());
+		
 		X509EncodedKeySpec pubSpec = new X509EncodedKeySpec(pubkey.getEncoded());
 		PKCS8EncodedKeySpec privSpec = new PKCS8EncodedKeySpec(privkey.getEncoded());
 		
 		try {
-			km_log.i(pubkeyFile.createNewFile() ? "Creation of public key file successful." : "Creation of public key file failed!");
+			km_log.d(pubkeyFile.createNewFile() ? "Creation of public key file successful." : "Creation of public key file failed!");
 			
 			FileOutputStream pubOut = new FileOutputStream(pubkeyFile);
 			pubOut.write(Base64.encodeBase64(pubSpec.getEncoded()));
@@ -74,7 +78,7 @@ public class KeyManager {
 		}
 		
 		try {
-			km_log.i(privkeyFile.createNewFile() ? "Creation of private key file successful." : "Creation of private key file failed!");
+			km_log.d(privkeyFile.createNewFile() ? "Creation of private key file successful." : "Creation of private key file failed!");
 			
 			FileOutputStream privOut = new FileOutputStream(privkeyFile);
 			privOut.write(Base64.encodeBase64(privSpec.getEncoded()));
@@ -92,6 +96,8 @@ public class KeyManager {
 	public static KeyPair loadRSAKeys() {
 		try {
 			km_log.i("Loading RSA key pair from disk.");
+			km_log.d("Public key file = " + pubkeyFile.getAbsolutePath());
+			km_log.d("Private key file = " + privkeyFile.getAbsolutePath());
 			byte[] privEncoded = Files.readAllBytes(privkeyFile.toPath());
 			byte[] pubEncoded = Files.readAllBytes(pubkeyFile.toPath());
 			
@@ -115,6 +121,7 @@ public class KeyManager {
 		km_log.i("Loading public key for " + ip_address);
 		try {
 			File pubFile = new File(installationPath + File.separator + ip_address + ".pub");
+			km_log.d("Key file = " + pubFile.getAbsolutePath());
 			
 			byte[] pubEncoded = Files.readAllBytes(pubFile.toPath());
 			X509EncodedKeySpec pubSpec = new X509EncodedKeySpec(Base64.decodeBase64(pubEncoded));
@@ -138,6 +145,7 @@ public class KeyManager {
 		km_log.i("Saving public key for " + ip_address);
 		X509EncodedKeySpec pubSpec = new X509EncodedKeySpec(publicKey.getEncoded());
 		File pubFile = new File(installationPath + File.separator + ip_address + ".pub");
+		km_log.d("Key file = " + pubFile.getAbsolutePath());
 		
 		km_log.i("Deleting old key if it exists.");
 		if (pubFile.exists())

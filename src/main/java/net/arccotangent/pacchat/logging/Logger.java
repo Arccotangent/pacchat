@@ -27,9 +27,18 @@ public class Logger {
 	private String tag = "";
 	private final String ANSI_RESET = "\u001B[0m";
 	private final String ANSI_BOLD = "\u001B[1m";
+	private static boolean debug = false; //You can set this to true if you want debug mode enabled by default
 	
 	public Logger(String loggerTag) {
 		tag = loggerTag;
+	}
+	
+	public static void toggleDebug() {
+		debug = !debug;
+	}
+	
+	public static boolean debugEnabled() {
+		return debug;
 	}
 	
 	private String getTime() {
@@ -37,6 +46,13 @@ public class Logger {
 		Date d = c.getTime();
 		DateFormat df = new SimpleDateFormat("MM-dd-yyyy hh:mm:ss.SSS aa z");
 		return df.format(d);
+	}
+	
+	public void d(String msg) {
+		if (debug) {
+			String ANSI_MAGENTA = "\u001B[35m";
+			System.out.println(ANSI_BOLD + ANSI_MAGENTA + getTime() + " [DEBUG] [" + tag + "] " + msg + ANSI_RESET);
+		}
 	}
 	
 	public void i(String msg) {

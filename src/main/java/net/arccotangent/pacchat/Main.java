@@ -23,10 +23,7 @@ import net.arccotangent.pacchat.filesystem.KeyManager;
 import net.arccotangent.pacchat.gui.PacchatGUI;
 import net.arccotangent.pacchat.logging.Logger;
 import net.arccotangent.pacchat.net.*;
-import net.arccotangent.pacchat.net.p2p.P2PClient;
-import net.arccotangent.pacchat.net.p2p.P2PConnectionManager;
-import net.arccotangent.pacchat.net.p2p.P2PServer;
-import net.arccotangent.pacchat.net.p2p.PeerManager;
+import net.arccotangent.pacchat.net.p2p.*;
 
 import java.awt.*;
 import java.security.KeyPair;
@@ -37,7 +34,7 @@ import java.util.Scanner;
 
 public class Main {
 	private static final Logger core_log = new Logger("CORE");
-	public static final String VERSION = "0.2-B16";
+	public static final String VERSION = "0.2-B17";
 	private static KeyPair keyPair;
 	private static final String ANSI_BOLD = "\u001B[1m";
 	private static final String ANSI_BLUE = "\u001B[34m";
@@ -50,6 +47,7 @@ public class Main {
 	private static boolean p2p = false;
 	private static PacchatGUI gui;
 	private static final boolean guiPossible = !GraphicsEnvironment.isHeadless();
+	private static P2PClientChecker clientChecker;
 	
 	private static Scanner stdin = new Scanner(System.in);
 	
@@ -59,6 +57,10 @@ public class Main {
 	
 	public static Server getServer() {
 		return server;
+	}
+	
+	public static P2PServer getP2PServer() {
+		return p2p_server;
 	}
 	
 	public static boolean isP2PEnabled() {
@@ -123,6 +125,7 @@ public class Main {
 		System.out.println(ANSI_BOLD + ANSI_CYAN + "---Miscellaneous---" + ANSI_RESET);
 		System.out.println(ANSI_BOLD + ANSI_BLUE + "copyright/c - Show the full copyright message." + ANSI_RESET);
 		System.out.println(ANSI_BOLD + ANSI_BLUE + "gui/g - Open the PacChat GUI." + ANSI_RESET);
+		System.out.println(ANSI_BOLD + ANSI_BLUE + "debug/d - Toggle log debug mode. Debug mode increases log verbosity." + ANSI_RESET);
 	}
 	
 	public static void main(String[] args) {
@@ -167,9 +170,13 @@ public class Main {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+		
+		clientChecker = new P2PClientChecker();
+		clientChecker.start();
 
 		core_log.i("PacChat is ready for use!");
 		core_log.i("Entering chat mode, type exit to exit, and type send <ip address> to send a message.");
+		core_log.i("Log debug mode is currently " + (Logger.debugEnabled() ? "ENABLED." : "DISABLED."));
 		core_log.w("Type 'help' for command help.");
 		core_log.w("If applicable, run 'gui' to start the PacChat GUI.");
 		active = true;
@@ -261,7 +268,7 @@ public class Main {
 				break;
 			case "r":
 			case "reply":
-				if (server == null) {
+				if (server == null || !server.isActive()) {
 					core_log.e("Server is not running.");
 					break;
 				}
@@ -475,18 +482,19 @@ public class Main {
 			case "p2pdisconnect":
 				if (!p2p)
 					core_log.e("P2P is already disabled.");
-				core_log.i("Disabling P2P network usage and disconnecting from all peers.");
-				ArrayList<P2PClient> peerList = P2PConnectionManager.getConnectedPeers();
-				for (P2PClient peer : peerList) {
-					P2PConnectionManager.disconnectFromPeer(peer.getConnectedAddress());
+				else {
+					core_log.i("Disabling P2P network usage and disconnecting from all peers.");
+					ArrayList<P2PClient> peerList = P2PConnectionManager.getConnectedPeers();
+					for (P2PClient peer : peerList) {
+						P2PConnectionManager.disconnectFromPeer(peer.getConnectedAddress());
+					}
+					p2p = false;
 				}
-				p2p = false;
 				break;
 			case "vp":
 			case "viewpeers":
-				if (!p2p) {
+				if (!p2p)
 					core_log.e("P2P is currently disabled. Run the 'p2p' command to enable P2P.");
-				}
 				ArrayList<P2PClient> peers = P2PConnectionManager.getConnectedPeers();
 				for (int i = 0; i < peers.size(); i++) {
 					core_log.i("Peer " + i + ": " + peers.get(i).getConnectedAddress());
@@ -500,7 +508,12 @@ public class Main {
 					} else if (P2PConnectionManager.connectedToPeer(cmd[1])) {
 						core_log.e("Already connected to this peer!");
 					} else {
+						core_log.i("Connecting to peer " + cmd[1]);
 						P2PConnectionManager.connectToPeer(cmd[1]);
+						if (P2PConnectionManager.connectedToPeer(cmd[1])) {
+							core_log.i("Connection successful, P2P enabled!");
+							p2p = true;
+						}
 					}
 				} else {
 					core_log.e("An IP address was not specified.");
@@ -514,6 +527,12 @@ public class Main {
 				} else {
 					core_log.e("An IP address was not specified.");
 				}
+				break;
+			case "d":
+			case "debug":
+				Logger.toggleDebug();
+				core_log.i(Logger.debugEnabled() ? "Debug mode enabled." : "Debug mode disabled.");
+				core_log.d("Example of a debug message");
 				break;
 			case "c":
 			case "copyright":

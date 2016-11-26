@@ -31,13 +31,17 @@ public class MsgCrypto {
 	
 	public static String encryptAndSignMessage(String msg, PublicKey publicKey, PrivateKey privateKey) {
 		mc_log.i("Encrypting and signing message.");
+		mc_log.d("Generating AES key.");
 		SecretKey aes = AES.generateAESKey();
 		
 		assert aes != null;
 		
+		mc_log.d("Encrypting message text.");
 		byte[] aesCryptedText = AES.encryptBytes(msg.getBytes(), aes);
+		mc_log.d("Encrypting AES key.");
 		byte[] cryptedAesKey = RSA.encryptBytes(aes.getEncoded(), publicKey);
 		
+		mc_log.d("Signing AES key.");
 		byte[] signature = RSA.signBytes(cryptedAesKey, privateKey);
 		
 		String cryptedTextB64 = Base64.encodeBase64String(aesCryptedText);
@@ -54,6 +58,7 @@ public class MsgCrypto {
 		String cryptedTextB64 = messageComponents[1];
 		String signatureB64 = messageComponents[2];
 		
+		mc_log.d("Verifying signature.");
 		boolean verified = RSA.verifyBytes(Base64.decodeBase64(cryptedKeyB64), Base64.decodeBase64(signatureB64), publicKey);
 		if (verified)
 			mc_log.i("Message authenticity verified!");
@@ -65,10 +70,12 @@ public class MsgCrypto {
 			mc_log.w("**********************************************");
 		}
 		
+		mc_log.d("Decrypting AES key.");
 		DecryptStatus rsa = RSA.decryptBytes(Base64.decodeBase64(cryptedKeyB64), privateKey);
 		byte[] aesKey = rsa.getMessage();
 		SecretKey aes = new SecretKeySpec(aesKey, "AES");
 		
+		mc_log.d("Decrypting message ciphertext.");
 		DecryptStatus message = AES.decryptBytes(Base64.decodeBase64(cryptedTextB64), aes);
 		byte[] msg = message.getMessage();
 		boolean decrypted = message.isDecryptedSuccessfully();
