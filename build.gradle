@@ -22,6 +22,7 @@ dependencies {
     compile group: 'org.fourthline.cling', name: 'cling-support', version: '2.1.0'
     compile group: 'com.intellij', name: 'forms_rt', version: '7.0.3'
     compile group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.2'
+    compile group: 'org.bouncycastle', name: 'bcprov-jdk15on', version: '1.54'
 }
 
 //noinspection GroovyAssignabilityCheck
