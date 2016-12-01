@@ -31,5 +31,11 @@ jar {
         attributes 'Main-Class': 'net.arccotangent.pacchat.Main'
     }
 
-    from {configurations.compile.collect {it.isDirectory() ? it : zipTree(it)}}
+    from {
+        configurations.runtime.collect { it.isDirectory() ? it : zipTree(it) }
+    } {
+        exclude "META-INF/*.SF"
+        exclude "META-INF/*.DSA"
+        exclude "META-INF/*.RSA"
+    }
 }

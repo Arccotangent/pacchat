@@ -29,9 +29,11 @@ public class RSA {
 	
 	private static final Logger rsa_log = new Logger("CRYPTO/RSA");
 	
+	private static final String RSA_signature_algorithm = "SHA512withRSA";
+	
 	public static KeyPair generateRSAKeypair(int bitsize) {
 		try {
-			rsa_log.i("Initializing key pair generator, generating " + bitsize + " bit RSA key");
+			rsa_log.d("Initializing key pair generator, generating " + bitsize + " bit RSA key");
 			KeyPairGenerator gen = KeyPairGenerator.getInstance("RSA");
 			gen.initialize(bitsize);
 			
@@ -74,7 +76,7 @@ public class RSA {
 	
 	static byte[] signBytes(byte[] toSign, PrivateKey privateKey) {
 		try {
-			Signature sig = Signature.getInstance("SHA512withRSA");
+			Signature sig = Signature.getInstance(RSA_signature_algorithm);
 			sig.initSign(privateKey);
 			sig.update(toSign);
 			return sig.sign();
@@ -87,7 +89,7 @@ public class RSA {
 	
 	static boolean verifyBytes(byte[] signedBytes, byte[] signature, PublicKey publicKey) {
 		try {
-			Signature sig = Signature.getInstance("SHA512withRSA");
+			Signature sig = Signature.getInstance(RSA_signature_algorithm);
 			sig.initVerify(publicKey);
 			sig.update(signedBytes);
 			return sig.verify(signature);

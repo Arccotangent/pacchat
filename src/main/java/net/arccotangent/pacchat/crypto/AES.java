@@ -22,6 +22,7 @@ import net.arccotangent.pacchat.logging.Logger;
 import javax.crypto.*;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
 
 class AES {
 	
@@ -29,12 +30,12 @@ class AES {
 	
 	static SecretKey generateAESKey() {
 		try {
-			aes_log.i("Generating 128 bit AES key.");
+			aes_log.d("Generating 128 bit AES key.");
 			
-			KeyGenerator gen = KeyGenerator.getInstance("AES");
+			KeyGenerator gen = KeyGenerator.getInstance("AES", "BC");
 			gen.init(128);
 			return gen.generateKey();
-		} catch (NoSuchAlgorithmException e) {
+		} catch (NoSuchAlgorithmException | NoSuchProviderException e) {
 			aes_log.e("Error while generating AES key!");
 			e.printStackTrace();
 		}
@@ -43,10 +44,10 @@ class AES {
 	
 	static byte[] encryptBytes(byte[] toEncrypt, SecretKey aes) {
 		try {
-			Cipher c = Cipher.getInstance("AES");
+			Cipher c = Cipher.getInstance("AES", "BC");
 			c.init(Cipher.ENCRYPT_MODE, aes);
 			return c.doFinal(toEncrypt);
-		} catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException e) {
+		} catch (NoSuchAlgorithmException | NoSuchProviderException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException e) {
 			aes_log.e("Error while encrypting text with AES key!");
 			e.printStackTrace();
 		}
@@ -55,11 +56,11 @@ class AES {
 	
 	static DecryptStatus decryptBytes(byte[] toDecrypt, SecretKey aes) {
 		try {
-			Cipher c = Cipher.getInstance("AES");
+			Cipher c = Cipher.getInstance("AES", "BC");
 			c.init(Cipher.DECRYPT_MODE, aes);
 			byte[] decrypted = c.doFinal(toDecrypt);
 			return new DecryptStatus(decrypted, true);
-		} catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException e) {
+		} catch (NoSuchAlgorithmException | NoSuchProviderException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException e) {
 			aes_log.e("Error while decrypting text with AES key!");
 			e.printStackTrace();
 		}

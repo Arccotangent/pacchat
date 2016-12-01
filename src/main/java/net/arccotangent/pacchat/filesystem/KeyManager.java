@@ -23,6 +23,9 @@ import net.arccotangent.pacchat.net.Server;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.binary.Hex;
 
+import javax.crypto.*;
+import javax.crypto.spec.PBEKeySpec;
+import javax.crypto.spec.PBEParameterSpec;
 import java.io.*;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -43,8 +46,99 @@ public class KeyManager {
 	private static final File privkeyFile = new File(installationPath + File.separator + "local.priv");
 	private static final File pubkeyFile = new File(installationPath + File.separator + "local.pub");
 	
+	private static String PBE_algorithm = "PBEWithSHAAnd3-KeyTripleDES-CBC";
+	private static final int PBE_iterations = 25000;
+	
+	private static byte[] generateSalt() {
+		SecureRandom random = new SecureRandom();
+		byte[] salt = new byte[8];
+		random.nextBytes(salt);
+		return salt;
+	}
+	
+	public static boolean keysEncrypted() {
+		try {
+			String privFileContents = new String(Files.readAllBytes(privkeyFile.toPath()));
+			return privFileContents.split("\n")[0].equals("1");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
+	/*
+	private static boolean isEncrypted(String key) {
+		return key.split("\n")[0].equals("1");
+	}
+	*/
+	
+	public static String encryptPrivkey(String privkeyB64, char[] password) {
+		km_log.d("Encrypting private key.");
+		km_log.d("PBE Algorithm = " + PBE_algorithm);
+		km_log.d("PBE iteration count = " + PBE_iterations);
+		try {
+			PBEKeySpec keySpec = new PBEKeySpec(password);
+			byte[] salt = generateSalt();
+			PBEParameterSpec params = new PBEParameterSpec(salt, PBE_iterations);
+			SecretKeyFactory keyFactory = SecretKeyFactory.getInstance(PBE_algorithm, "BC");
+			SecretKey key = keyFactory.generateSecret(keySpec);
+			
+			Cipher cipher = Cipher.getInstance(PBE_algorithm, "BC");
+			cipher.init(Cipher.ENCRYPT_MODE, key, params);
+			byte[] encryptedPrivkey = cipher.doFinal(Base64.decodeBase64(privkeyB64));
+			
+			return "1\n" + Base64.encodeBase64String(salt) + "\n" + Base64.encodeBase64String(encryptedPrivkey);
+		} catch (NoSuchAlgorithmException | NoSuchProviderException | InvalidKeySpecException | NoSuchPaddingException | InvalidKeyException | InvalidAlgorithmParameterException | IllegalBlockSizeException | BadPaddingException e) {
+			km_log.e("Error encrypting private key!");
+			e.printStackTrace();
+		}
+		return privkeyB64;
+	}
+	
+	public static String decryptPrivkey(String encryptedB64, char[] password) {
+		km_log.d("Decrypting private key.");
+		km_log.d("PBE Algorithm = " + PBE_algorithm);
+		km_log.d("PBE iteration count = " + PBE_iterations);
+		String[] keyParts = encryptedB64.split("\n");
+		//keyParts[0] = 1 (indicates encrypted private key)
+		//keyParts[1] = base 64 8 byte salt for PBE
+		//keyParts[2] = encrypted base 64 private key
+		
+		byte[] salt = Base64.decodeBase64(keyParts[1]);
+		byte[] encryptedPrivkey = Base64.decodeBase64(keyParts[2]);
+		
+		for (int i = 0; i < keyParts.length; i++) {
+			km_log.d("keyParts[" + i + "] = " + keyParts[i]);
+		}
+		
+		try {
+			PBEKeySpec keySpec = new PBEKeySpec(password);
+			PBEParameterSpec params = new PBEParameterSpec(salt, PBE_iterations);
+			SecretKeyFactory keyFactory = SecretKeyFactory.getInstance(PBE_algorithm, "BC");
+			SecretKey key = keyFactory.generateSecret(keySpec);
+			
+			Cipher cipher = Cipher.getInstance(PBE_algorithm, "BC");
+			cipher.init(Cipher.DECRYPT_MODE, key, params);
+			
+			byte[] privkey = cipher.doFinal(encryptedPrivkey);
+			
+			return Base64.encodeBase64String(privkey);
+		} catch (NoSuchAlgorithmException | NoSuchProviderException | InvalidKeySpecException | NoSuchPaddingException | InvalidKeyException | InvalidAlgorithmParameterException | IllegalBlockSizeException | BadPaddingException e) {
+			km_log.e("Error decrypting private key!");
+			e.printStackTrace();
+			if (e instanceof BadPaddingException) {
+				km_log.e("Bad decryption password?");
+			}
+		}
+		return null;
+	}
+	
 	private static void generateNewKeys() {
 		km_log.i("Generating new keys.");
+		km_log.w("-----------------------------------------------------------------------");
+		km_log.w("FOR YOUR SECURITY, PLEASE ENCRYPT YOUR KEYS!");
+		km_log.w("Use the 'encrypt' command to encrypt your keys after generation is complete!");
+		km_log.w("-----------------------------------------------------------------------");
 		KeyPair keyPair = RSA.generateRSAKeypair(4096);
 		km_log.d("4096 bit RSA key generated.");
 		
@@ -52,23 +146,21 @@ public class KeyManager {
 		PrivateKey privkey = keyPair.getPrivate();
 		PublicKey pubkey = keyPair.getPublic();
 		
-		saveKeys(privkey, pubkey);
+		saveUnencryptedKeys(privkey, pubkey);
 	}
 	
-	private static void saveKeys(PrivateKey privkey, PublicKey pubkey) {
-		km_log.i("Saving keys to disk.");
+	public static void saveEncryptedKeys(String privkeyCryptB64, PublicKey pubkey) {
+		km_log.i("Saving encrypted keys to disk.");
 		
 		km_log.d("Public key file = " + pubkeyFile.getAbsolutePath());
 		km_log.d("Private key file = " + privkeyFile.getAbsolutePath());
 		
-		X509EncodedKeySpec pubSpec = new X509EncodedKeySpec(pubkey.getEncoded());
-		PKCS8EncodedKeySpec privSpec = new PKCS8EncodedKeySpec(privkey.getEncoded());
-		
 		try {
-			km_log.d(pubkeyFile.createNewFile() ? "Creation of public key file successful." : "Creation of public key file failed!");
+			if (!pubkeyFile.exists())
+				km_log.d(pubkeyFile.createNewFile() ? "Creation of public key file successful." : "Creation of public key file failed!");
 			
 			FileOutputStream pubOut = new FileOutputStream(pubkeyFile);
-			pubOut.write(Base64.encodeBase64(pubSpec.getEncoded()));
+			pubOut.write(Base64.encodeBase64(pubkey.getEncoded()));
 			pubOut.flush();
 			pubOut.close();
 			
@@ -78,10 +170,11 @@ public class KeyManager {
 		}
 		
 		try {
-			km_log.d(privkeyFile.createNewFile() ? "Creation of private key file successful." : "Creation of private key file failed!");
+			if (!privkeyFile.exists())
+				km_log.d(privkeyFile.createNewFile() ? "Creation of private key file successful." : "Creation of private key file failed!");
 			
 			FileOutputStream privOut = new FileOutputStream(privkeyFile);
-			privOut.write(Base64.encodeBase64(privSpec.getEncoded()));
+			privOut.write(privkeyCryptB64.getBytes());
 			privOut.flush();
 			privOut.close();
 			
@@ -93,6 +186,112 @@ public class KeyManager {
 		km_log.i("Finished saving keys to disk. Operation appears successful.");
 	}
 	
+	public static void saveUnencryptedKeys(PrivateKey privkey, PublicKey pubkey) {
+		km_log.i("Saving keys to disk.");
+		
+		km_log.d("Public key file = " + pubkeyFile.getAbsolutePath());
+		km_log.d("Private key file = " + privkeyFile.getAbsolutePath());
+		
+		//X509EncodedKeySpec pubSpec = new X509EncodedKeySpec(pubkey.getEncoded());
+		//PKCS8EncodedKeySpec privSpec = new PKCS8EncodedKeySpec(privkey.getEncoded());
+		
+		try {
+			if (!pubkeyFile.exists())
+				km_log.d(pubkeyFile.createNewFile() ? "Creation of public key file successful." : "Creation of public key file failed!");
+			
+			FileOutputStream pubOut = new FileOutputStream(pubkeyFile);
+			pubOut.write(Base64.encodeBase64(pubkey.getEncoded()));
+			pubOut.flush();
+			pubOut.close();
+			
+		} catch (IOException e) {
+			km_log.e("Error while saving public key!");
+			e.printStackTrace();
+		}
+		
+		try {
+			if (!privkeyFile.exists())
+				km_log.d(privkeyFile.createNewFile() ? "Creation of private key file successful." : "Creation of private key file failed!");
+			
+			FileOutputStream privOut = new FileOutputStream(privkeyFile);
+			privOut.write(Base64.encodeBase64(privkey.getEncoded()));
+			privOut.flush();
+			privOut.close();
+			
+		} catch (IOException e) {
+			km_log.e("Error while saving private key!");
+			e.printStackTrace();
+		}
+		
+		km_log.i("Finished saving keys to disk. Operation appears successful.");
+	}
+	
+	public static String loadCryptedPrivkey() {
+		try {
+			km_log.i("Loading encrypted RSA private key from disk.");
+			km_log.d("Private key file = " + privkeyFile.getAbsolutePath());
+			byte[] privEncoded = Files.readAllBytes(privkeyFile.toPath());
+			
+			return new String(privEncoded);
+		} catch (IOException e) {
+			km_log.e("Error while loading private key!");
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public static PrivateKey loadUnencryptedPrivkey() {
+		try {
+			km_log.i("Loading unencrypted RSA private key from disk.");
+			km_log.d("Public key file = " + pubkeyFile.getAbsolutePath());
+			km_log.d("Private key file = " + privkeyFile.getAbsolutePath());
+			byte[] privEncoded = Files.readAllBytes(privkeyFile.toPath());
+			
+			PKCS8EncodedKeySpec privSpec = new PKCS8EncodedKeySpec(Base64.decodeBase64(privEncoded));
+			
+			KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+			
+			return keyFactory.generatePrivate(privSpec);
+		} catch (IOException | NoSuchAlgorithmException | InvalidKeySpecException e) {
+			km_log.e("Error while loading private key!");
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public static PrivateKey Base64ToPrivkey(String b64Privkey) {
+		try {
+			PKCS8EncodedKeySpec privSpec = new PKCS8EncodedKeySpec(Base64.decodeBase64(b64Privkey));
+			
+			KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+			
+			return keyFactory.generatePrivate(privSpec);
+		} catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
+			km_log.e("Error while decoding base 64 private key!");
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public static PublicKey loadPubkey() {
+		try {
+			km_log.i("Loading RSA public key from disk.");
+			km_log.d("Public key file = " + pubkeyFile.getAbsolutePath());
+			byte[] pubEncoded = Files.readAllBytes(pubkeyFile.toPath());
+			
+			X509EncodedKeySpec pubSpec = new X509EncodedKeySpec(Base64.decodeBase64(pubEncoded));
+			
+			KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+			
+			return keyFactory.generatePublic(pubSpec);
+		} catch (IOException | NoSuchAlgorithmException | InvalidKeySpecException e) {
+			km_log.e("Error while loading public key!");
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	@Deprecated
 	public static KeyPair loadRSAKeys() {
 		try {
 			km_log.i("Loading RSA key pair from disk.");

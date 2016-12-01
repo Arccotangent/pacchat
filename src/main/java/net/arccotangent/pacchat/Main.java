@@ -24,17 +24,22 @@ import net.arccotangent.pacchat.gui.PacchatGUI;
 import net.arccotangent.pacchat.logging.Logger;
 import net.arccotangent.pacchat.net.*;
 import net.arccotangent.pacchat.net.p2p.*;
+import org.apache.commons.codec.binary.Base64;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 import java.awt.*;
 import java.security.KeyPair;
+import java.security.PrivateKey;
 import java.security.PublicKey;
+import java.security.Security;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Scanner;
 
 public class Main {
 	private static final Logger core_log = new Logger("CORE");
-	public static final String VERSION = "0.2-B17";
+	public static final String VERSION = "0.2-B18";
 	private static KeyPair keyPair;
 	private static final String ANSI_BOLD = "\u001B[1m";
 	private static final String ANSI_BLUE = "\u001B[34m";
@@ -114,6 +119,8 @@ public class Main {
 		System.out.println(ANSI_BOLD + ANSI_BLUE + "updatelist/ul <ID> - List all pending update IDs." + ANSI_RESET);
 		System.out.println(ANSI_BOLD + ANSI_BLUE + "updateinfo/ui <ID> - Print info about a pending update request with the specified ID." + ANSI_RESET);
 		System.out.println(ANSI_BOLD + ANSI_BLUE + "getkey/gk <ip address> - Download a key from the specified IP address." + ANSI_RESET);
+		System.out.println(ANSI_BOLD + ANSI_BLUE + "encrypt - Encrypt an unencrypted private key on disk." + ANSI_RESET);
+		System.out.println(ANSI_BOLD + ANSI_BLUE + "decrypt - Decrypt an encrypted private key on disk." + ANSI_RESET);
 		System.out.println(ANSI_BOLD + ANSI_WHITE + "Note: If you update a key, it will permanently delete the old key, so be careful!" + ANSI_RESET);
 		System.out.println();
 		System.out.println(ANSI_BOLD + ANSI_CYAN + "---P2P Network---" + ANSI_RESET);
@@ -133,22 +140,63 @@ public class Main {
 		printCopyright();
 		System.out.println();
 		core_log.i("Initializing PacChat " + VERSION);
+		core_log.d("Registering Bouncy Castle provider.");
+		Security.addProvider(new BouncyCastleProvider());
 		core_log.i("Creating installation if it doesn't already exist.");
 		KeyManager.createInstallationIfNotExist(); //This function handles everything from the installation to key gen
 
 		core_log.i("Loading keys from disk.");
-		keyPair = KeyManager.loadRSAKeys();
-
-		assert keyPair != null;
-
-		core_log.i("Performing crypto test..");
-		String testmsg = "test message";
-		String crypted = MsgCrypto.encryptAndSignMessage(testmsg, keyPair.getPublic(), keyPair.getPrivate());
-		if (testmsg.equals(MsgCrypto.decryptAndVerifyMessage(crypted, keyPair.getPrivate(), keyPair.getPublic()).getMessage())) {
-			core_log.i("Crypto test successful!");
+		
+		PrivateKey privkey;
+		
+		if (KeyManager.keysEncrypted()) {
+			core_log.i("Private key is encrypted!");
+			core_log.i("Please enter password to decrypt. The password will not be shown.");
+			System.out.print(ANSI_BOLD + ANSI_WHITE + "Decryption password: " + ANSI_RESET);
+			char[] password = System.console().readPassword();
+			core_log.i("Attempting decryption.");
+			String b64Privkey_crypt = KeyManager.loadCryptedPrivkey();
+			String b64Privkey = KeyManager.decryptPrivkey(b64Privkey_crypt, password);
+			if (b64Privkey == null) {
+				core_log.e("Decrypted private key is null, PacChat cannot be used without a valid private key. Exiting.");
+				System.exit(1);
+			}
+			privkey = KeyManager.Base64ToPrivkey(b64Privkey);
 		} else {
-			core_log.e("Crypto test failed! Something might break later on.");
+			core_log.w("Private key is unencrypted!");
+			core_log.w("An unencrypted private key is a threat to security!");
+			core_log.w("You can encrypt your key using the 'encrypt' command.");
+			privkey = KeyManager.loadUnencryptedPrivkey();
 		}
+
+		keyPair = new KeyPair(KeyManager.loadPubkey(), privkey);
+
+		core_log.i("Performing crypto tests..");
+		core_log.i("Testing message crypto...");
+		String testmsg = "test message";
+		String cryptedMsg = MsgCrypto.encryptAndSignMessage(testmsg, keyPair.getPublic(), keyPair.getPrivate());
+		String decryptedMsg = MsgCrypto.decryptAndVerifyMessage(cryptedMsg, keyPair.getPrivate(), keyPair.getPublic()).getMessage();
+		if (testmsg.equals(decryptedMsg)) {
+			core_log.i("Message crypto test successful!");
+		} else {
+			core_log.e("Message crypto test failed! Something might break later on.");
+			core_log.d("testmsg = " + testmsg);
+			core_log.d("decryptedMsg = " + decryptedMsg);
+		}
+		
+		core_log.i("Testing password based encryption (PBE)...");
+		String testb64 = "test key";
+		String cryptedKey = KeyManager.encryptPrivkey(Base64.encodeBase64String(testb64.getBytes()), "password".toCharArray());
+		String decryptedKey = new String(Base64.decodeBase64(KeyManager.decryptPrivkey(cryptedKey, "password".toCharArray())));
+		if (testb64.equals(decryptedKey)) {
+			core_log.i("PBE test successful!");
+		} else {
+			core_log.e("PBE test failed! Something might break later on.");
+			core_log.d("testb64 = " + testb64);
+			core_log.d("decryptedKey = " + decryptedKey);
+		}
+		
+		core_log.i("Crypto tests complete.");
 
 		NetUtils.updateLocalIPAddr();
 		NetUtils.updateExternalIPAddr();
@@ -533,6 +581,70 @@ public class Main {
 				Logger.toggleDebug();
 				core_log.i(Logger.debugEnabled() ? "Debug mode enabled." : "Debug mode disabled.");
 				core_log.d("Example of a debug message");
+				break;
+			case "encrypt":
+				if (KeyManager.keysEncrypted()) {
+					core_log.e("Keys are already encrypted!");
+					break;
+				}
+				core_log.i("Encrypting private key, please enter your password below.");
+				core_log.i("The password will not be shown. To cancel encryption, enter a blank password.");
+				core_log.w("------------------------------------------------------------------");
+				core_log.w("!!!!WARNING: IF YOU LOSE YOUR PASSWORD, YOU WILL LOSE ACCESS TO YOUR PRIVATE KEY!!!!");
+				core_log.w("------------------------------------------------------------------");
+				System.out.print(ANSI_BOLD + ANSI_WHITE + "Encryption password: " + ANSI_RESET);
+				char[] password_encrypt = System.console().readPassword();
+				if (password_encrypt.length == 0) {
+					core_log.i("Cancelled encryption.");
+					break;
+				}
+				System.out.print(ANSI_BOLD + ANSI_WHITE + "Encryption password (confirm): " + ANSI_RESET);
+				char[] password_encrypt_confirm = System.console().readPassword();
+				if (password_encrypt_confirm.length == 0) {
+					core_log.i("Cancelled encryption.");
+					break;
+				}
+				
+				if (!Arrays.equals(password_encrypt, password_encrypt_confirm)) {
+					core_log.e("Passwords did not match! Aborting encryption.");
+					break;
+				}
+				
+				String encryptedB64 = KeyManager.encryptPrivkey(Base64.encodeBase64String(keyPair.getPrivate().getEncoded()), password_encrypt);
+				if (encryptedB64 == null) {
+					core_log.e("Encrypted private key is null, aborting encryption.");
+					break;
+				}
+				
+				core_log.i("Encrypted key successfully, saving to disk.");
+				KeyManager.saveEncryptedKeys(encryptedB64, keyPair.getPublic());
+				break;
+			case "decrypt":
+				if (!KeyManager.keysEncrypted()) {
+					core_log.e("Keys are not encrypted!");
+					break;
+				}
+				core_log.w("An unencrypted private key is a threat to security!");
+				core_log.w("If you do not wish to decrypt, enter a blank password below.");
+				System.out.print(ANSI_BOLD + ANSI_WHITE + "Decryption password: " + ANSI_RESET);
+				char[] password_decrypt = System.console().readPassword();
+				if (password_decrypt.length == 0) {
+					core_log.i("Cancelled decryption.");
+					break;
+				}
+				String currentPrivkey = Base64.encodeBase64String(keyPair.getPrivate().getEncoded());
+				String privkeyB64 = KeyManager.decryptPrivkey(KeyManager.loadCryptedPrivkey(), password_decrypt);
+				if (privkeyB64 == null) {
+					core_log.e("Decrypted private key is null, aborting decryption.");
+					break;
+				}
+				
+				if (currentPrivkey.equals(privkeyB64)) {
+					core_log.i("Decryption successful. Saving unencrypted key to disk.");
+					KeyManager.saveUnencryptedKeys(keyPair.getPrivate(), keyPair.getPublic());
+				} else {
+					core_log.e("Decrypted private key doesn't match current private key. Incorrect password?");
+				}
 				break;
 			case "c":
 			case "copyright":

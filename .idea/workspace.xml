@@ -1,20 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="79364940-6310-42d6-b582-6897c6aef7c0" name="Default" comment="Allow P2P clients to accept messages&#10;Add debug log level&#10;Bugfixes and optimizations">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/net/arccotangent/pacchat/net/p2p/P2PClientChecker.java" />
+    <list default="true" id="79364940-6310-42d6-b582-6897c6aef7c0" name="Default" comment="Update Gradle wrapper">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__org_bouncycastle_bcprov_jdk15on_1_54.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/modules/pacchat_main.iml" afterPath="$PROJECT_DIR$/.idea/modules/pacchat_main.iml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/modules/pacchat_test.iml" afterPath="$PROJECT_DIR$/.idea/modules/pacchat_test.iml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/build.gradle" afterPath="$PROJECT_DIR$/build.gradle" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/net/arccotangent/pacchat/Main.java" afterPath="$PROJECT_DIR$/src/main/java/net/arccotangent/pacchat/Main.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/net/arccotangent/pacchat/crypto/MsgCrypto.java" afterPath="$PROJECT_DIR$/src/main/java/net/arccotangent/pacchat/crypto/MsgCrypto.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/net/arccotangent/pacchat/filesystem/ContactManager.java" afterPath="$PROJECT_DIR$/src/main/java/net/arccotangent/pacchat/filesystem/ContactManager.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/net/arccotangent/pacchat/crypto/AES.java" afterPath="$PROJECT_DIR$/src/main/java/net/arccotangent/pacchat/crypto/AES.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/net/arccotangent/pacchat/crypto/RSA.java" afterPath="$PROJECT_DIR$/src/main/java/net/arccotangent/pacchat/crypto/RSA.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/net/arccotangent/pacchat/filesystem/KeyManager.java" afterPath="$PROJECT_DIR$/src/main/java/net/arccotangent/pacchat/filesystem/KeyManager.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/net/arccotangent/pacchat/logging/Logger.java" afterPath="$PROJECT_DIR$/src/main/java/net/arccotangent/pacchat/logging/Logger.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/net/arccotangent/pacchat/net/NetUtils.java" afterPath="$PROJECT_DIR$/src/main/java/net/arccotangent/pacchat/net/NetUtils.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/net/arccotangent/pacchat/net/p2p/P2PClient.java" afterPath="$PROJECT_DIR$/src/main/java/net/arccotangent/pacchat/net/p2p/P2PClient.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/net/arccotangent/pacchat/net/p2p/P2PConnectionHandler.java" afterPath="$PROJECT_DIR$/src/main/java/net/arccotangent/pacchat/net/p2p/P2PConnectionHandler.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/net/arccotangent/pacchat/net/p2p/P2PConnectionManager.java" afterPath="$PROJECT_DIR$/src/main/java/net/arccotangent/pacchat/net/p2p/P2PConnectionManager.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/net/arccotangent/pacchat/net/p2p/P2PServer.java" afterPath="$PROJECT_DIR$/src/main/java/net/arccotangent/pacchat/net/p2p/P2PServer.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/net/arccotangent/pacchat/net/p2p/PeerManager.java" afterPath="$PROJECT_DIR$/src/main/java/net/arccotangent/pacchat/net/p2p/PeerManager.java" />
     </list>
     <ignored path="pacchat.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -57,12 +53,25 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="Main.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="Main.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/net/arccotangent/pacchat/Main.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="14">
-              <caret line="473" column="59" selection-start-line="473" selection-start-column="59" selection-end-line="473" selection-end-column="59" />
+            <state relative-caret-position="300">
+              <caret line="639" column="26" selection-start-line="639" selection-start-column="26" selection-end-line="639" selection-end-column="26" />
               <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="KeyManager.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/net/arccotangent/pacchat/filesystem/KeyManager.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="252">
+              <caret line="63" column="32" selection-start-line="63" selection-start-column="32" selection-end-line="63" selection-end-column="32" />
+              <folding>
+                <element signature="imports" expanded="true" />
+                <element signature="e#12507#12553#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -73,8 +82,16 @@
             <state relative-caret-position="742">
               <caret line="82" column="47" selection-start-line="82" selection-start-column="47" selection-end-line="82" selection-end-column="47" />
               <folding>
-                <element signature="e#1475#1476#0" expanded="true" />
-                <element signature="e#1496#1497#0" expanded="true" />
+                <element signature="e#0#3272#0" expanded="false" />
+                <element signature="imports" expanded="false" />
+                <element signature="e#1315#1316#0" expanded="false" />
+                <element signature="e#1365#1366#0" expanded="false" />
+                <element signature="e#1400#1401#0" expanded="false" />
+                <element signature="e#1425#1426#0" expanded="false" />
+                <element signature="e#1475#1476#0" expanded="false" />
+                <element signature="e#1496#1497#0" expanded="false" />
+                <element signature="e#1527#1528#0" expanded="false" />
+                <element signature="e#1547#1548#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -83,11 +100,9 @@
       <file leaf-file-name="PeerManager.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/net/arccotangent/pacchat/net/p2p/PeerManager.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="238">
+            <state relative-caret-position="518">
               <caret line="64" column="56" selection-start-line="64" selection-start-column="56" selection-end-line="64" selection-end-column="56" />
-              <folding>
-                <element signature="e#0#3968#0" expanded="true" />
-              </folding>
+              <folding />
             </state>
           </provider>
         </entry>
@@ -97,17 +112,35 @@
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="476">
               <caret line="53" column="69" selection-start-line="53" selection-start-column="69" selection-end-line="53" selection-end-column="69" />
-              <folding />
+              <folding>
+                <element signature="e#0#2655#0" expanded="false" />
+                <element signature="imports" expanded="false" />
+                <element signature="e#1740#1741#0" expanded="false" />
+                <element signature="e#1760#1761#0" expanded="false" />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="P2PConnectionManager.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="P2PConnectionManager.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/net/arccotangent/pacchat/net/p2p/P2PConnectionManager.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="196">
-              <caret line="259" column="11" selection-start-line="259" selection-start-column="11" selection-end-line="259" selection-end-column="11" />
-              <folding />
+            <state relative-caret-position="3654">
+              <caret line="299" column="57" selection-start-line="299" selection-start-column="57" selection-end-line="299" selection-end-column="57" />
+              <folding>
+                <element signature="e#0#13365#0" expanded="false" />
+                <element signature="imports" expanded="false" />
+                <element signature="e#1700#1701#0" expanded="false" />
+                <element signature="e#1739#1740#0" expanded="false" />
+                <element signature="e#2947#2948#0" expanded="false" />
+                <element signature="e#2975#2976#0" expanded="false" />
+                <element signature="e#3785#3786#0" expanded="false" />
+                <element signature="e#3844#3845#0" expanded="false" />
+                <element signature="e#3897#3898#0" expanded="false" />
+                <element signature="e#3954#3955#0" expanded="false" />
+                <element signature="e#4108#4109#0" expanded="false" />
+                <element signature="e#4146#4147#0" expanded="false" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -137,12 +170,12 @@
   <component name="GradleLocalSettings">
     <option name="myGradleHomes">
       <map>
-        <entry key="$PROJECT_DIR$" value="$USER_HOME$/.gradle/wrapper/dists/gradle-3.1-bin/37qejo6a26ua35lyn7h1u9v2n/gradle-3.1" />
+        <entry key="$PROJECT_DIR$" value="/usr/share/java/gradle" />
       </map>
     </option>
     <option name="myGradleVersions">
       <map>
-        <entry key="$PROJECT_DIR$" value="3.1" />
+        <entry key="$PROJECT_DIR$" value="3.2.1" />
       </map>
     </option>
     <option name="availableProjects">
@@ -189,6 +222,11 @@
                 <option name="description" value="Assembles main classes." />
                 <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
                 <option name="name" value="classes" />
+              </ExternalTaskPojo>
+              <ExternalTaskPojo>
+                <option name="description" value="Displays the dependent components of components in root project 'pacchat'. [incubating]" />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
+                <option name="name" value="dependentComponents" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
                 <option name="description" value="Displays all buildscript dependencies declared in root project 'pacchat'." />
@@ -307,7 +345,7 @@
     </option>
     <option name="modificationStamps">
       <map>
-        <entry key="$PROJECT_DIR$" value="2952993253314" />
+        <entry key="$PROJECT_DIR$" value="2955155029237" />
       </map>
     </option>
     <option name="projectBuildClasspath">
@@ -329,73 +367,73 @@
               <option name="name" value="pacchat" />
               <option name="projectBuildClasspath">
                 <list>
-                  <option value="/usr/share/java/gradle/lib/gradle-model-core-3.1.jar" />
-                  <option value="/usr/share/java/gradle/lib/gradle-script-kotlin-0.3.2.jar" />
-                  <option value="/usr/share/java/gradle/lib/gradle-base-services-groovy-3.1.jar" />
-                  <option value="/usr/share/java/gradle/lib/gradle-base-services-3.1.jar" />
-                  <option value="/usr/share/java/gradle/lib/gradle-tooling-api-3.1.jar" />
-                  <option value="/usr/share/java/gradle/lib/gradle-installation-beacon-3.1.jar" />
-                  <option value="/usr/share/java/gradle/lib/gradle-native-3.1.jar" />
-                  <option value="/usr/share/java/gradle/lib/gradle-open-api-3.1.jar" />
+                  <option value="/usr/share/java/gradle/lib/gradle-base-services-3.2.1.jar" />
+                  <option value="/usr/share/java/gradle/lib/gradle-tooling-api-3.2.1.jar" />
+                  <option value="/usr/share/java/gradle/lib/gradle-logging-3.2.1.jar" />
+                  <option value="/usr/share/java/gradle/lib/gradle-resources-3.2.1.jar" />
+                  <option value="/usr/share/java/gradle/lib/gradle-script-kotlin-0.4.0.jar" />
+                  <option value="/usr/share/java/gradle/lib/gradle-jvm-services-3.2.1.jar" />
+                  <option value="/usr/share/java/gradle/lib/gradle-base-services-groovy-3.2.1.jar" />
+                  <option value="/usr/share/java/gradle/lib/gradle-launcher-3.2.1.jar" />
                   <option value="/usr/share/java/gradle/lib/ant-1.9.6.jar" />
                   <option value="/usr/share/java/gradle/lib/groovy-all-2.4.7.jar" />
-                  <option value="/usr/share/java/gradle/lib/gradle-core-3.1.jar" />
-                  <option value="/usr/share/java/gradle/lib/gradle-cli-3.1.jar" />
-                  <option value="/usr/share/java/gradle/lib/gradle-jvm-services-3.1.jar" />
-                  <option value="/usr/share/java/gradle/lib/gradle-model-groovy-3.1.jar" />
-                  <option value="/usr/share/java/gradle/lib/gradle-resources-3.1.jar" />
+                  <option value="/usr/share/java/gradle/lib/gradle-open-api-3.2.1.jar" />
+                  <option value="/usr/share/java/gradle/lib/gradle-core-3.2.1.jar" />
+                  <option value="/usr/share/java/gradle/lib/gradle-native-3.2.1.jar" />
+                  <option value="/usr/share/java/gradle/lib/gradle-ui-3.2.1.jar" />
+                  <option value="/usr/share/java/gradle/lib/gradle-process-services-3.2.1.jar" />
                   <option value="/usr/share/java/gradle/lib/ant-launcher-1.9.6.jar" />
-                  <option value="/usr/share/java/gradle/lib/gradle-wrapper-3.1.jar" />
-                  <option value="/usr/share/java/gradle/lib/gradle-ui-3.1.jar" />
-                  <option value="/usr/share/java/gradle/lib/gradle-messaging-3.1.jar" />
-                  <option value="/usr/share/java/gradle/lib/gradle-launcher-3.1.jar" />
-                  <option value="/usr/share/java/gradle/lib/gradle-docs-3.1.jar" />
-                  <option value="/usr/share/java/gradle/lib/gradle-logging-3.1.jar" />
-                  <option value="/usr/share/java/gradle/lib/gradle-process-services-3.1.jar" />
-                  <option value="/usr/share/java/gradle/lib/plugins/gradle-ide-native-3.1.jar" />
-                  <option value="/usr/share/java/gradle/lib/plugins/gradle-language-groovy-3.1.jar" />
-                  <option value="/usr/share/java/gradle/lib/plugins/gradle-plugins-3.1.jar" />
-                  <option value="/usr/share/java/gradle/lib/plugins/gradle-platform-native-3.1.jar" />
+                  <option value="/usr/share/java/gradle/lib/gradle-model-core-3.2.1.jar" />
+                  <option value="/usr/share/java/gradle/lib/gradle-model-groovy-3.2.1.jar" />
+                  <option value="/usr/share/java/gradle/lib/gradle-cli-3.2.1.jar" />
+                  <option value="/usr/share/java/gradle/lib/gradle-docs-3.2.1.jar" />
+                  <option value="/usr/share/java/gradle/lib/gradle-messaging-3.2.1.jar" />
+                  <option value="/usr/share/java/gradle/lib/gradle-installation-beacon-3.2.1.jar" />
+                  <option value="/usr/share/java/gradle/lib/gradle-wrapper-3.2.1.jar" />
+                  <option value="/usr/share/java/gradle/lib/plugins/gradle-ide-native-3.2.1.jar" />
+                  <option value="/usr/share/java/gradle/lib/plugins/gradle-code-quality-3.2.1.jar" />
+                  <option value="/usr/share/java/gradle/lib/plugins/gradle-ide-play-3.2.1.jar" />
                   <option value="/usr/share/java/gradle/lib/plugins/ivy-2.2.0.jar" />
-                  <option value="/usr/share/java/gradle/lib/plugins/gradle-build-init-3.1.jar" />
-                  <option value="/usr/share/java/gradle/lib/plugins/gradle-ide-play-3.1.jar" />
-                  <option value="/usr/share/java/gradle/lib/plugins/gradle-antlr-3.1.jar" />
-                  <option value="/usr/share/java/gradle/lib/plugins/gradle-plugin-use-3.1.jar" />
-                  <option value="/usr/share/java/gradle/lib/plugins/gradle-testing-native-3.1.jar" />
-                  <option value="/usr/share/java/gradle/lib/plugins/gradle-plugin-development-3.1.jar" />
-                  <option value="/usr/share/java/gradle/lib/plugins/gradle-platform-base-3.1.jar" />
-                  <option value="/usr/share/java/gradle/lib/plugins/gradle-publish-3.1.jar" />
-                  <option value="/usr/share/java/gradle/lib/plugins/gradle-language-jvm-3.1.jar" />
-                  <option value="/usr/share/java/gradle/lib/plugins/gradle-ide-3.1.jar" />
-                  <option value="/usr/share/java/gradle/lib/plugins/gradle-code-quality-3.1.jar" />
-                  <option value="/usr/share/java/gradle/lib/plugins/gradle-ear-3.1.jar" />
-                  <option value="/usr/share/java/gradle/lib/plugins/gradle-dependency-management-3.1.jar" />
-                  <option value="/usr/share/java/gradle/lib/plugins/gradle-platform-play-3.1.jar" />
-                  <option value="/usr/share/java/gradle/lib/plugins/gradle-resources-sftp-3.1.jar" />
-                  <option value="/usr/share/java/gradle/lib/plugins/gradle-resources-http-3.1.jar" />
-                  <option value="/usr/share/java/gradle/lib/plugins/gradle-task-cache-http-3.1.jar" />
-                  <option value="/usr/share/java/gradle/lib/plugins/gradle-build-comparison-3.1.jar" />
-                  <option value="/usr/share/java/gradle/lib/plugins/gradle-resources-s3-3.1.jar" />
-                  <option value="/usr/share/java/gradle/lib/plugins/gradle-testing-base-3.1.jar" />
-                  <option value="/usr/share/java/gradle/lib/plugins/gradle-language-native-3.1.jar" />
-                  <option value="/usr/share/java/gradle/lib/plugins/gradle-reporting-3.1.jar" />
-                  <option value="/usr/share/java/gradle/lib/plugins/gradle-platform-jvm-3.1.jar" />
-                  <option value="/usr/share/java/gradle/lib/plugins/gradle-osgi-3.1.jar" />
-                  <option value="/usr/share/java/gradle/lib/plugins/gradle-signing-3.1.jar" />
-                  <option value="/usr/share/java/gradle/lib/plugins/gradle-test-kit-3.1.jar" />
-                  <option value="/usr/share/java/gradle/lib/plugins/gradle-tooling-api-builders-3.1.jar" />
-                  <option value="/usr/share/java/gradle/lib/plugins/gradle-announce-3.1.jar" />
-                  <option value="/usr/share/java/gradle/lib/plugins/gradle-language-scala-3.1.jar" />
-                  <option value="/usr/share/java/gradle/lib/plugins/gradle-composite-builds-3.1.jar" />
-                  <option value="/usr/share/java/gradle/lib/plugins/gradle-jacoco-3.1.jar" />
-                  <option value="/usr/share/java/gradle/lib/plugins/gradle-maven-3.1.jar" />
-                  <option value="/usr/share/java/gradle/lib/plugins/gradle-language-java-3.1.jar" />
-                  <option value="/usr/share/java/gradle/lib/plugins/gradle-jetty-3.1.jar" />
-                  <option value="/usr/share/java/gradle/lib/plugins/gradle-testing-jvm-3.1.jar" />
-                  <option value="/usr/share/java/gradle/lib/plugins/gradle-scala-3.1.jar" />
-                  <option value="/usr/share/java/gradle/lib/plugins/gradle-ivy-3.1.jar" />
-                  <option value="/usr/share/java/gradle/lib/plugins/gradle-javascript-3.1.jar" />
-                  <option value="/usr/share/java/gradle/lib/plugins/gradle-diagnostics-3.1.jar" />
+                  <option value="/usr/share/java/gradle/lib/plugins/gradle-composite-builds-3.2.1.jar" />
+                  <option value="/usr/share/java/gradle/lib/plugins/gradle-platform-jvm-3.2.1.jar" />
+                  <option value="/usr/share/java/gradle/lib/plugins/gradle-resources-http-3.2.1.jar" />
+                  <option value="/usr/share/java/gradle/lib/plugins/gradle-ear-3.2.1.jar" />
+                  <option value="/usr/share/java/gradle/lib/plugins/gradle-jetty-3.2.1.jar" />
+                  <option value="/usr/share/java/gradle/lib/plugins/gradle-osgi-3.2.1.jar" />
+                  <option value="/usr/share/java/gradle/lib/plugins/gradle-diagnostics-3.2.1.jar" />
+                  <option value="/usr/share/java/gradle/lib/plugins/gradle-scala-3.2.1.jar" />
+                  <option value="/usr/share/java/gradle/lib/plugins/gradle-announce-3.2.1.jar" />
+                  <option value="/usr/share/java/gradle/lib/plugins/gradle-dependency-management-3.2.1.jar" />
+                  <option value="/usr/share/java/gradle/lib/plugins/gradle-plugin-development-3.2.1.jar" />
+                  <option value="/usr/share/java/gradle/lib/plugins/gradle-maven-3.2.1.jar" />
+                  <option value="/usr/share/java/gradle/lib/plugins/gradle-ide-3.2.1.jar" />
+                  <option value="/usr/share/java/gradle/lib/plugins/gradle-plugins-3.2.1.jar" />
+                  <option value="/usr/share/java/gradle/lib/plugins/gradle-antlr-3.2.1.jar" />
+                  <option value="/usr/share/java/gradle/lib/plugins/gradle-testing-native-3.2.1.jar" />
+                  <option value="/usr/share/java/gradle/lib/plugins/gradle-publish-3.2.1.jar" />
+                  <option value="/usr/share/java/gradle/lib/plugins/gradle-jacoco-3.2.1.jar" />
+                  <option value="/usr/share/java/gradle/lib/plugins/gradle-ivy-3.2.1.jar" />
+                  <option value="/usr/share/java/gradle/lib/plugins/gradle-language-native-3.2.1.jar" />
+                  <option value="/usr/share/java/gradle/lib/plugins/gradle-platform-play-3.2.1.jar" />
+                  <option value="/usr/share/java/gradle/lib/plugins/gradle-build-init-3.2.1.jar" />
+                  <option value="/usr/share/java/gradle/lib/plugins/gradle-test-kit-3.2.1.jar" />
+                  <option value="/usr/share/java/gradle/lib/plugins/gradle-tooling-api-builders-3.2.1.jar" />
+                  <option value="/usr/share/java/gradle/lib/plugins/gradle-language-scala-3.2.1.jar" />
+                  <option value="/usr/share/java/gradle/lib/plugins/gradle-reporting-3.2.1.jar" />
+                  <option value="/usr/share/java/gradle/lib/plugins/gradle-signing-3.2.1.jar" />
+                  <option value="/usr/share/java/gradle/lib/plugins/gradle-resources-sftp-3.2.1.jar" />
+                  <option value="/usr/share/java/gradle/lib/plugins/gradle-javascript-3.2.1.jar" />
+                  <option value="/usr/share/java/gradle/lib/plugins/gradle-resources-s3-3.2.1.jar" />
+                  <option value="/usr/share/java/gradle/lib/plugins/gradle-language-jvm-3.2.1.jar" />
+                  <option value="/usr/share/java/gradle/lib/plugins/gradle-language-groovy-3.2.1.jar" />
+                  <option value="/usr/share/java/gradle/lib/plugins/gradle-testing-jvm-3.2.1.jar" />
+                  <option value="/usr/share/java/gradle/lib/plugins/gradle-language-java-3.2.1.jar" />
+                  <option value="/usr/share/java/gradle/lib/plugins/gradle-platform-native-3.2.1.jar" />
+                  <option value="/usr/share/java/gradle/lib/plugins/gradle-platform-base-3.2.1.jar" />
+                  <option value="/usr/share/java/gradle/lib/plugins/gradle-build-comparison-3.2.1.jar" />
+                  <option value="/usr/share/java/gradle/lib/plugins/gradle-plugin-use-3.2.1.jar" />
+                  <option value="/usr/share/java/gradle/lib/plugins/gradle-task-cache-http-3.2.1.jar" />
+                  <option value="/usr/share/java/gradle/lib/plugins/gradle-testing-base-3.2.1.jar" />
                   <option value="$PROJECT_DIR$/buildSrc/src/main/java" />
                   <option value="$PROJECT_DIR$/buildSrc/src/main/groovy" />
                 </list>
@@ -415,8 +453,6 @@
         <option value="$PROJECT_DIR$/LICENSE" />
         <option value="$PROJECT_DIR$/src/main/java/net/arccotangent/pacchat/crypto/DecryptStatus.java" />
         <option value="$PROJECT_DIR$/src/main/java/net/arccotangent/pacchat/crypto/MsgCryptoDecryptStatus.java" />
-        <option value="$PROJECT_DIR$/src/main/java/net/arccotangent/pacchat/crypto/RSA.java" />
-        <option value="$PROJECT_DIR$/src/main/java/net/arccotangent/pacchat/crypto/AES.java" />
         <option value="$PROJECT_DIR$/src/main/java/net/arccotangent/pacchat/StandardInput.java" />
         <option value="$PROJECT_DIR$/src/main/java/net/arccotangent/pacchat/crypto/PacchatMessage.java" />
         <option value="$PROJECT_DIR$/src/main/java/net/arccotangent/pacchat/KeyUpdate.java" />
@@ -428,25 +464,27 @@
         <option value="$PROJECT_DIR$/src/main/java/net/arccotangent/pacchat/net/UPNPManager.java" />
         <option value="$PROJECT_DIR$/src/main/java/net/arccotangent/pacchat/net/p2p/Peer.java" />
         <option value="$PROJECT_DIR$/README.md" />
-        <option value="$PROJECT_DIR$/build.gradle" />
         <option value="$PROJECT_DIR$/src/main/java/net/arccotangent/pacchat/net/ConnectionHandler.java" />
         <option value="$PROJECT_DIR$/PROTOCOL.md" />
         <option value="$PROJECT_DIR$/src/main/java/net/arccotangent/pacchat/net/Server.java" />
         <option value="$PROJECT_DIR$/src/main/java/net/arccotangent/pacchat/net/Client.java" />
         <option value="$PROJECT_DIR$/P2P-PROTOCOL.md" />
         <option value="$PROJECT_DIR$/src/main/java/net/arccotangent/pacchat/gui/PacchatGUI.java" />
-        <option value="$PROJECT_DIR$/src/main/java/net/arccotangent/pacchat/filesystem/KeyManager.java" />
         <option value="$PROJECT_DIR$/src/main/java/net/arccotangent/pacchat/net/p2p/PeerManager.java" />
         <option value="$PROJECT_DIR$/src/main/java/net/arccotangent/pacchat/net/p2p/P2PServer.java" />
         <option value="$PROJECT_DIR$/src/main/java/net/arccotangent/pacchat/filesystem/ContactManager.java" />
         <option value="$PROJECT_DIR$/src/main/java/net/arccotangent/pacchat/crypto/MsgCrypto.java" />
         <option value="$PROJECT_DIR$/src/main/java/net/arccotangent/pacchat/net/NetUtils.java" />
-        <option value="$PROJECT_DIR$/src/main/java/net/arccotangent/pacchat/logging/Logger.java" />
         <option value="$PROJECT_DIR$/src/main/java/net/arccotangent/pacchat/net/p2p/P2PClientChecker.java" />
-        <option value="$PROJECT_DIR$/src/main/java/net/arccotangent/pacchat/Main.java" />
         <option value="$PROJECT_DIR$/src/main/java/net/arccotangent/pacchat/net/p2p/P2PConnectionHandler.java" />
         <option value="$PROJECT_DIR$/src/main/java/net/arccotangent/pacchat/net/p2p/P2PClient.java" />
         <option value="$PROJECT_DIR$/src/main/java/net/arccotangent/pacchat/net/p2p/P2PConnectionManager.java" />
+        <option value="$PROJECT_DIR$/build.gradle" />
+        <option value="$PROJECT_DIR$/src/main/java/net/arccotangent/pacchat/logging/Logger.java" />
+        <option value="$PROJECT_DIR$/src/main/java/net/arccotangent/pacchat/crypto/AES.java" />
+        <option value="$PROJECT_DIR$/src/main/java/net/arccotangent/pacchat/crypto/RSA.java" />
+        <option value="$PROJECT_DIR$/src/main/java/net/arccotangent/pacchat/Main.java" />
+        <option value="$PROJECT_DIR$/src/main/java/net/arccotangent/pacchat/filesystem/KeyManager.java" />
       </list>
     </option>
   </component>
@@ -486,8 +524,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
-      <pane id="PackagesPane" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -687,10 +723,6 @@
               <option name="myItemId" value="gui" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="PacchatGUI" />
-              <option name="myItemType" value="com.intellij.uiDesigner.projectView.FormNode" />
-            </PATH_ELEMENT>
           </PATH>
           <PATH>
             <PATH_ELEMENT>
@@ -754,7 +786,9 @@
           </PATH>
         </subPane>
       </pane>
+      <pane id="Scope" />
       <pane id="Scratches" />
+      <pane id="PackagesPane" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -763,7 +797,7 @@
     <property name="project.structure.side.proportion" value="0.2" />
     <property name="last_opened_file_path" value="$USER_HOME$/AndroidStudioProjects/SMSNuke" />
     <property name="external.system.task.project.file.to.start" value="$PROJECT_DIR$/build.gradle" />
-    <property name="settings.editor.selected.configurable" value="project.propGUI" />
+    <property name="settings.editor.selected.configurable" value="reference.settingsdialog.IDE.editor.colors.Font" />
     <property name="settings.editor.splitter.proportion" value="0.2" />
   </component>
   <component name="RunManager" selected="Application.PacChat">
@@ -1130,20 +1164,6 @@
       <option name="presentableId" value="Default" />
       <updated>1474688938825</updated>
     </task>
-    <task id="LOCAL-00002" summary="Add command aliases">
-      <created>1475001030647</created>
-      <option name="number" value="00002" />
-      <option name="presentableId" value="LOCAL-00002" />
-      <option name="project" value="LOCAL" />
-      <updated>1475001030647</updated>
-    </task>
-    <task id="LOCAL-00003" summary="Add signing/verification&#10;Update Gradle wrapper">
-      <created>1476040041134</created>
-      <option name="number" value="00003" />
-      <option name="presentableId" value="LOCAL-00003" />
-      <option name="project" value="LOCAL" />
-      <updated>1476040041134</updated>
-    </task>
     <task id="LOCAL-00004" summary="Add log coloring&#10;Make message decryption code easier to read">
       <created>1476466844909</created>
       <option name="number" value="00004" />
@@ -1473,7 +1493,21 @@
       <option name="project" value="LOCAL" />
       <updated>1479922050177</updated>
     </task>
-    <option name="localTasksCounter" value="51" />
+    <task id="LOCAL-00051" summary="Allow P2P clients to accept messages&#10;Add debug log level&#10;Bugfixes and optimizations">
+      <created>1480181078349</created>
+      <option name="number" value="00051" />
+      <option name="presentableId" value="LOCAL-00051" />
+      <option name="project" value="LOCAL" />
+      <updated>1480181078351</updated>
+    </task>
+    <task id="LOCAL-00052" summary="Update Gradle wrapper">
+      <created>1480516032145</created>
+      <option name="number" value="00052" />
+      <option name="presentableId" value="LOCAL-00052" />
+      <option name="project" value="LOCAL" />
+      <updated>1480516032145</updated>
+    </task>
+    <option name="localTasksCounter" value="53" />
     <servers />
   </component>
   <component name="TodoView">
@@ -1491,7 +1525,6 @@
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3289256" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3289256" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3289256" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
@@ -1514,6 +1547,7 @@
       <window_info id="Dependency Viewer" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3289256" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Inspection Results" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3289256" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3289256" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Documentation" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="FLOATING" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" x="100" y="100" width="1166" height="532" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3289256" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -1582,7 +1616,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Change server port to 14871" />
     <MESSAGE value="Bugfixes and optimizations&#10;Begin P2P development" />
     <MESSAGE value="Create peer manager&#10;Begin 'getaddr' implementation&#10;Update P2P-PROTOCOL.md" />
     <MESSAGE value="Complete 'getaddr'&#10;Update P2P protocol documentation" />
@@ -1607,7 +1640,8 @@
     <MESSAGE value="Add manual P2P connection&#10;Print error message if key fingerprint computation fails&#10;Prevent enabling P2P if there are no peers connected" />
     <MESSAGE value="Fix contact error dialog text" />
     <MESSAGE value="Allow P2P clients to accept messages&#10;Add debug log level&#10;Bugfixes and optimizations" />
-    <option name="LAST_COMMIT_MESSAGE" value="Allow P2P clients to accept messages&#10;Add debug log level&#10;Bugfixes and optimizations" />
+    <MESSAGE value="Update Gradle wrapper" />
+    <option name="LAST_COMMIT_MESSAGE" value="Update Gradle wrapper" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
   </component>
   <component name="XDebuggerManager">
@@ -1627,35 +1661,6 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/main/java/net/arccotangent/pacchat/filesystem/KeyManager.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="56">
-          <caret line="15" column="13" selection-start-line="15" selection-start-column="13" selection-end-line="15" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/net/arccotangent/pacchat/net/Server.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="588">
-          <caret line="50" column="106" selection-start-line="50" selection-start-column="106" selection-end-line="50" selection-end-column="106" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/net/arccotangent/pacchat/Main.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1190">
-          <caret line="96" column="60" selection-start-line="96" selection-start-column="60" selection-end-line="96" selection-end-column="60" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/net/arccotangent/pacchat/logging/Logger.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/net/arccotangent/pacchat/crypto/RSA.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1106">
@@ -1766,20 +1771,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/net/arccotangent/pacchat/crypto/PacchatMessage.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="56">
-          <caret line="19" column="13" selection-start-line="19" selection-start-column="13" selection-end-line="19" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/net/arccotangent/pacchat/crypto/AES.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="644">
-          <caret line="65" column="46" selection-start-line="65" selection-start-column="46" selection-end-line="65" selection-end-column="46" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/net/arccotangent/pacchat/gui/PacchatGUI.form">
       <provider editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -1791,13 +1782,6 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/net/arccotangent/pacchat/net/p2p/Peer.java" />
-    <entry file="file://$PROJECT_DIR$/build.gradle">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="336">
-          <caret line="24" column="1" selection-start-line="24" selection-start-column="1" selection-end-line="24" selection-end-column="1" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/PROTOCOL.md">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="56">
@@ -1833,36 +1817,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/net/arccotangent/pacchat/net/Server.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="196">
-          <caret line="33" column="42" selection-start-line="33" selection-start-column="42" selection-end-line="33" selection-end-column="42" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/net/arccotangent/pacchat/crypto/RSA.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-196">
-          <caret line="31" column="45" selection-start-line="31" selection-start-column="45" selection-end-line="31" selection-end-column="45" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/net/arccotangent/pacchat/filesystem/ContactManager.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="896">
-          <caret line="100" column="69" selection-start-line="100" selection-start-column="69" selection-end-line="100" selection-end-column="69" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/net/arccotangent/pacchat/net/NetUtils.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="140">
-          <caret line="35" column="43" selection-start-line="35" selection-start-column="43" selection-end-line="35" selection-end-column="43" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/net/arccotangent/pacchat/net/KeyUpdateClient.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="160">
@@ -1894,18 +1848,114 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/net/arccotangent/pacchat/filesystem/KeyManager.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="244">
-          <caret line="230" column="12" selection-start-line="230" selection-start-column="12" selection-end-line="230" selection-end-column="12" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/net/arccotangent/pacchat/gui/PacchatGUI.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2296">
           <caret line="232" column="24" selection-start-line="232" selection-start-column="24" selection-end-line="232" selection-end-column="24" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/net/arccotangent/pacchat/net/p2p/P2PServer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="742">
+          <caret line="82" column="47" selection-start-line="82" selection-start-column="47" selection-end-line="82" selection-end-column="47" />
+          <folding>
+            <element signature="e#0#3272#0" expanded="false" />
+            <element signature="imports" expanded="false" />
+            <element signature="e#1315#1316#0" expanded="false" />
+            <element signature="e#1365#1366#0" expanded="false" />
+            <element signature="e#1400#1401#0" expanded="false" />
+            <element signature="e#1425#1426#0" expanded="false" />
+            <element signature="e#1475#1476#0" expanded="false" />
+            <element signature="e#1496#1497#0" expanded="false" />
+            <element signature="e#1527#1528#0" expanded="false" />
+            <element signature="e#1547#1548#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/net/arccotangent/pacchat/net/p2p/P2PClient.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="313">
+          <caret line="54" column="4" selection-start-line="54" selection-start-column="4" selection-end-line="54" selection-end-column="4" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/net/arccotangent/pacchat/net/p2p/P2PConnectionManager.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3654">
+          <caret line="299" column="57" selection-start-line="299" selection-start-column="57" selection-end-line="299" selection-end-column="57" />
+          <folding>
+            <element signature="e#0#13365#0" expanded="false" />
+            <element signature="imports" expanded="false" />
+            <element signature="e#1700#1701#0" expanded="false" />
+            <element signature="e#1739#1740#0" expanded="false" />
+            <element signature="e#2947#2948#0" expanded="false" />
+            <element signature="e#2975#2976#0" expanded="false" />
+            <element signature="e#3785#3786#0" expanded="false" />
+            <element signature="e#3844#3845#0" expanded="false" />
+            <element signature="e#3897#3898#0" expanded="false" />
+            <element signature="e#3954#3955#0" expanded="false" />
+            <element signature="e#4108#4109#0" expanded="false" />
+            <element signature="e#4146#4147#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/net/arccotangent/pacchat/net/p2p/P2PConnectionHandler.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="476">
+          <caret line="53" column="69" selection-start-line="53" selection-start-column="69" selection-end-line="53" selection-end-column="69" />
+          <folding>
+            <element signature="e#0#2655#0" expanded="false" />
+            <element signature="imports" expanded="false" />
+            <element signature="e#1740#1741#0" expanded="false" />
+            <element signature="e#1760#1761#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.bouncycastle/bcprov-jdk15on/1.54/27cf7631a904e6b98d9842db13e09a22e524eee4/bcprov-jdk15on-1.54-sources.jar!/org/bouncycastle/jcajce/provider/symmetric/PBEPBKDF2.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="14">
+          <caret line="27" column="13" selection-start-line="27" selection-start-column="13" selection-end-line="27" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.bouncycastle/bcprov-jdk15on/1.54/27cf7631a904e6b98d9842db13e09a22e524eee4/bcprov-jdk15on-1.54-sources.jar!/org/bouncycastle/jcajce/provider/symmetric/PBEPKCS12.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="56">
+          <caret line="15" column="13" selection-start-line="15" selection-start-column="13" selection-end-line="15" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.bouncycastle/bcprov-jdk15on/1.54/27cf7631a904e6b98d9842db13e09a22e524eee4/bcprov-jdk15on-1.54-sources.jar!/org/bouncycastle/jcajce/provider/symmetric/IDEA.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="56">
+          <caret line="29" column="19" selection-start-line="29" selection-start-column="19" selection-end-line="29" selection-end-column="19" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.bouncycastle/bcprov-jdk15on/1.54/27cf7631a904e6b98d9842db13e09a22e524eee4/bcprov-jdk15on-1.54-sources.jar!/org/bouncycastle/jce/provider/BouncyCastleProvider.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="76">
+          <caret line="43" column="19" selection-start-line="43" selection-start-column="19" selection-end-line="43" selection-end-column="19" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/build.gradle">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="477">
+          <caret line="40" column="1" selection-start-line="40" selection-start-column="1" selection-end-line="40" selection-end-column="1" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/net/arccotangent/pacchat/net/p2p/PeerManager.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="518">
+          <caret line="64" column="56" selection-start-line="64" selection-start-column="56" selection-end-line="64" selection-end-column="56" />
           <folding />
         </state>
       </provider>
@@ -1918,73 +1968,85 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/net/arccotangent/pacchat/net/p2p/P2PClientChecker.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/net/arccotangent/pacchat/crypto/AES.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="420">
-          <caret line="45" column="12" selection-start-line="45" selection-start-column="12" selection-end-line="45" selection-end-column="12" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/net/arccotangent/pacchat/net/p2p/P2PServer.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="742">
-          <caret line="82" column="47" selection-start-line="82" selection-start-column="47" selection-end-line="82" selection-end-column="47" />
-          <folding>
-            <element signature="e#1475#1476#0" expanded="true" />
-            <element signature="e#1496#1497#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/net/arccotangent/pacchat/net/p2p/P2PConnectionHandler.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="476">
-          <caret line="53" column="69" selection-start-line="53" selection-start-column="69" selection-end-line="53" selection-end-column="69" />
+        <state relative-caret-position="6">
+          <caret line="38" column="38" selection-start-line="38" selection-start-column="38" selection-end-line="38" selection-end-column="38" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/net/arccotangent/pacchat/net/p2p/PeerManager.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/net/arccotangent/pacchat/crypto/RSA.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="238">
-          <caret line="64" column="56" selection-start-line="64" selection-start-column="56" selection-end-line="64" selection-end-column="56" />
-          <folding>
-            <element signature="e#0#3968#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="140">
+          <caret line="31" column="12" selection-start-line="31" selection-start-column="12" selection-end-line="31" selection-end-column="12" />
+          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/net/arccotangent/pacchat/net/p2p/P2PClient.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/net/arccotangent/pacchat/crypto/PacchatMessage.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="313">
-          <caret line="54" column="4" selection-start-line="54" selection-start-column="4" selection-end-line="54" selection-end-column="4" />
+        <state relative-caret-position="294">
+          <caret line="45" column="6" selection-start-line="45" selection-start-column="6" selection-end-line="45" selection-end-column="6" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/net/arccotangent/pacchat/filesystem/ContactManager.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1148">
+          <caret line="100" column="69" selection-start-line="100" selection-start-column="69" selection-end-line="100" selection-end-column="69" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/net/arccotangent/pacchat/logging/Logger.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="154">
-          <caret line="29" column="110" selection-start-line="29" selection-start-column="110" selection-end-line="29" selection-end-column="110" />
+        <state relative-caret-position="-64">
+          <caret line="29" column="40" selection-start-line="29" selection-start-column="40" selection-end-line="29" selection-end-column="40" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/net/arccotangent/pacchat/net/NetUtils.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="300">
+          <caret line="117" column="57" selection-start-line="117" selection-start-column="57" selection-end-line="117" selection-end-column="57" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/net/arccotangent/pacchat/net/Server.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="196">
+          <caret line="33" column="42" selection-start-line="33" selection-start-column="42" selection-end-line="33" selection-end-column="42" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/net/arccotangent/pacchat/net/p2p/P2PClientChecker.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="323">
+          <caret line="45" column="12" selection-start-line="45" selection-start-column="12" selection-end-line="45" selection-end-column="12" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/net/arccotangent/pacchat/filesystem/KeyManager.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="252">
+          <caret line="63" column="32" selection-start-line="63" selection-start-column="32" selection-end-line="63" selection-end-column="32" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#12507#12553#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/net/arccotangent/pacchat/Main.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="14">
-          <caret line="473" column="59" selection-start-line="473" selection-start-column="59" selection-end-line="473" selection-end-column="59" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/net/arccotangent/pacchat/net/p2p/P2PConnectionManager.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="196">
-          <caret line="259" column="11" selection-start-line="259" selection-start-column="11" selection-end-line="259" selection-end-column="11" />
+        <state relative-caret-position="300">
+          <caret line="639" column="26" selection-start-line="639" selection-start-column="26" selection-end-line="639" selection-end-column="26" />
           <folding />
         </state>
       </provider>
