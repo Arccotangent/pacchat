@@ -30,10 +30,10 @@ class AES {
 	
 	static SecretKey generateAESKey() {
 		try {
-			aes_log.d("Generating 128 bit AES key.");
+			aes_log.d("Generating 256 bit AES key.");
 			
 			KeyGenerator gen = KeyGenerator.getInstance("AES", "BC");
-			gen.init(128);
+			gen.init(256);
 			return gen.generateKey();
 		} catch (NoSuchAlgorithmException | NoSuchProviderException e) {
 			aes_log.e("Error while generating AES key!");
