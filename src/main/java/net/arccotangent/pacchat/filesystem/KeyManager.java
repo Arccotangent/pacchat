@@ -286,6 +286,7 @@ public class KeyManager {
 		return null;
 	}
 	
+	/*
 	@Deprecated
 	public static KeyPair loadRSAKeys() {
 		try {
@@ -310,6 +311,7 @@ public class KeyManager {
 		}
 		return null;
 	}
+	*/
 	
 	public static PublicKey loadKeyByIP(String ip_address) {
 		km_log.i("Loading public key for " + ip_address);

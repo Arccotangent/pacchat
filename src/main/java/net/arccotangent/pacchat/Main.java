@@ -39,7 +39,7 @@ import java.util.Scanner;
 
 public class Main {
 	private static final Logger core_log = new Logger("CORE");
-	public static final String VERSION = "0.2-B18";
+	public static final String VERSION = "0.2-B19";
 	private static KeyPair keyPair;
 	private static final String ANSI_BOLD = "\u001B[1m";
 	private static final String ANSI_BLUE = "\u001B[34m";
@@ -305,8 +305,14 @@ public class Main {
 								P2PConnectionManager.sendChat(msg, KeyManager.loadKeyByIP(cmd[1]), keyPair.getPrivate());
 							else
 								core_log.e("Target's key does not exist. You can try to download their key using by running 'getkey " + cmd[1] + "'");
-						} else
-							Client.sendMessage(msg, cmd[1]);
+						} else {
+							boolean success = Client.sendMessage(msg, cmd[1]);
+							if (success) {
+								core_log.i("Message sent successfully!");
+							} else {
+								core_log.e("Message was not sent successfully!");
+							}
+						}
 					} else if (buf.equals(",")) {
 						core_log.i("Message cancelled.");
 					}
@@ -316,8 +322,6 @@ public class Main {
 				break;
 			case "help":
 				printHelpMsg();
-				break;
-			case "":
 				break;
 			case "r":
 			case "reply":
@@ -347,7 +351,12 @@ public class Main {
 					core_log.i("Message accepted, attempting to send to target.");
 					String msg = msgBuilder.toString();
 					//TODO reply over P2P
-					Client.sendMessage(msg, server.getLastSender());
+					boolean success = Client.sendMessage(msg, server.getLastSender());
+					if (success) {
+						core_log.i("Message sent successfully!");
+					} else {
+						core_log.e("Message was not sent successfully!");
+					}
 				} else if (buf.equals(",")) {
 					core_log.i("Message cancelled.");
 				}
@@ -654,6 +663,8 @@ public class Main {
 			case "c":
 			case "copyright":
 				printFullCopyright();
+				break;
+			case "":
 				break;
 			default:
 				core_log.e("Invalid chat command!");
