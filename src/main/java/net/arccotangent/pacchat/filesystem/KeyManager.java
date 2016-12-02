@@ -25,7 +25,6 @@ import org.apache.commons.codec.binary.Hex;
 
 import javax.crypto.*;
 import javax.crypto.spec.PBEKeySpec;
-import javax.crypto.spec.PBEParameterSpec;
 import java.io.*;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -46,8 +45,8 @@ public class KeyManager {
 	private static final File privkeyFile = new File(installationPath + File.separator + "local.priv");
 	private static final File pubkeyFile = new File(installationPath + File.separator + "local.pub");
 	
-	private static String PBE_algorithm = "PBEWithSHAAnd3-KeyTripleDES-CBC";
-	private static final int PBE_iterations = 25000;
+	private static String PBE_algorithm = "PBEWithSHA1AndDES";
+	private static final int PBE_iterations = 160000;
 	private static final int RSA_bitsize = 4096;
 	
 	private static byte[] generateSalt() {
@@ -78,18 +77,17 @@ public class KeyManager {
 		km_log.d("PBE Algorithm = " + PBE_algorithm);
 		km_log.d("PBE iteration count = " + PBE_iterations);
 		try {
-			PBEKeySpec keySpec = new PBEKeySpec(password);
 			byte[] salt = generateSalt();
-			PBEParameterSpec params = new PBEParameterSpec(salt, PBE_iterations);
+			PBEKeySpec keySpec = new PBEKeySpec(password, salt, PBE_iterations);
 			SecretKeyFactory keyFactory = SecretKeyFactory.getInstance(PBE_algorithm, "BC");
 			SecretKey key = keyFactory.generateSecret(keySpec);
 			
 			Cipher cipher = Cipher.getInstance(PBE_algorithm, "BC");
-			cipher.init(Cipher.ENCRYPT_MODE, key, params);
+			cipher.init(Cipher.ENCRYPT_MODE, key);
 			byte[] encryptedPrivkey = cipher.doFinal(Base64.decodeBase64(privkeyB64));
 			
 			return "1\n" + Base64.encodeBase64String(salt) + "\n" + Base64.encodeBase64String(encryptedPrivkey);
-		} catch (NoSuchAlgorithmException | NoSuchProviderException | InvalidKeySpecException | NoSuchPaddingException | InvalidKeyException | InvalidAlgorithmParameterException | IllegalBlockSizeException | BadPaddingException e) {
+		} catch (NoSuchAlgorithmException | NoSuchProviderException | InvalidKeySpecException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException e) {
 			km_log.e("Error encrypting private key!");
 			e.printStackTrace();
 		}
@@ -113,18 +111,17 @@ public class KeyManager {
 		}
 		
 		try {
-			PBEKeySpec keySpec = new PBEKeySpec(password);
-			PBEParameterSpec params = new PBEParameterSpec(salt, PBE_iterations);
+			PBEKeySpec keySpec = new PBEKeySpec(password, salt, PBE_iterations);
 			SecretKeyFactory keyFactory = SecretKeyFactory.getInstance(PBE_algorithm, "BC");
 			SecretKey key = keyFactory.generateSecret(keySpec);
 			
 			Cipher cipher = Cipher.getInstance(PBE_algorithm, "BC");
-			cipher.init(Cipher.DECRYPT_MODE, key, params);
+			cipher.init(Cipher.DECRYPT_MODE, key);
 			
 			byte[] privkey = cipher.doFinal(encryptedPrivkey);
 			
 			return Base64.encodeBase64String(privkey);
-		} catch (NoSuchAlgorithmException | NoSuchProviderException | InvalidKeySpecException | NoSuchPaddingException | InvalidKeyException | InvalidAlgorithmParameterException | IllegalBlockSizeException | BadPaddingException e) {
+		} catch (NoSuchAlgorithmException | NoSuchProviderException | InvalidKeySpecException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException e) {
 			km_log.e("Error decrypting private key!");
 			e.printStackTrace();
 			if (e instanceof BadPaddingException) {

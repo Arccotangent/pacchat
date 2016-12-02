@@ -40,7 +40,7 @@ public class Client {
 		return kuc_id;
 	}
 	
-	public static void sendMessage(String msg, String ip_address) {
+	public static boolean sendMessage(String msg, String ip_address) {
 		client_log.i("Sending message to " + ip_address);
 		client_log.i("Connecting to server...");
 		
@@ -67,19 +67,19 @@ public class Client {
 		} catch (SocketTimeoutException e) {
 			client_log.e("Connection to server timed out!");
 			e.printStackTrace();
-			return;
+			return false;
 		} catch (ConnectException e) {
 			client_log.e("Connection to server was refused!");
 			e.printStackTrace();
-			return;
+			return false;
 		} catch (UnknownHostException e) {
 			client_log.e("You entered an invalid IP address!");
 			e.printStackTrace();
-			return;
+			return false;
 		} catch (IOException e) {
 			client_log.e("Error connecting to server!");
 			e.printStackTrace();
-			return;
+			return false;
 		}
 		
 		try {
@@ -104,35 +104,43 @@ public class Client {
 			switch (ack) {
 				case "201 message acknowledgement":
 					client_log.i("Transmission successful, received server acknowledgement.");
-					break;
+					output.close();
+					input.close();
+					return true;
 				case "202 unable to decrypt":
 					client_log.e("Transmission failure! Server reports that the message could not be decrypted. Did your keys change? Asking recipient for key update.");
 					kuc_id++;
 					KeyUpdateClient kuc = new KeyUpdateClient(kuc_id, ip_address);
 					kuc.start();
-					break;
+					output.close();
+					input.close();
+					return false;
 				case "203 unable to verify":
 					client_log.w("**********************************************");
 					client_log.w("Transmission successful, but the receiving server reports that the authenticity of the message could not be verified!");
 					client_log.w("Someone may be tampering with your connection! This is an unlikely, but not impossible scenario!");
 					client_log.w("If you are sure the connection was not tampered with, consider downloading the key from the sender's server by running 'getkey " + ip_address + "'.");
 					client_log.w("**********************************************");
-					break;
+					output.close();
+					input.close();
+					return true;
 				case "400 invalid transmission header":
 					client_log.e("Transmission failure! Server reports that the message is invalid. Try updating your software and have the recipient do the same. If this does not fix the problem, report the error to developers.");
-					break;
+					output.close();
+					input.close();
+					return false;
 				default:
 					client_log.w("Server responded with unexpected code: " + ack);
 					client_log.w("Transmission might not have been successful.");
-					break;
+					output.close();
+					input.close();
+					return true;
 			}
-			
-			output.close();
-			input.close();
 		} catch (IOException e) {
 			client_log.e("Error sending message to recipient!");
 			e.printStackTrace();
 		}
+		return false;
 	}
 	
 }

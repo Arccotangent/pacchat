@@ -108,8 +108,8 @@ public class PacchatGUI extends JFrame {
 					P2PConnectionManager.sendChat(msg, KeyManager.loadKeyByIP(ip), Main.getKeypair().getPrivate());
 					messagePanel.append("\n[" + getTime() + "] You -> P2P Network -> " + ip + ": " + msg);
 				} else {
-					Client.sendMessage(msg, ip);
-					messagePanel.append("\n[" + getTime() + "] You -> " + ip + ": " + msg);
+					boolean success = Client.sendMessage(msg, ip);
+					messagePanel.append("\n[" + getTime() + "] " + (success ? "[SUCCESSFUL]" : "[FAILURE]") + " You -> " + ip + ": " + msg);
 				}
 				
 				JScrollBar verticalBar = messagePanelScroll.getVerticalScrollBar();
