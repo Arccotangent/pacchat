@@ -140,13 +140,12 @@ public class Main {
 		printCopyright();
 		System.out.println();
 		core_log.i("Initializing PacChat " + VERSION);
-		core_log.d("Registering Bouncy Castle provider.");
+		core_log.d("Registering Bouncy Castle cryptography provider.");
 		Security.addProvider(new BouncyCastleProvider());
 		core_log.i("Creating installation if it doesn't already exist.");
 		KeyManager.createInstallationIfNotExist(); //This function handles everything from the installation to key gen
 
 		core_log.i("Loading keys from disk.");
-		
 		PrivateKey privkey;
 		
 		if (KeyManager.keysEncrypted()) {
@@ -196,11 +195,17 @@ public class Main {
 			core_log.d("decryptedKey = " + decryptedKey);
 		}
 		
+		core_log.i("Testing key fingerprinting...");
+		String fingerprint = KeyManager.fingerprint(keyPair.getPublic());
+		core_log.d("fingerprint = " + fingerprint);
+		
 		core_log.i("Crypto tests complete.");
 
+		core_log.i("Retrieving IP addresses.");
 		NetUtils.updateLocalIPAddr();
 		NetUtils.updateExternalIPAddr();
-		core_log.i("Starting server.");
+		
+		core_log.i("Starting servers.");
 		server = new Server();
 		server.start();
 		
@@ -224,7 +229,7 @@ public class Main {
 
 		core_log.i("PacChat is ready for use!");
 		core_log.i("Entering chat mode, type exit to exit, and type send <ip address> to send a message.");
-		core_log.i("Log debug mode is currently " + (Logger.debugEnabled() ? "ENABLED." : "DISABLED."));
+		core_log.i("Log debug mode is currently " + (Logger.debugEnabled() ? "ENABLED." : "DISABLED.") + "Use the 'debug' command to toggle debug mode.");
 		core_log.w("Type 'help' for command help.");
 		core_log.w("If applicable, run 'gui' to start the PacChat GUI.");
 		active = true;

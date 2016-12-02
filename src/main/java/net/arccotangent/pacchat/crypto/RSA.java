@@ -34,7 +34,7 @@ public class RSA {
 	public static KeyPair generateRSAKeypair(int bitsize) {
 		try {
 			rsa_log.d("Initializing key pair generator, generating " + bitsize + " bit RSA key");
-			KeyPairGenerator gen = KeyPairGenerator.getInstance("RSA");
+			KeyPairGenerator gen = KeyPairGenerator.getInstance("RSA", "BC");
 			gen.initialize(bitsize);
 			
 			rsa_log.i("Generating RSA keypair now.");
@@ -42,7 +42,7 @@ public class RSA {
 			rsa_log.i("Generation complete.");
 			
 			return keyPair;
-		} catch (NoSuchAlgorithmException e) {
+		} catch (NoSuchAlgorithmException | NoSuchProviderException e) {
 			rsa_log.e("Error while generating RSA keys!");
 			e.printStackTrace();
 		}
@@ -51,10 +51,10 @@ public class RSA {
 	
 	static byte[] encryptBytes(byte[] toEncrypt, PublicKey publicKey) {
 		try {
-			Cipher c = Cipher.getInstance("RSA");
+			Cipher c = Cipher.getInstance("RSA", "BC");
 			c.init(Cipher.ENCRYPT_MODE, publicKey);
 			return c.doFinal(toEncrypt);
-		} catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException e) {
+		} catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException | NoSuchProviderException e) {
 			rsa_log.e("Error while encrypting text with RSA pubkey!");
 			e.printStackTrace();
 		}
@@ -63,11 +63,11 @@ public class RSA {
 	
 	static DecryptStatus decryptBytes(byte[] toDecrypt, PrivateKey privateKey) {
 		try {
-			Cipher c = Cipher.getInstance("RSA");
+			Cipher c = Cipher.getInstance("RSA", "BC");
 			c.init(Cipher.DECRYPT_MODE, privateKey);
 			byte[] msg = c.doFinal(toDecrypt);
 			return new DecryptStatus(msg, true);
-		} catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException e) {
+		} catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException | NoSuchProviderException e) {
 			rsa_log.e("Error while decrypting text with RSA privkey!");
 			e.printStackTrace();
 		}
@@ -76,11 +76,11 @@ public class RSA {
 	
 	static byte[] signBytes(byte[] toSign, PrivateKey privateKey) {
 		try {
-			Signature sig = Signature.getInstance(RSA_signature_algorithm);
+			Signature sig = Signature.getInstance(RSA_signature_algorithm, "BC");
 			sig.initSign(privateKey);
 			sig.update(toSign);
 			return sig.sign();
-		} catch (NoSuchAlgorithmException | InvalidKeyException | SignatureException e) {
+		} catch (NoSuchAlgorithmException | InvalidKeyException | SignatureException | NoSuchProviderException e) {
 			rsa_log.e("Error while signing text with RSA privkey!");
 			e.printStackTrace();
 		}
@@ -89,11 +89,11 @@ public class RSA {
 	
 	static boolean verifyBytes(byte[] signedBytes, byte[] signature, PublicKey publicKey) {
 		try {
-			Signature sig = Signature.getInstance(RSA_signature_algorithm);
+			Signature sig = Signature.getInstance(RSA_signature_algorithm, "BC");
 			sig.initVerify(publicKey);
 			sig.update(signedBytes);
 			return sig.verify(signature);
-		} catch (NoSuchAlgorithmException | InvalidKeyException | SignatureException e) {
+		} catch (NoSuchAlgorithmException | InvalidKeyException | SignatureException | NoSuchProviderException e) {
 			rsa_log.e("Error while signing text with RSA privkey!");
 			e.printStackTrace();
 		}

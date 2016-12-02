@@ -48,6 +48,7 @@ public class KeyManager {
 	
 	private static String PBE_algorithm = "PBEWithSHAAnd3-KeyTripleDES-CBC";
 	private static final int PBE_iterations = 25000;
+	private static final int RSA_bitsize = 4096;
 	
 	private static byte[] generateSalt() {
 		SecureRandom random = new SecureRandom();
@@ -139,8 +140,8 @@ public class KeyManager {
 		km_log.w("FOR YOUR SECURITY, PLEASE ENCRYPT YOUR KEYS!");
 		km_log.w("Use the 'encrypt' command to encrypt your keys after generation is complete!");
 		km_log.w("-----------------------------------------------------------------------");
-		KeyPair keyPair = RSA.generateRSAKeypair(4096);
-		km_log.d("4096 bit RSA key generated.");
+		KeyPair keyPair = RSA.generateRSAKeypair(RSA_bitsize);
+		km_log.d(RSA_bitsize + " bit RSA key generated.");
 		
 		assert keyPair != null;
 		PrivateKey privkey = keyPair.getPrivate();
@@ -191,9 +192,6 @@ public class KeyManager {
 		
 		km_log.d("Public key file = " + pubkeyFile.getAbsolutePath());
 		km_log.d("Private key file = " + privkeyFile.getAbsolutePath());
-		
-		//X509EncodedKeySpec pubSpec = new X509EncodedKeySpec(pubkey.getEncoded());
-		//PKCS8EncodedKeySpec privSpec = new PKCS8EncodedKeySpec(privkey.getEncoded());
 		
 		try {
 			if (!pubkeyFile.exists())
@@ -435,10 +433,10 @@ public class KeyManager {
 	public static String fingerprint(PublicKey pubkey) {
 		byte[] keyBytes = pubkey.getEncoded();
 		try {
-			MessageDigest hasher = MessageDigest.getInstance("SHA-256");
+			MessageDigest hasher = MessageDigest.getInstance("SHA3-512", "BC");
 			hasher.update(keyBytes);
 			return Hex.encodeHexString(hasher.digest());
-		} catch (NoSuchAlgorithmException e) {
+		} catch (NoSuchAlgorithmException | NoSuchProviderException e) {
 			km_log.e("Error computing key fingerprint!");
 			e.printStackTrace();
 		}

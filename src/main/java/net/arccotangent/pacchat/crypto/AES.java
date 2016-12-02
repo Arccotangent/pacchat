@@ -27,13 +27,14 @@ import java.security.NoSuchProviderException;
 class AES {
 	
 	private static final Logger aes_log = new Logger("CRYPTO/AES");
+	private static final int AES_bitsize = 128;
 	
 	static SecretKey generateAESKey() {
 		try {
-			aes_log.d("Generating 256 bit AES key.");
+			aes_log.d("Generating " + AES_bitsize + " bit AES key.");
 			
 			KeyGenerator gen = KeyGenerator.getInstance("AES", "BC");
-			gen.init(256);
+			gen.init(AES_bitsize);
 			return gen.generateKey();
 		} catch (NoSuchAlgorithmException | NoSuchProviderException e) {
 			aes_log.e("Error while generating AES key!");
