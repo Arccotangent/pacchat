@@ -208,7 +208,7 @@ public class PacchatGUI extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				int ownKey = JOptionPane.showConfirmDialog(null, "Would you like to view your own public key?", "View Raw Key", JOptionPane.YES_NO_OPTION);
 				if (ownKey == JOptionPane.YES_OPTION) {
-					byte[] publicKeyBytes = KeyManager.loadRSAKeys().getPublic().getEncoded();
+					byte[] publicKeyBytes = KeyManager.loadPubkey().getEncoded();
 					String pubkeyB64 = Base64.encodeBase64String(publicKeyBytes);
 					keyTextArea.setText(pubkeyB64);
 				} else {
