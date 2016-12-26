@@ -40,7 +40,7 @@ import java.util.Scanner;
 
 public class Main {
 	private static final Logger core_log = new Logger("CORE");
-	public static final String VERSION = "0.2-B22";
+	public static final String VERSION = "0.2-B23";
 	private static KeyPair keyPair;
 	private static final String ANSI_BOLD = "\u001B[1m";
 	private static final String ANSI_BLUE = "\u001B[34m";
@@ -260,7 +260,7 @@ public class Main {
 
 		core_log.i("PacChat is ready for use!");
 		core_log.i("Entering chat mode, type exit to exit, and type send <ip address> to send a message.");
-		core_log.i("Log debug mode is currently " + (Logger.debugEnabled() ? "ENABLED." : "DISABLED.") + "Use the 'debug' command to toggle debug mode.");
+		core_log.i("Log debug mode is currently " + (Logger.debugEnabled() ? "ENABLED." : "DISABLED.") + " Use the 'debug' command to toggle debug mode.");
 		core_log.w("Type 'help' for command help.");
 		core_log.w("If applicable, run 'gui' to start the PacChat GUI.");
 		active = true;

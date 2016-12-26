@@ -64,6 +64,13 @@ class ConnectionHandler extends Thread {
 					output.flush();
 					output.close();
 					break;
+				case "103 version":
+					ch_log.i("Client asked for server version, responding with server version (" + Main.VERSION + ").");
+					output.write(Main.VERSION);
+					output.newLine();
+					output.flush();
+					output.close();
+					break;
 				case "302 request key update":
 					ch_log.i("Client is requesting a key update.");
 					KeyUpdate update = new KeyUpdate(ip, false);

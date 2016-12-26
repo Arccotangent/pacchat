@@ -12,6 +12,10 @@ Currently unused by PacChat, but the functionality is still built in. You can te
 
 Ping response message.
 
+## 103 version
+
+Currently unused by PacChat, but the functionality is still built in. You can telnet to a PacChat server (0.2-B23 and on) and send `103 version` to it, it will respond with the server version.
+
 ## 200 encrypted message
 
 An encrypted message with 3 lines below the header.
