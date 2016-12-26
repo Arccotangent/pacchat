@@ -24,8 +24,8 @@ import java.util.HashMap;
 
 public class KeyUpdateManager {
 	
-	//TODO add HashMap for outgoing updates
 	private static final HashMap<Long, KeyUpdate> incoming_updates = new HashMap<>();
+	//private static final HashMap<Long, KeyUpdate> outgoing_updates = new HashMap<>();
 	private static final Logger kum_log = new Logger("KEY UPDATES");
 	
 	public static void addPendingUpdate(long id, KeyUpdate update) {

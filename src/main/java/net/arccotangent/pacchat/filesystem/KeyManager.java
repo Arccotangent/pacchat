@@ -244,10 +244,10 @@ public class KeyManager {
 			
 			PKCS8EncodedKeySpec privSpec = new PKCS8EncodedKeySpec(Base64.decodeBase64(privEncoded));
 			
-			KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+			KeyFactory keyFactory = KeyFactory.getInstance("RSA", "BC");
 			
 			return keyFactory.generatePrivate(privSpec);
-		} catch (IOException | NoSuchAlgorithmException | InvalidKeySpecException e) {
+		} catch (IOException | NoSuchAlgorithmException | InvalidKeySpecException | NoSuchProviderException e) {
 			km_log.e("Error while loading private key!");
 			e.printStackTrace();
 		}
@@ -258,10 +258,10 @@ public class KeyManager {
 		try {
 			PKCS8EncodedKeySpec privSpec = new PKCS8EncodedKeySpec(Base64.decodeBase64(b64Privkey));
 			
-			KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+			KeyFactory keyFactory = KeyFactory.getInstance("RSA", "BC");
 			
 			return keyFactory.generatePrivate(privSpec);
-		} catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
+		} catch (NoSuchAlgorithmException | InvalidKeySpecException | NoSuchProviderException e) {
 			km_log.e("Error while decoding base 64 private key!");
 			e.printStackTrace();
 		}
@@ -276,42 +276,15 @@ public class KeyManager {
 			
 			X509EncodedKeySpec pubSpec = new X509EncodedKeySpec(Base64.decodeBase64(pubEncoded));
 			
-			KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+			KeyFactory keyFactory = KeyFactory.getInstance("RSA", "BC");
 			
 			return keyFactory.generatePublic(pubSpec);
-		} catch (IOException | NoSuchAlgorithmException | InvalidKeySpecException e) {
+		} catch (IOException | NoSuchAlgorithmException | InvalidKeySpecException | NoSuchProviderException e) {
 			km_log.e("Error while loading public key!");
 			e.printStackTrace();
 		}
 		return null;
 	}
-	
-	/*
-	@Deprecated
-	public static KeyPair loadRSAKeys() {
-		try {
-			km_log.i("Loading RSA key pair from disk.");
-			km_log.d("Public key file = " + pubkeyFile.getAbsolutePath());
-			km_log.d("Private key file = " + privkeyFile.getAbsolutePath());
-			byte[] privEncoded = Files.readAllBytes(privkeyFile.toPath());
-			byte[] pubEncoded = Files.readAllBytes(pubkeyFile.toPath());
-			
-			X509EncodedKeySpec pubSpec = new X509EncodedKeySpec(Base64.decodeBase64(pubEncoded));
-			PKCS8EncodedKeySpec privSpec = new PKCS8EncodedKeySpec(Base64.decodeBase64(privEncoded));
-			
-			KeyFactory keyFactory = KeyFactory.getInstance("RSA");
-			
-			PublicKey pubkey = keyFactory.generatePublic(pubSpec);
-			PrivateKey privkey = keyFactory.generatePrivate(privSpec);
-			
-			return new KeyPair(pubkey, privkey);
-		} catch (IOException | NoSuchAlgorithmException | InvalidKeySpecException e) {
-			km_log.e("Error while loading keypair!");
-			e.printStackTrace();
-		}
-		return null;
-	}
-	*/
 	
 	public static PublicKey loadKeyByIP(String ip_address) {
 		km_log.i("Loading public key for " + ip_address);
@@ -322,9 +295,9 @@ public class KeyManager {
 			byte[] pubEncoded = Files.readAllBytes(pubFile.toPath());
 			X509EncodedKeySpec pubSpec = new X509EncodedKeySpec(Base64.decodeBase64(pubEncoded));
 			
-			KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+			KeyFactory keyFactory = KeyFactory.getInstance("RSA", "BC");
 			return keyFactory.generatePublic(pubSpec);
-		} catch (IOException | NoSuchAlgorithmException | InvalidKeySpecException e) {
+		} catch (IOException | NoSuchAlgorithmException | InvalidKeySpecException | NoSuchProviderException e) {
 			km_log.e("Error while loading public key for " + ip_address + "!");
 			e.printStackTrace();
 		}
@@ -400,13 +373,13 @@ public class KeyManager {
 			String pubkeyB64 = inputGetkey.readLine();
 			byte[] pubEncoded = Base64.decodeBase64(pubkeyB64);
 			X509EncodedKeySpec pubSpec = new X509EncodedKeySpec(pubEncoded);
-			KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+			KeyFactory keyFactory = KeyFactory.getInstance("RSA", "BC");
 			
 			outputGetkey.close();
 			inputGetkey.close();
 			
 			return keyFactory.generatePublic(pubSpec);
-		} catch (IOException | NoSuchAlgorithmException | InvalidKeySpecException e) {
+		} catch (IOException | NoSuchAlgorithmException | InvalidKeySpecException | NoSuchProviderException e) {
 			km_log.e("Error saving recipient's key!");
 			e.printStackTrace();
 		}
