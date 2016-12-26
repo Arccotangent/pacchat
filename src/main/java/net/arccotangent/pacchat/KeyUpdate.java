@@ -19,16 +19,22 @@ package net.arccotangent.pacchat;
 
 public class KeyUpdate {
 	
-	private final String source;
+	private final String addr;
 	private boolean accepted = false;
 	private boolean processed = false;
+	private boolean out = false;
 	
-	public KeyUpdate(String source_ip) {
-		source = source_ip;
+	public KeyUpdate(String addr_ip, boolean outgoing) {
+		addr = addr_ip;
+		out = outgoing;
 	}
 	
-	String getSource() {
-		return source;
+	String getAddress() {
+		return addr;
+	}
+	
+	boolean isOutgoing() {
+		return out;
 	}
 	
 	public boolean isProcessed() {
@@ -46,12 +52,12 @@ public class KeyUpdate {
 		return accepted;
 	}
 	
-	void acceptUpdate() {
+	public void acceptUpdate() {
 		processed = true;
 		accepted = true;
 	}
 	
-	void rejectUpdate() {
+	public void rejectUpdate() {
 		processed = true;
 	}
 	

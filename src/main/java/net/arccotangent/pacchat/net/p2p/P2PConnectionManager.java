@@ -28,7 +28,7 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.security.PrivateKey;
-import java.security.PublicKey;
+import java.security.interfaces.RSAPublicKey;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -148,7 +148,7 @@ public class P2PConnectionManager {
 	}
 	
 	private static void propagate(String origin, String destination, long timestamp, long mid, String message) {
-		if (origin.equalsIgnoreCase(KeyManager.fingerprint(Main.getKeypair().getPublic()))) {
+		if (origin.equalsIgnoreCase(KeyManager.fingerprint((RSAPublicKey) Main.getKeypair().getPublic()))) {
 			p2p_cm_log.i("Propagating message through network.");
 			for (P2PClient peer : connectedPeers) {
 				peer.sendMessage(origin, destination, message, mid);
@@ -167,8 +167,8 @@ public class P2PConnectionManager {
 		}
 	}
 	
-	public static void sendChat(String chat_message, PublicKey targetKey, PrivateKey ownPriv) {
-		String origin = KeyManager.fingerprint(Main.getKeypair().getPublic());
+	public static void sendChat(String chat_message, RSAPublicKey targetKey, PrivateKey ownPriv) {
+		String origin = KeyManager.fingerprint((RSAPublicKey) Main.getKeypair().getPublic());
 		String destination = KeyManager.fingerprint(targetKey);
 		long mid = getRandomMID();
 		long timestamp = System.currentTimeMillis();
@@ -205,7 +205,7 @@ public class P2PConnectionManager {
 					long mid = Long.parseLong(input.readLine());
 					if (MIDProcessed(mid))
 						break;
-					if (destination.equals(KeyManager.fingerprint(Main.getKeypair().getPublic()))) {
+					if (destination.equals(KeyManager.fingerprint((RSAPublicKey) Main.getKeypair().getPublic()))) {
 						p2p_cm_log.i("Received P2P message from peer " + ip);
 						p2p_cm_log.i("P2P message is sent by " + origin);
 						String message = input.readLine();

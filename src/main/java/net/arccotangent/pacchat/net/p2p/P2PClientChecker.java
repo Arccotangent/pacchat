@@ -48,6 +48,7 @@ public class P2PClientChecker extends Thread {
 				Thread.sleep(100);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
+				pcc_log.e("Thread sleep has been interrupted.");
 			}
 		}
 	}

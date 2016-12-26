@@ -33,6 +33,7 @@ import java.net.Socket;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
+import java.security.interfaces.RSAPublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
 
@@ -65,9 +66,9 @@ class ConnectionHandler extends Thread {
 					break;
 				case "302 request key update":
 					ch_log.i("Client is requesting a key update.");
-					KeyUpdate update = new KeyUpdate(ip);
+					KeyUpdate update = new KeyUpdate(ip, false);
 					KeyUpdateManager.addPendingUpdate(connection_id, update);
-					while (KeyUpdateManager.getUpdate(connection_id).isProcessed()) {
+					while (KeyUpdateManager.getIncomingUpdate(connection_id).isProcessed()) {
 						try {
 							Thread.sleep(50);
 						} catch (InterruptedException e) {
@@ -75,8 +76,8 @@ class ConnectionHandler extends Thread {
 						}
 					}
 					
-					boolean accepted = KeyUpdateManager.getUpdate(connection_id).isAccepted();
-					KeyUpdateManager.completeIncomingUpdate(connection_id, KeyUpdateManager.getUpdate(connection_id));
+					boolean accepted = KeyUpdateManager.getIncomingUpdate(connection_id).isAccepted();
+					KeyUpdateManager.completeIncomingUpdate(connection_id, KeyUpdateManager.getIncomingUpdate(connection_id));
 					if (accepted) {
 						ch_log.i("Accepting key update");
 						try {
@@ -93,7 +94,7 @@ class ConnectionHandler extends Thread {
 							output.close();
 							input.close();
 							
-							KeyManager.saveKeyByIP(ip, keyFactory.generatePublic(pubSpec));
+							KeyManager.saveKeyByIP(ip, (RSAPublicKey) keyFactory.generatePublic(pubSpec));
 						} catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
 							ch_log.e("Error updating sender's key!");
 							e.printStackTrace();
@@ -142,7 +143,7 @@ class ConnectionHandler extends Thread {
 							outputGetkey.close();
 							inputGetkey.close();
 							
-							KeyManager.saveKeyByIP(ip, keyFactory.generatePublic(pubSpec));
+							KeyManager.saveKeyByIP(ip, (RSAPublicKey) keyFactory.generatePublic(pubSpec));
 						} catch (IOException | NoSuchAlgorithmException | InvalidKeySpecException e) {
 							ch_log.e("Error saving sender's key!");
 							e.printStackTrace();

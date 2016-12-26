@@ -24,8 +24,8 @@ import net.arccotangent.pacchat.logging.Logger;
 
 import java.io.*;
 import java.net.*;
-import java.security.PrivateKey;
-import java.security.PublicKey;
+import java.security.interfaces.RSAPrivateKey;
+import java.security.interfaces.RSAPublicKey;
 
 public class Client {
 	
@@ -44,8 +44,8 @@ public class Client {
 		client_log.i("Sending message to " + ip_address);
 		client_log.i("Connecting to server...");
 		
-		PublicKey pub;
-		PrivateKey priv;
+		RSAPublicKey pub;
+		RSAPrivateKey priv;
 		Socket socket;
 		BufferedReader input;
 		BufferedWriter output;
@@ -55,7 +55,7 @@ public class Client {
 			client_log.i("Public key found.");
 		} else {
 			client_log.i("Public key not found, requesting key from their server.");
-			PublicKey server_key = KeyManager.downloadKeyFromIP(ip_address);
+			RSAPublicKey server_key = KeyManager.downloadKeyFromIP(ip_address);
 			KeyManager.saveKeyByIP(ip_address, server_key);
 		}
 		
@@ -89,7 +89,7 @@ public class Client {
 		}
 		
 		pub = KeyManager.loadKeyByIP(ip_address);
-		priv = Main.getKeypair().getPrivate();
+		priv = (RSAPrivateKey) Main.getKeypair().getPrivate();
 		
 		String cryptedMsg = MsgCrypto.encryptAndSignMessage(msg, pub, priv);
 		try {

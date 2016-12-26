@@ -25,24 +25,45 @@ import java.util.HashMap;
 public class KeyUpdateManager {
 	
 	private static final HashMap<Long, KeyUpdate> incoming_updates = new HashMap<>();
-	//private static final HashMap<Long, KeyUpdate> outgoing_updates = new HashMap<>();
+	private static final HashMap<Long, KeyUpdate> outgoing_updates = new HashMap<>();
 	private static final Logger kum_log = new Logger("KEY UPDATES");
 	
 	public static void addPendingUpdate(long id, KeyUpdate update) {
 		if (!incoming_updates.containsKey(id)) {
 			incoming_updates.put(id, update);
+			kum_log.i("Pending update added to list: ID " + id + ", IP " + update.getAddress());
+			kum_log.w("**********************************************");
+			kum_log.w("NOTICE: Updating this key will permanently delete the old key.");
+			kum_log.w("To accept this update, run this command: ua " + id);
+			kum_log.w("To reject this update, run this command: ur " + id);
+			kum_log.w("**********************************************");
+		} else {
+			kum_log.e("Attempted to add an update with ID " + id + " and source " + update.getAddress() + " to incoming update database, but it already exists! Please report this error to developers.");
 		}
-		kum_log.i("Pending update added to list: ID " + id + ", IP " + update.getSource());
-		kum_log.w("**********************************************");
-		kum_log.w("NOTICE: Updating this key will permanently delete the old key.");
-		kum_log.w("To accept this update, run this command: ua " + id);
-		kum_log.w("To reject this update, run this command: ur " + id);
-		kum_log.w("**********************************************");
+	}
+	
+	public static void addOutgoingUpdate(long id, KeyUpdate update) {
+		if (!outgoing_updates.containsKey(id)) {
+			outgoing_updates.put(id, update);
+			kum_log.d("Added key update with ID " + id + " to outgoing update database.");
+		} else {
+			kum_log.e("Attempted to add an update with ID " + id + " and source " + update.getAddress() + " to outgoing update database, but it already exists! Please report this error to developers.");
+		}
 	}
 	
 	public static void completeIncomingUpdate(long id, KeyUpdate newUpdate) {
-		if (incoming_updates.containsKey(id) && incoming_updates.get(id).isProcessed()) {
+		if (incoming_updates.containsKey(id) && !incoming_updates.get(id).isProcessed()) {
 			incoming_updates.put(id, newUpdate);
+		} else {
+			kum_log.e("Attempted to complete incoming update " + id + " but it doesn't exist or is already processed! Please report this error to developers.");
+		}
+	}
+	
+	public static void completeOutgoingUpdate(long id, KeyUpdate newUpdate) {
+		if (outgoing_updates.containsKey(id) && !outgoing_updates.get(id).isProcessed()) {
+			outgoing_updates.put(id, newUpdate);
+		} else {
+			kum_log.e("Attempted to complete outgoing update " + id + " but it doesn't exist or is already processed! Please report this error to developers.");
 		}
 	}
 	
@@ -50,9 +71,16 @@ public class KeyUpdateManager {
 		return incoming_updates.keySet();
 	}
 	
-	public static KeyUpdate getUpdate(long id) {
+	public static KeyUpdate getIncomingUpdate(long id) {
 		if (incoming_updates.containsKey(id))
 			return incoming_updates.get(id);
+		else
+			return null;
+	}
+	
+	public static KeyUpdate getOutgoingUpdate(long id) {
+		if (outgoing_updates.containsKey(id))
+			return outgoing_updates.get(id);
 		else
 			return null;
 	}

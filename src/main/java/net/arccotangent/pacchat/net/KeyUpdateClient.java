@@ -17,6 +17,8 @@ along with PacChat.  If not, see <http://www.gnu.org/licenses/>.
 
 package net.arccotangent.pacchat.net;
 
+import net.arccotangent.pacchat.KeyUpdate;
+import net.arccotangent.pacchat.KeyUpdateManager;
 import net.arccotangent.pacchat.Main;
 import net.arccotangent.pacchat.logging.Logger;
 import org.apache.commons.codec.binary.Base64;
@@ -27,11 +29,13 @@ import java.net.*;
 public class KeyUpdateClient extends Thread {
 	
 	private final Logger kuc_log;
+	private final long id;
 	private final String server_ip;
 	
 	public KeyUpdateClient(long keyupdate_id, String server) {
 		kuc_log = new Logger("CLIENT/KEY-UPDATE-" + keyupdate_id);
 		server_ip = server;
+		id = keyupdate_id;
 	}
 	
 	public void run() {
@@ -64,11 +68,13 @@ public class KeyUpdateClient extends Thread {
 			return;
 		}
 		
+		KeyUpdate keyUpdate = new KeyUpdate(server_ip, true);
 		try {
 			kuc_log.i("Requesting a key update.");
 			output.write("302 request key update");
 			output.newLine();
 			output.flush();
+			KeyUpdateManager.addOutgoingUpdate(id, keyUpdate);
 			
 			kuc_log.i("Awaiting response from server.");
 			String update = input.readLine();
@@ -80,26 +86,36 @@ public class KeyUpdateClient extends Thread {
 					output.newLine();
 					output.flush();
 					output.close();
+					keyUpdate.acceptUpdate();
+					KeyUpdateManager.completeOutgoingUpdate(id, keyUpdate);
 					break;
 				case "304 no update":
 					kuc_log.i("Server rejected update request, closing connection.");
 					input.close();
 					output.close();
+					keyUpdate.rejectUpdate();
+					KeyUpdateManager.completeOutgoingUpdate(id, keyUpdate);
 					break;
 				case "305 update unavailable":
 					kuc_log.i("Server cannot update at this time, try again later.");
 					input.close();
 					output.close();
+					keyUpdate.rejectUpdate();
+					KeyUpdateManager.completeOutgoingUpdate(id, keyUpdate);
 					break;
 				default:
 					kuc_log.i("Server sent back invalid response");
 					input.close();
 					output.close();
+					keyUpdate.rejectUpdate();
+					KeyUpdateManager.completeOutgoingUpdate(id, keyUpdate);
 					break;
 			}
 		} catch (IOException e) {
 			kuc_log.e("Error in key update request!");
 			e.printStackTrace();
+			keyUpdate.rejectUpdate();
+			KeyUpdateManager.completeOutgoingUpdate(id, keyUpdate);
 		}
 	}
 	

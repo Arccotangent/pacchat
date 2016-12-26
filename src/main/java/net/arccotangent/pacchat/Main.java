@@ -30,8 +30,9 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import java.awt.*;
 import java.security.KeyPair;
 import java.security.PrivateKey;
-import java.security.PublicKey;
 import java.security.Security;
+import java.security.interfaces.RSAPrivateKey;
+import java.security.interfaces.RSAPublicKey;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -39,7 +40,7 @@ import java.util.Scanner;
 
 public class Main {
 	private static final Logger core_log = new Logger("CORE");
-	public static final String VERSION = "0.2-B21";
+	public static final String VERSION = "0.2-B22";
 	private static KeyPair keyPair;
 	private static final String ANSI_BOLD = "\u001B[1m";
 	private static final String ANSI_BLUE = "\u001B[34m";
@@ -66,6 +67,10 @@ public class Main {
 	
 	public static P2PServer getP2PServer() {
 		return p2p_server;
+	}
+	
+	public static P2PClientChecker getClientChecker() {
+		return clientChecker;
 	}
 	
 	public static boolean isP2PEnabled() {
@@ -95,6 +100,16 @@ public class Main {
 	
 	public static KeyPair getKeypair(){
 		return keyPair;
+	}
+	
+	private static void printCLOHelp() {
+		System.out.println("pacchat [arguments]");
+		System.out.println();
+		System.out.println("Enter no arguments to run PacChat normally.");
+		System.out.println("Arguments can be one of the following:");
+		System.out.println();
+		System.out.println("help - Print this help");
+		System.out.println("version - Print PacChat version and exit");
 	}
 	
 	private static void printHelpMsg() {
@@ -136,6 +151,21 @@ public class Main {
 	}
 	
 	public static void main(String[] args) {
+		
+		if (args.length > 0) {
+			switch (args[0].toLowerCase()) {
+				case "help":
+					printCLOHelp();
+					break;
+				case "version":
+					System.out.println(VERSION);
+					break;
+				default:
+					System.out.println("Unrecognized command line option. Try 'help'");
+					break;
+			}
+			System.exit(0);
+		}
 
 		printCopyright();
 		System.out.println();
@@ -156,6 +186,7 @@ public class Main {
 			core_log.i("Attempting decryption.");
 			String b64Privkey_crypt = KeyManager.loadCryptedPrivkey();
 			String b64Privkey = KeyManager.decryptPrivkey(b64Privkey_crypt, password);
+			password = null;
 			if (b64Privkey == null) {
 				core_log.e("Decrypted private key is null, PacChat cannot be used without a valid private key. Exiting.");
 				System.exit(1);
@@ -196,7 +227,7 @@ public class Main {
 		}
 		
 		core_log.i("Testing key fingerprinting...");
-		String fingerprint = KeyManager.fingerprint(keyPair.getPublic());
+		String fingerprint = KeyManager.fingerprint((RSAPublicKey) keyPair.getPublic());
 		core_log.d("fingerprint = " + fingerprint);
 		
 		core_log.i("Crypto tests complete.");
@@ -427,9 +458,9 @@ public class Main {
 			case "updateaccept":
 				if (cmd.length >= 2 && !cmd[1].isEmpty()) {
 					core_log.i("Accepting update with ID " + cmd[1]);
-					KeyUpdate update = KeyUpdateManager.getUpdate(Long.parseLong(cmd[1]));
+					KeyUpdate update = KeyUpdateManager.getIncomingUpdate(Long.parseLong(cmd[1]));
 					if (update == null) {
-						core_log.e("Update ID " + cmd[1] + " does not exist.");
+						core_log.e("Update ID " + cmd[1] + " does not exist or is not incoming.");
 						break;
 					}
 					update.acceptUpdate();
@@ -442,9 +473,9 @@ public class Main {
 			case "updatereject":
 				if (cmd.length >= 2 && !cmd[1].isEmpty()) {
 					core_log.i("Rejecting update with ID " + cmd[1]);
-					KeyUpdate update = KeyUpdateManager.getUpdate(Long.parseLong(cmd[1]));
+					KeyUpdate update = KeyUpdateManager.getIncomingUpdate(Long.parseLong(cmd[1]));
 					if (update == null) {
-						core_log.e("Update ID " + cmd[1] + " does not exist.");
+						core_log.e("Update ID " + cmd[1] + " does not exist or is not incoming.");
 						break;
 					}
 					update.rejectUpdate();
@@ -456,18 +487,18 @@ public class Main {
 			case "ui":
 			case "updateinfo":
 				if (cmd.length >= 2 && !cmd[1].isEmpty()) {
-					KeyUpdate update = KeyUpdateManager.getUpdate(Long.parseLong(cmd[1]));
+					KeyUpdate update = KeyUpdateManager.getIncomingUpdate(Long.parseLong(cmd[1]));
 					if (update == null) {
 						core_log.e("Update ID " + cmd[1] + " does not exist.");
 						break;
 					}
 					if (!update.isProcessed()) {
-						core_log.w("[PENDING] Update ID " + cmd[1] + " source IP = " + update.getSource());
+						core_log.w((update.isOutgoing() ? "[OUTGOING]" : "[INCOMING]") + " [PENDING] Update ID " + cmd[1] + " source IP = " + update.getAddress());
 					} else {
 						if (update.isAccepted()) {
-							core_log.i("[ACCEPTED] Update ID " + cmd[1] + " source IP = " + update.getSource());
+							core_log.i((update.isOutgoing() ? "[OUTGOING]" : "[INCOMING]") + " [ACCEPTED] Update ID " + cmd[1] + " source IP = " + update.getAddress());
 						} else {
-							core_log.i("[REJECTED] Update ID " + cmd[1] + " source IP = " + update.getSource());
+							core_log.i((update.isOutgoing() ? "[OUTGOING]" : "[INCOMING]") + " [REJECTED] Update ID " + cmd[1] + " source IP = " + update.getAddress());
 						}
 					}
 				} else {
@@ -476,22 +507,22 @@ public class Main {
 				break;
 			case "ul":
 			case "updatelist":
-				Collection<Long> keys = KeyUpdateManager.getAllIncomingKeys();
+				Collection<Long> incomingKeys = KeyUpdateManager.getAllIncomingKeys();
 				ArrayList<Long> ids = new ArrayList<>();
-				ids.addAll(keys);
+				ids.addAll(incomingKeys);
 				for (Long id : ids) {
-					KeyUpdate update = KeyUpdateManager.getUpdate(id);
+					KeyUpdate update = KeyUpdateManager.getIncomingUpdate(id);
 					if (update == null) {
 						core_log.e("Update ID " + id + " does not exist.");
 						break;
 					}
 					if (!update.isProcessed()) {
-						core_log.w("[PENDING] Update ID " + id + " source IP = " + update.getSource());
+						core_log.w((update.isOutgoing() ? "[OUTGOING]" : "[INCOMING]") + " [PENDING] Update ID " + id + " source IP = " + update.getAddress());
 					} else {
 						if (update.isAccepted()) {
-							core_log.i("[ACCEPTED] Update ID " + id + " source IP = " + update.getSource());
+							core_log.i((update.isOutgoing() ? "[OUTGOING]" : "[INCOMING]") + " [ACCEPTED] Update ID " + id + " source IP = " + update.getAddress());
 						} else {
-							core_log.i("[REJECTED] Update ID " + id + " source IP = " + update.getSource());
+							core_log.i((update.isOutgoing() ? "[OUTGOING]" : "[INCOMING]") + " [REJECTED] Update ID " + id + " source IP = " + update.getAddress());
 						}
 					}
 				}
@@ -584,7 +615,7 @@ public class Main {
 			case "getkey":
 			case "gk":
 				if (cmd.length >= 2 && !cmd[1].isEmpty()) {
-					PublicKey key = KeyManager.downloadKeyFromIP(cmd[1]);
+					RSAPublicKey key = KeyManager.downloadKeyFromIP(cmd[1]);
 					KeyManager.saveKeyByIP(cmd[1], key);
 				} else {
 					core_log.e("An IP address was not specified.");
@@ -631,7 +662,7 @@ public class Main {
 				}
 				
 				core_log.i("Encrypted key successfully, saving to disk.");
-				KeyManager.saveEncryptedKeys(encryptedB64, keyPair.getPublic());
+				KeyManager.saveEncryptedKeys(encryptedB64, (RSAPublicKey) keyPair.getPublic());
 				break;
 			case "decrypt":
 				if (!KeyManager.keysEncrypted()) {
@@ -655,7 +686,7 @@ public class Main {
 				
 				if (currentPrivkey.equals(privkeyB64)) {
 					core_log.i("Decryption successful. Saving unencrypted key to disk.");
-					KeyManager.saveUnencryptedKeys(keyPair.getPrivate(), keyPair.getPublic());
+					KeyManager.saveUnencryptedKeys((RSAPrivateKey) keyPair.getPrivate(), (RSAPublicKey) keyPair.getPublic());
 				} else {
 					core_log.e("Decrypted private key doesn't match current private key. Incorrect password?");
 				}

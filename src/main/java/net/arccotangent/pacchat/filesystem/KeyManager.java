@@ -26,13 +26,18 @@ import org.apache.commons.codec.binary.Hex;
 import javax.crypto.*;
 import javax.crypto.spec.PBEKeySpec;
 import java.io.*;
+import java.math.BigInteger;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.nio.file.Files;
 import java.security.*;
+import java.security.interfaces.RSAPrivateCrtKey;
+import java.security.interfaces.RSAPrivateKey;
+import java.security.interfaces.RSAPublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
+import java.security.spec.RSAPublicKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 
 public class KeyManager {
@@ -41,6 +46,10 @@ public class KeyManager {
 	private static final String user_home = System.getProperty("user.home");
 	private static final String installationPath = user_home + File.separator + ".pacchat";
 	private static final File installationFile = new File(installationPath);
+	
+	private static final String ANSI_BOLD = "\u001B[1m";
+	private static final String ANSI_WHITE = "\u001B[37m";
+	private static final String ANSI_RESET = "\u001B[0m";
 	
 	private static final File privkeyFile = new File(installationPath + File.separator + "local.priv");
 	private static final File pubkeyFile = new File(installationPath + File.separator + "local.pub");
@@ -141,13 +150,13 @@ public class KeyManager {
 		km_log.d(RSA_bitsize + " bit RSA key generated.");
 		
 		assert keyPair != null;
-		PrivateKey privkey = keyPair.getPrivate();
-		PublicKey pubkey = keyPair.getPublic();
+		RSAPrivateKey privkey = (RSAPrivateKey) keyPair.getPrivate();
+		RSAPublicKey pubkey = (RSAPublicKey) keyPair.getPublic();
 		
 		saveUnencryptedKeys(privkey, pubkey);
 	}
 	
-	public static void saveEncryptedKeys(String privkeyCryptB64, PublicKey pubkey) {
+	public static void saveEncryptedKeys(String privkeyCryptB64, RSAPublicKey pubkey) {
 		km_log.i("Saving encrypted keys to disk.");
 		
 		km_log.d("Public key file = " + pubkeyFile.getAbsolutePath());
@@ -184,7 +193,7 @@ public class KeyManager {
 		km_log.i("Finished saving keys to disk. Operation appears successful.");
 	}
 	
-	public static void saveUnencryptedKeys(PrivateKey privkey, PublicKey pubkey) {
+	public static void saveUnencryptedKeys(RSAPrivateKey privkey, RSAPublicKey pubkey) {
 		km_log.i("Saving keys to disk.");
 		
 		km_log.d("Public key file = " + pubkeyFile.getAbsolutePath());
@@ -235,7 +244,7 @@ public class KeyManager {
 		return null;
 	}
 	
-	public static PrivateKey loadUnencryptedPrivkey() {
+	public static RSAPrivateKey loadUnencryptedPrivkey() {
 		try {
 			km_log.i("Loading unencrypted RSA private key from disk.");
 			km_log.d("Public key file = " + pubkeyFile.getAbsolutePath());
@@ -246,7 +255,7 @@ public class KeyManager {
 			
 			KeyFactory keyFactory = KeyFactory.getInstance("RSA", "BC");
 			
-			return keyFactory.generatePrivate(privSpec);
+			return (RSAPrivateKey) keyFactory.generatePrivate(privSpec);
 		} catch (IOException | NoSuchAlgorithmException | InvalidKeySpecException | NoSuchProviderException e) {
 			km_log.e("Error while loading private key!");
 			e.printStackTrace();
@@ -254,13 +263,13 @@ public class KeyManager {
 		return null;
 	}
 	
-	public static PrivateKey Base64ToPrivkey(String b64Privkey) {
+	public static RSAPrivateKey Base64ToPrivkey(String b64Privkey) {
 		try {
 			PKCS8EncodedKeySpec privSpec = new PKCS8EncodedKeySpec(Base64.decodeBase64(b64Privkey));
 			
 			KeyFactory keyFactory = KeyFactory.getInstance("RSA", "BC");
 			
-			return keyFactory.generatePrivate(privSpec);
+			return (RSAPrivateKey) keyFactory.generatePrivate(privSpec);
 		} catch (NoSuchAlgorithmException | InvalidKeySpecException | NoSuchProviderException e) {
 			km_log.e("Error while decoding base 64 private key!");
 			e.printStackTrace();
@@ -268,7 +277,7 @@ public class KeyManager {
 		return null;
 	}
 	
-	public static PublicKey loadPubkey() {
+	public static RSAPublicKey loadPubkey() {
 		try {
 			km_log.i("Loading RSA public key from disk.");
 			km_log.d("Public key file = " + pubkeyFile.getAbsolutePath());
@@ -278,7 +287,7 @@ public class KeyManager {
 			
 			KeyFactory keyFactory = KeyFactory.getInstance("RSA", "BC");
 			
-			return keyFactory.generatePublic(pubSpec);
+			return (RSAPublicKey) keyFactory.generatePublic(pubSpec);
 		} catch (IOException | NoSuchAlgorithmException | InvalidKeySpecException | NoSuchProviderException e) {
 			km_log.e("Error while loading public key!");
 			e.printStackTrace();
@@ -286,7 +295,7 @@ public class KeyManager {
 		return null;
 	}
 	
-	public static PublicKey loadKeyByIP(String ip_address) {
+	public static RSAPublicKey loadKeyByIP(String ip_address) {
 		km_log.i("Loading public key for " + ip_address);
 		try {
 			File pubFile = new File(installationPath + File.separator + ip_address + ".pub");
@@ -296,7 +305,7 @@ public class KeyManager {
 			X509EncodedKeySpec pubSpec = new X509EncodedKeySpec(Base64.decodeBase64(pubEncoded));
 			
 			KeyFactory keyFactory = KeyFactory.getInstance("RSA", "BC");
-			return keyFactory.generatePublic(pubSpec);
+			return (RSAPublicKey) keyFactory.generatePublic(pubSpec);
 		} catch (IOException | NoSuchAlgorithmException | InvalidKeySpecException | NoSuchProviderException e) {
 			km_log.e("Error while loading public key for " + ip_address + "!");
 			e.printStackTrace();
@@ -310,7 +319,7 @@ public class KeyManager {
 	}
 	
 	@SuppressWarnings("ResultOfMethodCallIgnored")
-	public static void saveKeyByIP(String ip_address, PublicKey publicKey) {
+	public static void saveKeyByIP(String ip_address, RSAPublicKey publicKey) {
 		km_log.i("Saving public key for " + ip_address);
 		X509EncodedKeySpec pubSpec = new X509EncodedKeySpec(publicKey.getEncoded());
 		File pubFile = new File(installationPath + File.separator + ip_address + ".pub");
@@ -342,9 +351,39 @@ public class KeyManager {
 			if (checkLocalKeys()) {
 				km_log.i("Keys exist. No further action required.");
 			} else {
-				km_log.w("One or both keys do not exist. Generating new keys.");
-				deleteLocalKeysIfExist();
-				generateNewKeys();
+				km_log.e("One or both keys do not exist. Checking to see which key.");
+				if (!privkeyFile.exists()) {
+					km_log.e("Private key does not exist. Generating new keys is necessary.");
+					deleteLocalKeysIfExist();
+					generateNewKeys();
+				} else if (!pubkeyFile.exists()) {
+					km_log.e("Public key does not exist. Attempting recovery from private key.");
+					RSAPrivateKey privkey;
+					char[] password;
+					if (keysEncrypted()) {
+						km_log.i("Private key is encrypted!");
+						km_log.i("Please enter password to decrypt. The password will not be shown.");
+						km_log.w("The decrypted private key will not be stored as it normally is. You will need to enter your password again. Your keys will not be stored to disk unencrypted at any time during the recovery.");
+						System.out.print(ANSI_BOLD + ANSI_WHITE + "Decryption password: " + ANSI_RESET);
+						password = System.console().readPassword();
+						km_log.i("Attempting decryption.");
+						String b64Privkey_crypt = loadCryptedPrivkey();
+						String b64Privkey = decryptPrivkey(b64Privkey_crypt, password);
+						if (b64Privkey == null) {
+							km_log.e("Decrypted private key is null. If you do not want to recover your public key, you must delete the private key manually and restart PacChat.");
+							km_log.e("When PacChat is restarted, new keys will be generated for you.");
+							System.exit(1);
+						}
+						privkey = Base64ToPrivkey(b64Privkey);
+						RSAPublicKey recoveredPubkey = recoverPubkey(privkey);
+						saveEncryptedKeys(b64Privkey_crypt, recoveredPubkey);
+					} else {
+						privkey = loadUnencryptedPrivkey();
+						RSAPublicKey recoveredPubkey = recoverPubkey(privkey);
+						saveUnencryptedKeys(privkey, recoveredPubkey);
+					}
+					password = null;
+				}
 			}
 		} else {
 			km_log.w("Installation does not exist. Creating new installation now.");
@@ -358,7 +397,23 @@ public class KeyManager {
 		}
 	}
 	
-	public static PublicKey downloadKeyFromIP(String ip_address) {
+	private static RSAPublicKey recoverPubkey(RSAPrivateKey privateKey) {
+		RSAPrivateCrtKey certKey = (RSAPrivateCrtKey) privateKey;
+		BigInteger pubExponent = certKey.getPublicExponent();
+		BigInteger modulus = certKey.getModulus();
+		
+		RSAPublicKeySpec pubSpec = new RSAPublicKeySpec(modulus, pubExponent);
+		try {
+			KeyFactory keyFactory = KeyFactory.getInstance("RSA", "BC");
+			return (RSAPublicKey) keyFactory.generatePublic(pubSpec);
+		} catch (NoSuchAlgorithmException | NoSuchProviderException | InvalidKeySpecException e) {
+			km_log.e("Error while recovering public key from private key!");
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public static RSAPublicKey downloadKeyFromIP(String ip_address) {
 		try {
 			km_log.i("Downloading key from IP " + ip_address);
 			Socket socketGetkey = new Socket();
@@ -378,7 +433,7 @@ public class KeyManager {
 			outputGetkey.close();
 			inputGetkey.close();
 			
-			return keyFactory.generatePublic(pubSpec);
+			return (RSAPublicKey) keyFactory.generatePublic(pubSpec);
 		} catch (IOException | NoSuchAlgorithmException | InvalidKeySpecException | NoSuchProviderException e) {
 			km_log.e("Error saving recipient's key!");
 			e.printStackTrace();
@@ -402,7 +457,7 @@ public class KeyManager {
 			privkeyFile.delete();
 	}
 	
-	public static String fingerprint(PublicKey pubkey) {
+	public static String fingerprint(RSAPublicKey pubkey) {
 		byte[] keyBytes = pubkey.getEncoded();
 		try {
 			MessageDigest hasher = MessageDigest.getInstance("SHA3-512", "BC");
