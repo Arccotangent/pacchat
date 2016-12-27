@@ -27,7 +27,7 @@ import org.apache.commons.codec.binary.Base64;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.security.PrivateKey;
+import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.util.ArrayList;
 import java.util.Random;
@@ -167,7 +167,7 @@ public class P2PConnectionManager {
 		}
 	}
 	
-	public static void sendChat(String chat_message, RSAPublicKey targetKey, PrivateKey ownPriv) {
+	public static void sendChat(String chat_message, RSAPublicKey targetKey, RSAPrivateKey ownPriv) {
 		String origin = KeyManager.fingerprint((RSAPublicKey) Main.getKeypair().getPublic());
 		String destination = KeyManager.fingerprint(targetKey);
 		long mid = getRandomMID();
@@ -265,7 +265,7 @@ public class P2PConnectionManager {
 				break;
 			case "200 encrypted message":
 				p2p_cm_log.i("Client sent an encrypted message, attempting verification and decryption.");
-				PrivateKey privkey = Main.getKeypair().getPrivate();
+				RSAPrivateKey privkey = (RSAPrivateKey) Main.getKeypair().getPrivate();
 				String cryptedMsg = messageLines[1] + "\n" + messageLines[2] + "\n" + messageLines[3];
 				
 				p2p_cm_log.i("Checking for sender's public key.");

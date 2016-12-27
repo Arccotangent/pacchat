@@ -40,7 +40,7 @@ import java.util.Scanner;
 
 public class Main {
 	private static final Logger core_log = new Logger("CORE");
-	public static final String VERSION = "0.2-B23";
+	public static final String VERSION = "0.2-B24";
 	private static KeyPair keyPair;
 	private static final String ANSI_BOLD = "\u001B[1m";
 	private static final String ANSI_BLUE = "\u001B[34m";
@@ -204,8 +204,8 @@ public class Main {
 		core_log.i("Performing crypto tests..");
 		core_log.i("Testing message crypto...");
 		String testmsg = "test message";
-		String cryptedMsg = MsgCrypto.encryptAndSignMessage(testmsg, keyPair.getPublic(), keyPair.getPrivate());
-		String decryptedMsg = MsgCrypto.decryptAndVerifyMessage(cryptedMsg, keyPair.getPrivate(), keyPair.getPublic()).getMessage();
+		String cryptedMsg = MsgCrypto.encryptAndSignMessage(testmsg, (RSAPublicKey) keyPair.getPublic(), (RSAPrivateKey) keyPair.getPrivate());
+		String decryptedMsg = MsgCrypto.decryptAndVerifyMessage(cryptedMsg, (RSAPrivateKey) keyPair.getPrivate(), (RSAPublicKey) keyPair.getPublic()).getMessage();
 		if (testmsg.equals(decryptedMsg)) {
 			core_log.i("Message crypto test successful!");
 		} else {
@@ -333,7 +333,7 @@ public class Main {
 						
 						if (p2p) {
 							if (KeyManager.checkIfIPKeyExists(cmd[1]))
-								P2PConnectionManager.sendChat(msg, KeyManager.loadKeyByIP(cmd[1]), keyPair.getPrivate());
+								P2PConnectionManager.sendChat(msg, KeyManager.loadKeyByIP(cmd[1]), (RSAPrivateKey) keyPair.getPrivate());
 							else
 								core_log.e("Target's key does not exist. You can try to download their key using by running 'getkey " + cmd[1] + "'");
 						} else {

@@ -30,6 +30,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.security.interfaces.RSAPrivateKey;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -105,7 +106,7 @@ public class PacchatGUI extends JFrame {
 				String ip = ipField.getText();
 				String msg = enteredText.getText();
 				if (Main.isP2PEnabled()) {
-					P2PConnectionManager.sendChat(msg, KeyManager.loadKeyByIP(ip), Main.getKeypair().getPrivate());
+					P2PConnectionManager.sendChat(msg, KeyManager.loadKeyByIP(ip), (RSAPrivateKey) Main.getKeypair().getPrivate());
 					messagePanel.append("\n[" + getTime() + "] You -> P2P Network -> " + ip + ": " + msg);
 				} else {
 					boolean success = Client.sendMessage(msg, ip);

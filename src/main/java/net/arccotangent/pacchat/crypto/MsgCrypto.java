@@ -22,14 +22,14 @@ import org.apache.commons.codec.binary.Base64;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
-import java.security.PrivateKey;
-import java.security.PublicKey;
+import java.security.interfaces.RSAPrivateKey;
+import java.security.interfaces.RSAPublicKey;
 
 public class MsgCrypto {
 	
 	private static final Logger mc_log = new Logger("CRYPTO/MSGCRYPTO");
 	
-	public static String encryptAndSignMessage(String msg, PublicKey publicKey, PrivateKey privateKey) {
+	public static String encryptAndSignMessage(String msg, RSAPublicKey publicKey, RSAPrivateKey privateKey) {
 		mc_log.i("Encrypting and signing message.");
 		mc_log.d("Generating AES key.");
 		SecretKey aes = AES.generateAESKey();
@@ -51,7 +51,7 @@ public class MsgCrypto {
 		return cryptedKeyB64 + "\n" + cryptedTextB64 + "\n" + signatureB64;
 	}
 	
-	public static PacchatMessage decryptAndVerifyMessage(String cryptedMsg, PrivateKey privateKey, PublicKey publicKey) {
+	public static PacchatMessage decryptAndVerifyMessage(String cryptedMsg, RSAPrivateKey privateKey, RSAPublicKey publicKey) {
 		mc_log.i("Decrypting and verifying message.");
 		String[] messageComponents = cryptedMsg.split("\n");
 		String cryptedKeyB64 = messageComponents[0];

@@ -32,7 +32,7 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
-import java.security.PrivateKey;
+import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
@@ -124,7 +124,7 @@ class ConnectionHandler extends Thread {
 					break;
 				case "200 encrypted message": //incoming encrypted message
 					ch_log.i("Client sent an encrypted message, attempting verification and decryption.");
-					PrivateKey privkey = Main.getKeypair().getPrivate();
+					RSAPrivateKey privkey = (RSAPrivateKey) Main.getKeypair().getPrivate();
 					String cryptedMsg = input.readLine() + "\n" + input.readLine() + "\n" + input.readLine();
 					
 					ch_log.i("Checking for sender's public key.");
