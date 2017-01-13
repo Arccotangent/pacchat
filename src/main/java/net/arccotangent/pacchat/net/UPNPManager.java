@@ -23,6 +23,10 @@ import net.arccotangent.pacchat.net.p2p.P2PServer;
 import org.fourthline.cling.UpnpService;
 import org.fourthline.cling.UpnpServiceImpl;
 import org.fourthline.cling.model.message.header.STAllHeader;
+import org.fourthline.cling.model.meta.LocalDevice;
+import org.fourthline.cling.model.meta.RemoteDevice;
+import org.fourthline.cling.registry.Registry;
+import org.fourthline.cling.registry.RegistryListener;
 import org.fourthline.cling.support.igd.PortMappingListener;
 import org.fourthline.cling.support.model.PortMapping;
 
@@ -37,6 +41,53 @@ public class UPNPManager {
 	public static boolean isOpen() {
 		return upnp_open;
 	}
+	
+	private static RegistryListener REGISTRY_LISTENER = new RegistryListener() {
+		@Override
+		public void remoteDeviceDiscoveryStarted(Registry registry, RemoteDevice device) {
+			registry_log.d("Discovery started for " + device.getDisplayString());
+		}
+		
+		@Override
+		public void remoteDeviceDiscoveryFailed(Registry registry, RemoteDevice device, Exception ex) {
+			registry_log.e("Discovery failed for " + device + ": " + ex);
+		}
+		
+		@Override
+		public void remoteDeviceAdded(Registry registry, RemoteDevice device) {
+			registry_log.d("Remote device available: " + device.getDisplayString());
+		}
+		
+		@Override
+		public void remoteDeviceUpdated(Registry registry, RemoteDevice device) {
+			registry_log.d("Remote device updated: " + device.getDisplayString());
+		}
+		
+		@Override
+		public void remoteDeviceRemoved(Registry registry, RemoteDevice device) {
+			registry_log.w("Remote device removed: " + device.getDisplayString());
+		}
+		
+		@Override
+		public void localDeviceAdded(Registry registry, LocalDevice device) {
+			registry_log.d("Local device added: " + device.getDisplayString());
+		}
+		
+		@Override
+		public void localDeviceRemoved(Registry registry, LocalDevice device) {
+			registry_log.w("Local device removed: " + device.getDisplayString());
+		}
+		
+		@Override
+		public void beforeShutdown(Registry registry) {
+			registry_log.d("Before shutdown, registry has " + registry.getDevices().size() + " devices.");
+		}
+		
+		@Override
+		public void afterShutdown() {
+			registry_log.d("Registry shutdown complete!");
+		}
+	};
 	
 	public static void UPNPOpenPorts()
 	{
@@ -53,7 +104,7 @@ public class UPNPManager {
 		PortMappingListener pml = new PortMappingListener(ports);
 		upnp_log.i("Registering port mappings.");
 		UPNP_SERVICE = new UpnpServiceImpl(pml);
-		//UPNP_SERVICE.getRegistry().addListener(REGISTRY_LISTENER);
+		UPNP_SERVICE.getRegistry().addListener(REGISTRY_LISTENER);
 		registry_log.i("Advertising local services.");
 		UPNP_SERVICE.getRegistry().advertiseLocalDevices();
 		control_point_log.i("Sending search message to all devices and services, devices should respond soon.");
