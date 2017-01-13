@@ -73,6 +73,10 @@ public class PacchatGUI extends JFrame {
 		setSize(700, 400);
 	}
 	
+	public void updateServerText(boolean active) {
+		serverTextArea.setText(active ? "Server is active! You are able to receive messages!" : "Server is halted! You are NOT able to receive messages.");
+	}
+	
 	private void updateContactList() {
 		ArrayList<String> contacts = ContactManager.getAllContacts();
 		DefaultListModel<String> model = (DefaultListModel<String>) contactList.getModel();
@@ -164,10 +168,13 @@ public class PacchatGUI extends JFrame {
 	
 	private void initServerManager() {
 		
+		serverTextArea.setText(Main.getServer() != null ? "Server is active! You are able to receive messages!" : "Server is halted! You are NOT able to receive messages.");
+		
 		haltServerButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				Main.doCommand("haltserver");
+				serverTextArea.setText("Server is halted! You are NOT able to receive messages.");
 			}
 		});
 		
@@ -175,6 +182,7 @@ public class PacchatGUI extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				Main.doCommand("startserver");
+				serverTextArea.setText("Server is active! You are able to receive messages!");
 			}
 		});
 		
@@ -182,6 +190,7 @@ public class PacchatGUI extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				Main.doCommand("restartserver");
+				serverTextArea.setText("Server is active! You are able to receive messages!");
 			}
 		});
 	}

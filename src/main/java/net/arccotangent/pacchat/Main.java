@@ -40,7 +40,7 @@ import java.util.Scanner;
 
 public class Main {
 	private static final Logger core_log = new Logger("CORE");
-	public static final String VERSION = "0.2-B24";
+	public static final String VERSION = "0.2-B25";
 	private static KeyPair keyPair;
 	private static final String ANSI_BOLD = "\u001B[1m";
 	private static final String ANSI_BLUE = "\u001B[34m";
@@ -403,6 +403,8 @@ public class Main {
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
+					if (guiPossible)
+						gui.updateServerText(server.isActive());
 				} else
 					core_log.i("Server is already running.");
 				break;
@@ -411,6 +413,8 @@ public class Main {
 				if (server != null && server.isActive()) {
 					core_log.i("Stopping server.");
 					server.closeServer();
+					if (guiPossible)
+						gui.updateServerText(server.isActive());
 					server = null;
 				} else
 					core_log.i("Server is not running.");
@@ -427,6 +431,9 @@ public class Main {
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
+					if (guiPossible)
+						gui.updateServerText(server.isActive());
+					core_log.i("Server restarted.");
 				} else {
 					core_log.i("Server is not running. Starting server.");
 					server = new Server();

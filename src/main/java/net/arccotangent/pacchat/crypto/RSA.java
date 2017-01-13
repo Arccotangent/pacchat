@@ -24,6 +24,8 @@ import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import java.security.*;
+import java.security.interfaces.RSAPrivateKey;
+import java.security.interfaces.RSAPublicKey;
 
 public class RSA {
 	
@@ -49,7 +51,7 @@ public class RSA {
 		return null;
 	}
 	
-	static byte[] encryptBytes(byte[] toEncrypt, PublicKey publicKey) {
+	static byte[] encryptBytes(byte[] toEncrypt, RSAPublicKey publicKey) {
 		try {
 			Cipher c = Cipher.getInstance("RSA", "BC");
 			c.init(Cipher.ENCRYPT_MODE, publicKey);
@@ -61,7 +63,7 @@ public class RSA {
 		return null;
 	}
 	
-	static DecryptStatus decryptBytes(byte[] toDecrypt, PrivateKey privateKey) {
+	static DecryptStatus decryptBytes(byte[] toDecrypt, RSAPrivateKey privateKey) {
 		try {
 			Cipher c = Cipher.getInstance("RSA", "BC");
 			c.init(Cipher.DECRYPT_MODE, privateKey);
@@ -74,7 +76,7 @@ public class RSA {
 		return new DecryptStatus(null, false);
 	}
 	
-	static byte[] signBytes(byte[] toSign, PrivateKey privateKey) {
+	static byte[] signBytes(byte[] toSign, RSAPrivateKey privateKey) {
 		try {
 			Signature sig = Signature.getInstance(RSA_signature_algorithm, "BC");
 			sig.initSign(privateKey);
@@ -87,7 +89,7 @@ public class RSA {
 		return null;
 	}
 	
-	static boolean verifyBytes(byte[] signedBytes, byte[] signature, PublicKey publicKey) {
+	static boolean verifyBytes(byte[] signedBytes, byte[] signature, RSAPublicKey publicKey) {
 		try {
 			Signature sig = Signature.getInstance(RSA_signature_algorithm, "BC");
 			sig.initVerify(publicKey);
