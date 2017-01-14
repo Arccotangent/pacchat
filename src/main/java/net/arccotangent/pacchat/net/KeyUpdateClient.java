@@ -70,7 +70,7 @@ public class KeyUpdateClient extends Thread {
 			return;
 		}
 		
-		KeyUpdate keyUpdate = new KeyUpdate(server_ip, true);
+		KeyUpdate keyUpdate = new KeyUpdate(server_ip, true, id);
 		try {
 			kuc_log.i("Requesting a key update.");
 			output.write("302 request key update");

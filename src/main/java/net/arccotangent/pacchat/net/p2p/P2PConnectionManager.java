@@ -286,7 +286,7 @@ public class P2PConnectionManager {
 					* For this reason, 301 getkey is not implemented on the P2P network.
 					* ==============================================================================================================================
 					*
-					* 301 getkey may be implemented in the future if a secure key exchange method such as Diffie-Hellman is implemented.
+					* 301 getkey may be implemented in the future if a secure key exchange method is implemented.
 					*
 					P2PConnectionManager.propagate(destination, origin, System.currentTimeMillis(), P2PConnectionManager.getRandomMID(), P2PConnectionManager.encode("301 getkey"));
 					String keyOrigin = "";

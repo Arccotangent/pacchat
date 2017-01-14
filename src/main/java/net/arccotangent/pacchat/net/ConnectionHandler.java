@@ -83,7 +83,7 @@ class ConnectionHandler extends Thread {
 						ch_log.w(ip + " key doesn't exist!");
 					}
 					
-					KeyUpdate update = new KeyUpdate(ip, false);
+					KeyUpdate update = new KeyUpdate(ip, false, connection_id);
 					KeyUpdateManager.addPendingUpdate(connection_id, update);
 					while (KeyUpdateManager.getIncomingUpdate(connection_id).isProcessed()) {
 						try {

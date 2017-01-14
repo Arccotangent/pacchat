@@ -71,6 +71,10 @@ public class KeyUpdateManager {
 		return incoming_updates.keySet();
 	}
 	
+	static Collection<Long> getAllOutgoingKeys() {
+		return outgoing_updates.keySet();
+	}
+	
 	public static KeyUpdate getIncomingUpdate(long id) {
 		if (incoming_updates.containsKey(id))
 			return incoming_updates.get(id);
@@ -78,7 +82,7 @@ public class KeyUpdateManager {
 			return null;
 	}
 	
-	public static KeyUpdate getOutgoingUpdate(long id) {
+	static KeyUpdate getOutgoingUpdate(long id) {
 		if (outgoing_updates.containsKey(id))
 			return outgoing_updates.get(id);
 		else

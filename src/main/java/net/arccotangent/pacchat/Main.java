@@ -1,6 +1,6 @@
 /*
 PacChat - Direct P2P secure, encrypted private chats
-Copyright (C) 2016 Arccotangent
+Copyright (C) 2016-2017 Arccotangent
 
 PacChat is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -32,14 +32,11 @@ import java.security.KeyPair;
 import java.security.Security;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Scanner;
+import java.util.*;
 
 public class Main {
 	private static final Logger core_log = new Logger("CORE");
-	public static final String VERSION = "0.2-B27";
+	public static final String VERSION = "0.2-B28";
 	private static KeyPair keyPair;
 	private static final String ANSI_BOLD = "\u001B[1m";
 	private static final String ANSI_BLUE = "\u001B[34m";
@@ -514,14 +511,27 @@ public class Main {
 			case "ul":
 			case "updatelist":
 				Collection<Long> incomingKeys = KeyUpdateManager.getAllIncomingKeys();
+				Collection<Long> outgoingKeys = KeyUpdateManager.getAllOutgoingKeys();
+				
 				ArrayList<Long> ids = new ArrayList<>();
 				ids.addAll(incomingKeys);
+				ids.addAll(outgoingKeys);
+				
+				Set<KeyUpdate> updates = new HashSet<>();
 				for (Long id : ids) {
-					KeyUpdate update = KeyUpdateManager.getIncomingUpdate(id);
-					if (update == null) {
-						core_log.e("Update ID " + id + " does not exist.");
-						break;
+					KeyUpdate incomingUpdate = KeyUpdateManager.getIncomingUpdate(id);
+					KeyUpdate outgoingUpdate = KeyUpdateManager.getOutgoingUpdate(id);
+					if (incomingUpdate != null) {
+						updates.add(incomingUpdate);
 					}
+					
+					if (outgoingUpdate != null) {
+						updates.add(outgoingUpdate);
+					}
+				}
+				
+				for (KeyUpdate update : updates) {
+					long id = update.getID();
 					if (!update.isProcessed()) {
 						core_log.w((update.isOutgoing() ? "[OUTGOING]" : "[INCOMING]") + " [PENDING] Update ID " + id + " source IP = " + update.getAddress());
 					} else {
@@ -532,6 +542,7 @@ public class Main {
 						}
 					}
 				}
+				
 				if (ids.size() == 0) {
 					core_log.i("No key updates.");
 				}

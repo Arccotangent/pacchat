@@ -1,0 +1,10 @@
+#!/bin/bash
+
+if [ $UID != "0" ]; then
+	echo "You must run this script as root!"
+	exit 0
+fi
+
+ln -fs "$PWD/pacchat" "/usr/local/bin/pacchat"
+echo "Script installed."
+

@@ -22,11 +22,13 @@ public class KeyUpdate {
 	private final String addr;
 	private boolean accepted = false;
 	private boolean processed = false;
+	private long id;
 	private boolean out = false;
 	
-	public KeyUpdate(String addr_ip, boolean outgoing) {
+	public KeyUpdate(String addr_ip, boolean outgoing, long id) {
 		addr = addr_ip;
 		out = outgoing;
+		this.id = id;
 	}
 	
 	String getAddress() {
@@ -35,6 +37,10 @@ public class KeyUpdate {
 	
 	boolean isOutgoing() {
 		return out;
+	}
+	
+	long getID() {
+		return id;
 	}
 	
 	public boolean isProcessed() {
