@@ -73,6 +73,16 @@ class ConnectionHandler extends Thread {
 					break;
 				case "302 request key update":
 					ch_log.i("Client is requesting a key update.");
+					String newFingerprint = input.readLine();
+					ch_log.w("Client reports new key fingerprint as '" + newFingerprint + "'");
+					
+					if (KeyManager.checkIfIPKeyExists(ip)) {
+						String fingerprint = KeyManager.fingerprint(KeyManager.loadKeyByIP(ip));
+						ch_log.w(ip + " current key fingerprint is: '" + fingerprint + "'");
+					} else {
+						ch_log.w(ip + " key doesn't exist!");
+					}
+					
 					KeyUpdate update = new KeyUpdate(ip, false);
 					KeyUpdateManager.addPendingUpdate(connection_id, update);
 					while (KeyUpdateManager.getIncomingUpdate(connection_id).isProcessed()) {

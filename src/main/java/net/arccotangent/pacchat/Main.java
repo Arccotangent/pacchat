@@ -29,7 +29,6 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 import java.awt.*;
 import java.security.KeyPair;
-import java.security.PrivateKey;
 import java.security.Security;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
@@ -40,7 +39,7 @@ import java.util.Scanner;
 
 public class Main {
 	private static final Logger core_log = new Logger("CORE");
-	public static final String VERSION = "0.2-B26";
+	public static final String VERSION = "0.2-B27";
 	private static KeyPair keyPair;
 	private static final String ANSI_BOLD = "\u001B[1m";
 	private static final String ANSI_BLUE = "\u001B[34m";
@@ -131,11 +130,12 @@ public class Main {
 		System.out.println(ANSI_BOLD + ANSI_BLUE + "update/u <ip address> - Request that the server at the specified IP address update their copy of your key." + ANSI_RESET);
 		System.out.println(ANSI_BOLD + ANSI_BLUE + "updateaccept/ua <ID> - Accept a pending update request with the specified ID." + ANSI_RESET);
 		System.out.println(ANSI_BOLD + ANSI_BLUE + "updatereject/ur <ID> - Reject a pending update request with the specified ID." + ANSI_RESET);
-		System.out.println(ANSI_BOLD + ANSI_BLUE + "updatelist/ul <ID> - List all pending update IDs." + ANSI_RESET);
+		System.out.println(ANSI_BOLD + ANSI_BLUE + "updatelist/ul - List all pending update IDs." + ANSI_RESET);
 		System.out.println(ANSI_BOLD + ANSI_BLUE + "updateinfo/ui <ID> - Print info about a pending update request with the specified ID." + ANSI_RESET);
 		System.out.println(ANSI_BOLD + ANSI_BLUE + "getkey/gk <ip address> - Download a key from the specified IP address." + ANSI_RESET);
 		System.out.println(ANSI_BOLD + ANSI_BLUE + "encrypt - Encrypt an unencrypted private key on disk." + ANSI_RESET);
 		System.out.println(ANSI_BOLD + ANSI_BLUE + "decrypt - Decrypt an encrypted private key on disk." + ANSI_RESET);
+		System.out.println(ANSI_BOLD + ANSI_BLUE + "fingerprint/f [ip address] - Fingerprint your own key or that of someone else." + ANSI_RESET);
 		System.out.println(ANSI_BOLD + ANSI_WHITE + "Note: If you update a key, it will permanently delete the old key, so be careful!" + ANSI_RESET);
 		System.out.println();
 		System.out.println(ANSI_BOLD + ANSI_CYAN + "---P2P Network---" + ANSI_RESET);
@@ -176,7 +176,7 @@ public class Main {
 		KeyManager.createInstallationIfNotExist(); //This function handles everything from the installation to key gen
 
 		core_log.i("Loading keys from disk.");
-		PrivateKey privkey;
+		RSAPrivateKey privkey;
 		
 		if (KeyManager.keysEncrypted()) {
 			core_log.i("Private key is encrypted!");
@@ -186,7 +186,6 @@ public class Main {
 			core_log.i("Attempting decryption.");
 			String b64Privkey_crypt = KeyManager.loadCryptedPrivkey();
 			String b64Privkey = KeyManager.decryptPrivkey(b64Privkey_crypt, password);
-			password = null;
 			if (b64Privkey == null) {
 				core_log.e("Decrypted private key is null, PacChat cannot be used without a valid private key. Exiting.");
 				System.exit(1);
@@ -696,6 +695,20 @@ public class Main {
 					KeyManager.saveUnencryptedKeys((RSAPrivateKey) keyPair.getPrivate(), (RSAPublicKey) keyPair.getPublic());
 				} else {
 					core_log.e("Decrypted private key doesn't match current private key. Incorrect password?");
+				}
+				break;
+			case "f":
+			case "fingerprint":
+				if (cmd.length == 1) {
+					String fingerprint = KeyManager.fingerprint((RSAPublicKey) keyPair.getPublic());
+					core_log.i("Your key fingerprint is: '" + fingerprint + "'");
+				} else {
+					if (!KeyManager.checkIfIPKeyExists(cmd[1])) {
+						core_log.e("Key for IP " + cmd[1] + " doesn't exist!");
+					} else {
+						String fingerprint = KeyManager.fingerprint(KeyManager.loadKeyByIP(cmd[1]));
+						core_log.i(cmd[1] + " key fingerprint is: '" + fingerprint + "'");
+					}
 				}
 				break;
 			case "c":

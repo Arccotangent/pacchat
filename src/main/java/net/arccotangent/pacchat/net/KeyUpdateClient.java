@@ -20,11 +20,13 @@ package net.arccotangent.pacchat.net;
 import net.arccotangent.pacchat.KeyUpdate;
 import net.arccotangent.pacchat.KeyUpdateManager;
 import net.arccotangent.pacchat.Main;
+import net.arccotangent.pacchat.filesystem.KeyManager;
 import net.arccotangent.pacchat.logging.Logger;
 import org.apache.commons.codec.binary.Base64;
 
 import java.io.*;
 import java.net.*;
+import java.security.interfaces.RSAPublicKey;
 
 public class KeyUpdateClient extends Thread {
 	
@@ -72,6 +74,8 @@ public class KeyUpdateClient extends Thread {
 		try {
 			kuc_log.i("Requesting a key update.");
 			output.write("302 request key update");
+			output.newLine();
+			output.write(KeyManager.fingerprint((RSAPublicKey) Main.getKeypair().getPublic()));
 			output.newLine();
 			output.flush();
 			KeyUpdateManager.addOutgoingUpdate(id, keyUpdate);

@@ -382,7 +382,6 @@ public class KeyManager {
 						RSAPublicKey recoveredPubkey = recoverPubkey(privkey);
 						saveUnencryptedKeys(privkey, recoveredPubkey);
 					}
-					password = null;
 				}
 			}
 		} else {
@@ -467,7 +466,7 @@ public class KeyManager {
 			km_log.e("Error computing key fingerprint!");
 			e.printStackTrace();
 		}
-		return null;
+		return "";
 	}
 	
 }

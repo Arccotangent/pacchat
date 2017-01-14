@@ -17,6 +17,7 @@ along with PacChat.  If not, see <http://www.gnu.org/licenses/>.
 
 package net.arccotangent.pacchat.net;
 
+import net.arccotangent.pacchat.Main;
 import net.arccotangent.pacchat.logging.Logger;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -34,6 +35,7 @@ public class NetUtils {
 	private static final Logger nu_log = new Logger("NETWORK");
 	private static String ip_address = "";
 	private static String external_ip = "";
+	private static final String ip_retrieval_url = "http://checkip.amazonaws.com";
 	
 	static String getLocalIPAddr() {
 		return ip_address;
@@ -111,8 +113,9 @@ public class NetUtils {
 		nu_log.i("Retrieving external IP address.");
 		CloseableHttpClient cli = HttpClients.createDefault();
 		
-		nu_log.d("IP retrieval URL = http://checkip.amazonaws.com");
-		HttpGet req = new HttpGet("http://checkip.amazonaws.com");
+		nu_log.d("IP retrieval URL = " + ip_retrieval_url);
+		HttpGet req = new HttpGet(ip_retrieval_url);
+		req.addHeader("User-Agent", "PacChat HTTP " + Main.VERSION);
 		
 		try {
 			CloseableHttpResponse res = cli.execute(req);

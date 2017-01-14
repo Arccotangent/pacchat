@@ -50,6 +50,8 @@ Sent by client to a server. The server will then respond with the key, and only 
 
 ## 302 request key update
 
+Line 2 contains the new key fingerprint as reported by client
+
 Sent by a client to a server. Basically, this is the client asking the server (and the operator) to update their copy of the client's key. This request must be manually accepted or rejected by the server operator.
 
 The update request is stored and kept pending until accepted or rejected.
