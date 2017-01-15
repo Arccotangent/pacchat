@@ -95,7 +95,7 @@ public class P2PConnectionManager {
 	
 	public static void connectToPeer(String peer_addr) {
 		if (!checkIPValidity(peer_addr)) {
-			p2p_cm_log.e("Peer address " + peer_addr + " is invalid!");
+			p2p_cm_log.e("Peer address '" + peer_addr + "' is invalid!");
 			return;
 		}
 		p2p_cm_log.i("Connecting to peer at " + peer_addr);
