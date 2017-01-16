@@ -27,6 +27,8 @@ import org.apache.commons.codec.binary.Base64;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.util.ArrayList;
@@ -53,6 +55,13 @@ public class P2PConnectionManager {
 	
 	static boolean checkIPValidity(String ip_address) {
 		//return (ip_address.equals("127.0.0.1") || ip_address.equalsIgnoreCase("localhost") || ip_address.isEmpty() || P2PConnectionManager.connectedToPeer(ip_address));
+		InetAddress addr;
+		try {
+			addr = InetAddress.getByName(ip_address);
+		} catch (UnknownHostException e) {
+			p2p_cm_log.d("Unknown host!");
+			return false;
+		}
 		if (ip_address == null) {
 			p2p_cm_log.d("IP is null!");
 			return false;
@@ -64,6 +73,12 @@ public class P2PConnectionManager {
 			return false;
 		} else if (ip_address.isEmpty()) {
 			p2p_cm_log.d("IP is empty!");
+			return false;
+		} else if (addr.isAnyLocalAddress()) {
+			p2p_cm_log.d("IP is local!");
+			return false;
+		} else if (addr.isLoopbackAddress()) {
+			p2p_cm_log.d("IP is loopback!");
 			return false;
 		} else if (P2PConnectionManager.connectedToPeer(ip_address)) {
 			p2p_cm_log.d("Already connected to this peer!");
@@ -192,6 +207,12 @@ public class P2PConnectionManager {
 					output.newLine();
 					output.flush();
 					break;
+				case "103 version":
+					p2p_cm_log.i("Client asked for our version, responding with version (" + Main.VERSION + ")");
+					output.write(Main.VERSION);
+					output.newLine();
+					output.flush();
+					break;
 				case "103 disconnecting":
 					p2p_cm_log.i("Peer is disconnecting.");
 					output.close();
@@ -261,7 +282,12 @@ public class P2PConnectionManager {
 		String line1 = messageLines[0];
 		switch (line1) {
 			case "101 ping":
+				p2p_cm_log.i("Peer pinged us, responding.");
 				propagate(destination, origin, System.currentTimeMillis(), P2PConnectionManager.getRandomMID(), P2PConnectionManager.encode("102 pong"));
+				break;
+			case "103 version":
+				p2p_cm_log.i("Peer requested our server version, responding with server version (" + Main.VERSION + ")");
+				propagate(destination, origin, System.currentTimeMillis(), P2PConnectionManager.getRandomMID(), P2PConnectionManager.encode(Main.VERSION));
 				break;
 			case "200 encrypted message":
 				p2p_cm_log.i("Client sent an encrypted message, attempting verification and decryption.");

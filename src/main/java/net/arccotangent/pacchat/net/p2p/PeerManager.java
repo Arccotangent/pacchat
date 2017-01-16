@@ -24,6 +24,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.net.InetAddress;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -133,7 +134,14 @@ public class PeerManager {
 	
 	static void addPeer(String peer) {
 		createPeerFileIfNotExist();
-		if (!existsInList(peer) && !peer.equals("127.0.0.1") && !peer.equals(NetUtils.getExternalIPAddr())) {
+		InetAddress addr;
+		try {
+			addr = InetAddress.getByName(peer);
+		} catch (IOException e) {
+			return;
+		}
+		
+		if (!existsInList(peer) && !peer.equals("127.0.0.1") && !peer.equals(NetUtils.getExternalIPAddr()) && !addr.isLoopbackAddress() && !addr.isAnyLocalAddress()) {
 			p2p_log.i("Adding peer " + peer + " to database.");
 			peers.add(peer);
 		}
