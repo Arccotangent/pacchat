@@ -157,6 +157,7 @@ public class P2PConnectionManager {
 	private static void propagateToClients(String origin, String destination, long timestamp, long mid, String message) {
 		ArrayList<P2PConnectionHandler> clients = Main.getP2PServer().getClients();
 		
+		p2p_cm_log.d("Propagating message to clients.");
 		for (P2PConnectionHandler client : clients) {
 			client.sendToClient(origin, destination, mid, message);
 		}
@@ -164,7 +165,8 @@ public class P2PConnectionManager {
 	
 	private static void propagate(String origin, String destination, long timestamp, long mid, String message) {
 		if (origin.equalsIgnoreCase(KeyManager.fingerprint((RSAPublicKey) Main.getKeypair().getPublic()))) {
-			p2p_cm_log.i("Propagating message through network.");
+			p2p_cm_log.i("Propagating message through network, we created the message.");
+			p2p_cm_log.d("message = " + message);
 			for (P2PClient peer : connectedPeers) {
 				peer.sendMessage(origin, destination, message, mid);
 			}
@@ -173,7 +175,8 @@ public class P2PConnectionManager {
 		}
 		
 		if (!messageIDs.contains(mid)) {
-			p2p_cm_log.i("Propagating message through network.");
+			p2p_cm_log.i("Propagating message through network, MID not processed.");
+			p2p_cm_log.d("message = " + message);
 			for (P2PClient peer : connectedPeers) {
 				peer.sendMessage(origin, destination, message, mid, timestamp);
 			}
