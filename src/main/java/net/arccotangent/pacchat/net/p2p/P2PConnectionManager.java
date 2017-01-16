@@ -50,7 +50,7 @@ public class P2PConnectionManager {
 	}
 	
 	public static boolean havePeers() {
-		return connectedPeers.size() > 0;
+		return connectedPeers.size() > 0 || Main.getP2PServer().getClients().size() > 0;
 	}
 	
 	static boolean checkIPValidity(String ip_address) {
