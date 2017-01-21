@@ -36,7 +36,7 @@ import java.util.*;
 
 public class Main {
 	private static final Logger core_log = new Logger("CORE");
-	public static final String VERSION = "0.2.1-B3";
+	public static final String VERSION = "0.2.1-B4";
 	private static KeyPair keyPair;
 	private static final String ANSI_BOLD = "\u001B[1m";
 	private static final String ANSI_BLUE = "\u001B[34m";

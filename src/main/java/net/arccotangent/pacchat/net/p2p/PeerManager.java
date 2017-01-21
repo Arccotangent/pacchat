@@ -40,7 +40,7 @@ public class PeerManager {
 	private static ArrayList<String> allPeers = new ArrayList<>();
 	
 	public static boolean firstTime() {
-		return !peerFile.exists() || peerFile.length() == 0;
+		return !peerFile.exists() || peerFile.length() <= 1;
 	}
 	
 	private static void createPeerFileIfNotExist() {
