@@ -12,7 +12,11 @@ Currently unused by PacChat, but the functionality is still built in. You can te
 
 Ping response message.
 
-## 103 disconnecting
+## 103 version
+
+Currently unused by PacChat, but the functionality is still built in. You can telnet to a PacChat server and send '103 version' to it, the server will respond with its version.
+
+## 110 disconnecting (previously 103 disconnecting)
 
 Sent from peer to peer, indicates that the sender will be disconnecting the receiver. The connection is then closed.
 

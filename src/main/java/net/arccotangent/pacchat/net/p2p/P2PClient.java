@@ -183,7 +183,7 @@ public class P2PClient {
 	void disconnect() {
 		p2p_client_log.i("Disconnecting from peer.");
 		try {
-			output.write("103 disconnecting");
+			output.write("110 disconnecting");
 			output.newLine();
 			output.flush();
 			connected = false;

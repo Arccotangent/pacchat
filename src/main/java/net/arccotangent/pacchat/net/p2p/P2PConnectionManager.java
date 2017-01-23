@@ -216,7 +216,7 @@ public class P2PConnectionManager {
 					output.newLine();
 					output.flush();
 					break;
-				case "103 disconnecting":
+				case "110 disconnecting":
 					p2p_cm_log.i("Peer is disconnecting.");
 					output.close();
 					input.close();
