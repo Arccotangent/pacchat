@@ -43,6 +43,19 @@ class P2PConnectionHandler extends Thread {
 		connected = true;
 	}
 	
+	public boolean isConnected() {
+		try {
+			input.ready();
+		} catch (IOException e) {
+			if (e.getMessage().equalsIgnoreCase("Stream closed")) {
+				connected = false;
+			} else
+				e.printStackTrace();
+		}
+		
+		return connected;
+	}
+	
 	private boolean inputReady() {
 		if (!connected)
 			return false;

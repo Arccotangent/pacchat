@@ -49,8 +49,22 @@ public class P2PConnectionManager {
 		}
 	}
 	
+	private static ArrayList<P2PConnectionHandler> getActiveClients() {
+		ArrayList<P2PConnectionHandler> clients, active = new ArrayList<>();
+		
+		clients = Main.getP2PServer().getClients();
+		
+		for (P2PConnectionHandler client : clients) {
+			if (client.isConnected()) {
+				active.add(client);
+			}
+		}
+		
+		return active;
+	}
+	
 	public static boolean havePeers() {
-		return connectedPeers.size() > 0 || Main.getP2PServer().getClients().size() > 0;
+		return connectedPeers.size() > 0 || getActiveClients().size() > 0;
 	}
 	
 	static boolean checkIPValidity(String ip_address) {
