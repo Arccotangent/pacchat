@@ -36,7 +36,7 @@ import java.util.*;
 
 public class Main {
 	private static final Logger core_log = new Logger("CORE");
-	public static final String VERSION = "0.2.1-B5";
+	public static final String VERSION = "0.2.1-B6";
 	private static KeyPair keyPair;
 	private static final String ANSI_BOLD = "\u001B[1m";
 	private static final String ANSI_BLUE = "\u001B[34m";
@@ -605,11 +605,19 @@ public class Main {
 				break;
 			case "vp":
 			case "viewpeers":
+				core_log.d("Checking peers.");
+				p2p = P2PConnectionManager.havePeers();
+				core_log.i(p2p ? "Peers and/or clients present, P2P is enabled." : "No peers or clients found! P2P disabled.");
 				if (!p2p)
 					core_log.e("P2P is currently disabled. Run the 'p2p' command to enable P2P.");
 				ArrayList<P2PClient> peers = P2PConnectionManager.getConnectedPeers();
 				for (int i = 0; i < peers.size(); i++) {
 					core_log.i("Peer " + i + ": " + peers.get(i).getConnectedAddress());
+				}
+				
+				ArrayList<P2PConnectionHandler> clients = P2PConnectionManager.getActiveClients();
+				for (int i = 0; i < clients.size(); i++) {
+					core_log.i("P2P Client " + i + ": " + clients.get(i).getIP());
 				}
 				break;
 			case "cp":

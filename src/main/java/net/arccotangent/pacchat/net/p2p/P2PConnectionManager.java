@@ -49,7 +49,7 @@ public class P2PConnectionManager {
 		}
 	}
 	
-	private static ArrayList<P2PConnectionHandler> getActiveClients() {
+	public static ArrayList<P2PConnectionHandler> getActiveClients() {
 		ArrayList<P2PConnectionHandler> clients, active = new ArrayList<>();
 		
 		clients = Main.getP2PServer().getClients();
@@ -278,6 +278,9 @@ public class P2PConnectionManager {
 						output.newLine();
 						output.flush();
 					}
+					break;
+				case "401 invalid p2p transmission header":
+					p2p_cm_log.d("Client sent invalid header response. Ignoring to avoid infinite loop.");
 					break;
 				default:
 					p2p_cm_log.i("Client sent an invalid request header: " + line1);

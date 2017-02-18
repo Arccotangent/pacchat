@@ -23,7 +23,7 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
 
-class P2PConnectionHandler extends Thread {
+public class P2PConnectionHandler extends Thread {
 	
 	private final BufferedReader input;
 	private final BufferedWriter output;
@@ -43,7 +43,7 @@ class P2PConnectionHandler extends Thread {
 		connected = true;
 	}
 	
-	public boolean isConnected() {
+	boolean isConnected() {
 		try {
 			input.ready();
 		} catch (IOException e) {
@@ -54,6 +54,10 @@ class P2PConnectionHandler extends Thread {
 		}
 		
 		return connected;
+	}
+	
+	public String getIP() {
+		return ip;
 	}
 	
 	private boolean inputReady() {
