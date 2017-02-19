@@ -78,14 +78,14 @@ public class Main {
 	}
 
 	private static void printCopyright() {
-		System.out.println("PacChat Copyright (C) 2016 Arccotangent");
+		System.out.println("PacChat Copyright (C) 2016-2017 Arccotangent");
 		System.out.println("This program comes with ABSOLUTELY NO WARRANTY");
 		System.out.println("This is free software, and you are welcome to redistribute it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or any later version.");
 	}
 	
 	private static void printFullCopyright() {
 		System.out.println("PacChat - Direct P2P secure, encrypted private chats");
-		System.out.println("Copyright (C) 2016 Arccotangent");
+		System.out.println("Copyright (C) 2016-2017 Arccotangent");
 		System.out.println();
 		System.out.println("This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or any later version.");
 		System.out.println();
