@@ -4,6 +4,8 @@ PacChat is a direct P2P chat application that will encrypt and sign all messages
 
 This program is still in beta.
 
+The P2P network is in beta and extremely buggy. It might not work at all in its present state.
+
 ## Pros and Cons
 
 ### Pros
