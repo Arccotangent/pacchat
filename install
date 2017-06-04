@@ -5,6 +5,6 @@ if [ $UID != "0" ]; then
 	exit 0
 fi
 
-ln -fs "$PWD/pacchat" "/usr/local/bin/pacchat"
+ln -vfs "$PWD/pacchat" "/usr/local/bin/pacchat"
 echo "Script installed."
 
